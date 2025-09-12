@@ -1,14 +1,18 @@
 # crooked-curators
 
 **Description**
+
 Welcome to CROOKED CURATORS!
 
-**Style Guide**
-[Style Guide](/_STYLE-GUIDE.md)
+[Style Guide](_STYLE-GUIDE.md)
+
+[Contributors](_CONTRIBUTING.md)
+
+**Views and Game Flow Diagram**
+
+![figma diagram](src/assets/images/Figma-Diagram-Game-Flow.png)
 
 **Components**
 
 **Deployment**
 
-**Contributors**
-[Contributors:](/_CONTRIBUTING.md)
