@@ -15,7 +15,7 @@
   \******************************/
 /***/ (() => {
 
-eval("{throw new Error(\"Module build failed (from ./node_modules/@babel/preset-typescript/lib/index.js):\\nTypeError: Cannot read properties of undefined (reading 'slice')\\n    at throwVersionError (/home/yoomeh/senior/crooked-curators/node_modules/@babel/helper-plugin-utils/lib/index.js:61:15)\\n    at Object.assertVersion (/home/yoomeh/senior/crooked-curators/node_modules/@babel/helper-plugin-utils/lib/index.js:10:5)\\n    at /home/yoomeh/senior/crooked-curators/node_modules/@babel/preset-typescript/lib/index.js:112:7\\n    at Object.<anonymous> (/home/yoomeh/senior/crooked-curators/node_modules/@babel/helper-plugin-utils/lib/index.js:32:12)\");\n\n//# sourceURL=webpack://crooked-curators/./src/client/index.tsx?\n}");
+eval("{\n\n//# sourceURL=webpack://crooked-curators/./src/client/index.tsx?\n}");
 
 /***/ })
 
@@ -24,7 +24,7 @@ eval("{throw new Error(\"Module build failed (from ./node_modules/@babel/preset-
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
 /******/ 	__webpack_modules__["./src/client/index.tsx"]();
 /******/ 	
