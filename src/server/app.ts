@@ -1,8 +1,10 @@
 const express = require('express');
-const passport = require('passport');
+let passport = require('passport');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
+
+const db = require('./db/index');
 
 // --------------ENV------------------
 
