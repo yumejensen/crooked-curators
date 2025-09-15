@@ -10,5 +10,5 @@
   },
   "lib": ["es2015"],
   "strict": true,
-  "allowImportingTsExtensions": true
+   "allowImportingTsExtensions": true
 }
