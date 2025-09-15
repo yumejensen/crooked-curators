@@ -38,7 +38,17 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        use: ["style-loader", "css-loader"]
+        use: [
+          "style-loader", 
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                namedExport: false,
+              }
+            }
+          }
+        ]
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
