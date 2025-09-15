@@ -1,7 +1,7 @@
-passport = require('passport');
+import passport from 'passport';
 const GoogleStrategy = require( 'passport-google-oauth20' ).Strategy;
-
 const { User } = require('./db/schemas/users');
+
 
 require('dotenv').config();
 
@@ -13,8 +13,27 @@ passport.use(new GoogleStrategy({
   clientSecret: GOOGLE_CLIENT_SECRET,
   callbackURL: 'http://localhost:3000/auth/google/callback',
 },
-  function(accessToken, refreshToken, profile, done){
+  function(accessToken, refreshToken, profile, cb){
 
     // access users schema with findOrCreate
+   User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
   }
-))
+));
+
+passport.serializeUser(function(user, cb) {
+  process.nextTick(function() {
+    return cb(null, {
+      googleId: user.id,
+      username: user.username,
+      profilePic: user.profilePic
+    });
+  });
+});
+
+passport.deserializeUser(function(user, cb) {
+  process.nextTick(function() {
+    return cb(null, user);
+  });
+});
