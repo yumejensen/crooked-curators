@@ -1,8 +1,10 @@
 const express = require('express');
-let passport = require('passport');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
+
+import passport from 'passport';
+
 
 const db = require('./db/index');
 
@@ -16,6 +18,12 @@ const { SESSION_SECRET } = process.env;
 
 // initialize app
 const app = express();
+require('./auth');
+
+//----------IMPORT ROUTES-------------
+
+import { authRouter } from './routes';
+
 
 // session middleware
 app.use(session({
@@ -31,6 +39,9 @@ app.use(passport.session());
 // require auth so it loads the auth in server init
 require('./auth.ts');
 
+//Setting endpoints for routers.
+app.use('/auth/google', authRouter);
+
 // ----------MIDDLEWARE---------------
 
 // path to files
@@ -42,6 +53,7 @@ app.use(bodyParser.json());
 
 // serve static files from client
 app.use(express.static(CLIENT));
+
 
 // main get endpoint
 app.get('/', (req, res) => {
@@ -56,3 +68,5 @@ const port = 3000;
 app.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
 });
+
+export { app };
