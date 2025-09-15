@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FC } from 'react';
 import {
   IconCalendarStats,
   IconDeviceDesktopAnalytics,
@@ -17,11 +18,11 @@ import classes from '../CSS/NavbarMinimal.module.css';
 interface NavbarLinkProps {
   icon: typeof IconHome2;
   label: string;
-  active?: boolean;
-  onClick?: () => void;
+  active: boolean;
+  onClick: () => void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+const NavbarLink: FC<NavbarLinkProps> = ({ icon: Icon, label, active, onClick }) => {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
@@ -66,8 +67,8 @@ export default function NavbarMinimal() {
       </div>
 
       <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconSwitchHorizontal} label="Change account" />
-        <NavbarLink icon={IconLogout} label="Logout" />
+        <NavbarLink icon={IconSwitchHorizontal} label="Change account" active={false} onClick={() => {}}/>
+        <NavbarLink icon={IconLogout} label="Logout" active={false} onClick={() => {}}/>
       </Stack>
     </nav>
   );
