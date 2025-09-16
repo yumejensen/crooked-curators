@@ -14,7 +14,6 @@ passport.use(new GoogleStrategy({
   callbackURL: 'http://localhost:3000/auth/google/callback',
 },
   function(accessToken, refreshToken, profile, cb){
-
     // access users schema with findOrCreate
    User.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);

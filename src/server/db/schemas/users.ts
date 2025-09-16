@@ -12,8 +12,8 @@ const User = sequelize.define('user', {
     allowNull: true
   },
   googleId: {
-  type: DataTypes.STRING,
-  allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false
   },
   email: {
     type: DataTypes.STRING,
@@ -27,4 +27,4 @@ const User = sequelize.define('user', {
   // Code here
 })();
 
-export default User;
+export { User };
