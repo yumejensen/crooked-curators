@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import Homepage from './Views/Homepage';
 import LoginButton from './Views/LoginButton'
+import NavBar from './Components/NavBar';
 
 // export default function App () {
 //     return (
@@ -26,24 +27,7 @@ const { Header, Content, Footer } = Layout;
 //   label: `nav ${index + 1}`,
 // }));
 
-const items = [
-    {
-        key: "home-1",
-        label: "Home"
-    },
-    {
-        key: "profile-1",
-        label: "Profile"
-    },
-    {
-        key: "sign-in-1",
-        label: (<a href='/auth/google/'>Sign-In</a>)
-    },
-    {
-        key: "sign-out-1",
-        label: "Sign-Out"
-    }
-];
+
 
 const App: React.FC = () => {
   const {
@@ -52,16 +36,7 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={items}
-          style={{ flex: 1, minWidth: 0 }}
-        />
-      </Header>
+      <NavBar />
       <Content style={{ padding: '0 48px' }}>
         <Breadcrumb
           style={{ margin: '16px 0' }}
