@@ -1,7 +1,10 @@
-import * as React from "react";
+import * as React from 'react';
+import { Routes, Route } from 'react-router';
 import { createTheme, MantineProvider } from '@mantine/core';
+import axios from 'axios';
 
-import Homepage from "./Views/Homepage";
+import Homepage from './Views/Homepage';
+import Login from './Views/Login'
 
 const theme = createTheme({
     // theme here
@@ -59,11 +62,24 @@ const theme = createTheme({
     }
 });
 
+const verifyAccount = function () {
+    axios.get('/auth/google')
+        .then((res)=>{
+            console.log('auth attemped', res)
+        })
+        .catch()
+}
 
 export default function App () {
     return (
         <MantineProvider theme={theme}>
-            <Homepage />
+            <div>
+                <button onClick={verifyAccount}>Login Here</button>
+                <Routes>
+                    <Route path='/' element={<Homepage />} />
+                    <Route path='/login' element={<Login />}/>
+                </Routes>
+            </div>
         </MantineProvider>
     )
 }

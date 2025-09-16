@@ -32,6 +32,7 @@
     "@tiptap/pm": "^3.4.3",
     "@tiptap/react": "^3.4.3",
     "@tiptap/starter-kit": "^3.4.3",
+    "axios": "^1.12.2",
     "body-parser": "^2.2.0",
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.2",

@@ -1,17 +1,23 @@
 import passport from 'passport';
-import { Router } from 'express';
+import { Router, Request } from 'express';
 
 
 const authRouter = Router();
 
-authRouter.get('auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] })
+authRouter.get('/',
+  passport.authenticate('google', { scope: ['email', 'profile'] }),
+  (req, res)=>{
+    console.log('user attempting login', req.body.user);
+  }
 );
 
-authRouter.get('auth/google/callback',
+authRouter.get('/callback',
   passport.authenticate('google', {
-    // failed sign in
-  })
+    failureRedirect: '/'
+  }),
+  (req, res) => {
+    res.redirect('http://localhost:3000/')
+  }
 
 )
 
