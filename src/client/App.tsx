@@ -1,88 +1,90 @@
-import * as React from 'react';
+// import * as React from 'react';
 import { Routes, Route } from 'react-router';
-import { createTheme, MantineProvider } from '@mantine/core';
 import axios from 'axios';
 
 import Homepage from './Views/Homepage';
 import LoginButton from './Views/LoginButton'
 
-const theme = createTheme({
-    // theme here
-    colors: {
-        // add all colors
+// export default function App () {
+//     return (
+//         <div>
+//             <LoginButton />
+//             <Routes>
+//                 <Route path='/' element={<Homepage />} />
+//             </Routes>
+//         </div>
+//     )
+// }
 
-        pink: [
-            "#3B262C", // OG
-            "#800933", // OG
-            "#C25576",
-            "#603E48",
-            "#9E6072", // OG
-            "#B58694",
-            "#CCACB6",
-            "#E3D2D7",
-            "#FAF8F9",
-            "#FFFFFF"
-        ],
+import React from 'react';
+import { Breadcrumb, Layout, Menu, theme } from 'antd';
 
-        yellow: [
-            "#736A47",
-            "#998D5E",
-            "#B2A882",
-            "#EDDB98", // OG
-            "#F7EABA",
-            "#DED6BA",
-            "#F0E7CA", // OG
-            "#F6EDCC",
-            "#F2EFE3",
-            "#FFFFFF",
-        ],
+const { Header, Content, Footer } = Layout;
 
-        teal: [
-            "#003020",
-            "#0B523A",
-            "#128860",
-            "#19BE86",
-            "#30E4A7",
-            "#00FCA7",
-            "#7BE3C0", // OG
-            "#ADEED8",
-            "#E0F9F0",
-            "#FFFFFF",
-        ]
+// const items = Array.from({ length: 15 }).map((_, index) => ({
+//   key: index + 1,
+//   label: `nav ${index + 1}`,
+// }));
+
+const items = [
+    {
+        key: "home-1",
+        label: "Home"
     },
-    shadows: {
-        md: '1px 1px 3px rgba(0, 0, 0, .25)',
-        xl: '5px 5px 3px rgba(0, 0, 0, .25)',
+    {
+        key: "profile-1",
+        label: "Profile"
     },
-    headings: {
-        fontFamily: 'Roboto, sans-serif',
-        sizes: {
-            h1: { fontSize: '36px' },
-        },
+    {
+        key: "sign-in-1",
+        label: "Sign-In"
+    },
+    {
+        key: "sign-out-1",
+        label: "Sign-Out"
     }
-});
+];
 
-const verifyAccount = () => {
-    axios.get('/auth/google')
-        .then((res)=>{
-            console.log('auth attemped', res)
-        })
-        .catch((err) => {
-            console.log('cannot verify account', err)
-        })
-}
+const App: React.FC = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
-export default function App () {
-    return (
-        <MantineProvider theme={theme}>
-            <div>
-                <LoginButton />
-                <Routes>
-                    <Route path='/' element={<Homepage />} />
-                </Routes>
-            </div>
-        </MantineProvider>
-    )
-}
+  return (
+    <Layout>
+      <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['2']}
+          items={items}
+          style={{ flex: 1, minWidth: 0 }}
+        />
+      </Header>
+      <Content style={{ padding: '0 48px' }}>
+        <Breadcrumb
+          style={{ margin: '16px 0' }}
+          items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
+        />
+        <div
+          style={{
+            background: colorBgContainer,
+            minHeight: 280,
+            padding: 24,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          Content
+        </div>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>
+        Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
+      </Footer>
+    </Layout>
+  );
+};
+
+export default App;
 
 /* <Route path='/login' element={<Login />}/> */
