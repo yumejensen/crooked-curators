@@ -4,7 +4,7 @@ import { createTheme, MantineProvider } from '@mantine/core';
 import axios from 'axios';
 
 import Homepage from './Views/Homepage';
-import Login from './Views/Login'
+import LoginButton from './Views/LoginButton'
 
 const theme = createTheme({
     // theme here
@@ -62,24 +62,27 @@ const theme = createTheme({
     }
 });
 
-const verifyAccount = function () {
+const verifyAccount = () => {
     axios.get('/auth/google')
         .then((res)=>{
             console.log('auth attemped', res)
         })
-        .catch()
+        .catch((err) => {
+            console.log('cannot verify account', err)
+        })
 }
 
 export default function App () {
     return (
         <MantineProvider theme={theme}>
             <div>
-                <button onClick={verifyAccount}>Login Here</button>
+                <LoginButton />
                 <Routes>
                     <Route path='/' element={<Homepage />} />
-                    <Route path='/login' element={<Login />}/>
                 </Routes>
             </div>
         </MantineProvider>
     )
 }
+
+/* <Route path='/login' element={<Login />}/> */
