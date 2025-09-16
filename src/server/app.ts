@@ -18,12 +18,13 @@ const { SESSION_SECRET } = process.env;
 
 // initialize app
 const app = express();
+
+// require auth to initialize google strategy
 require('./auth');
 
 //----------IMPORT ROUTES-------------
 
 import { authRouter } from './routes';
-
 
 // session middleware
 app.use(session({
@@ -36,10 +37,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// require auth so it loads the auth in server init
-require('./auth.ts');
 
-//Setting endpoints for routers.
+//----------SET ROUTES-------------
+
 app.use('/auth/google', authRouter);
 
 // ----------MIDDLEWARE---------------
