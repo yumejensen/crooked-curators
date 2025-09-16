@@ -37,7 +37,7 @@ const items = [
     },
     {
         key: "sign-in-1",
-        label: "Sign-In"
+        label: (<a href='/auth/google/'>Sign-In</a>)
     },
     {
         key: "sign-out-1",
