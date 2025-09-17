@@ -10,8 +10,6 @@ app.render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App/>} />
-      <Route path='/game' element={<ActiveGame />} />
-
     </Routes>
   </BrowserRouter>
 );
