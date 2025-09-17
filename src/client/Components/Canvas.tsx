@@ -1,0 +1,1 @@
+// Canvas for artists to draw on during the game

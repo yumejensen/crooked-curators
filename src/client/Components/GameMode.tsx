@@ -1,0 +1,1 @@
+// options for which game mode on game settings

@@ -1,0 +1,1 @@
+// Avatars for active game, rendering on either side of the page; eventually with their username rendered beside them
