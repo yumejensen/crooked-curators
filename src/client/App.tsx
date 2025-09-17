@@ -1,23 +1,8 @@
-// import * as React from 'react';
-import { Routes, Route } from 'react-router';
-import axios from 'axios';
+import React from 'react';
 
 import Homepage from './Views/Homepage';
-import LoginButton from './Views/LoginButton'
 import NavBar from './Components/NavBar';
 
-// export default function App () {
-//     return (
-//         <div>
-//             <LoginButton />
-//             <Routes>
-//                 <Route path='/' element={<Homepage />} />
-//             </Routes>
-//         </div>
-//     )
-// }
-
-import React from 'react';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 
 const { Header, Content, Footer } = Layout;
@@ -26,7 +11,6 @@ const { Header, Content, Footer } = Layout;
 //   key: index + 1,
 //   label: `nav ${index + 1}`,
 // }));
-
 
 
 const App: React.FC = () => {
@@ -51,7 +35,12 @@ const App: React.FC = () => {
           }}
         >
           Content
+
+          <Homepage />
+          
         </div>
+
+
       </Content>
       <Footer style={{ textAlign: 'center' }}>
         Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
@@ -61,5 +50,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-/* <Route path='/login' element={<Login />}/> */
