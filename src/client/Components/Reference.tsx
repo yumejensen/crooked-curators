@@ -1,0 +1,1 @@
+// Reference image that will show on artist view and curator view after a reference is picked from reference search

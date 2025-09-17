@@ -1,0 +1,1 @@
+// Search that sends request to server for server to request to the API for the keyword searched
