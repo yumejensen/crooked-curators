@@ -55,10 +55,17 @@ app.use(bodyParser.json());
 app.use(express.static(CLIENT));
 
 
-// main get endpoint
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+// check if a user is logged in
+const isLoggedIn = (req, res, next) => {
+  // get a user from the session
+  const user = req.session.user;
+  if (user === null){
+    res.redirect('/')
+  } else {
+    next();
+  }
+}
+
 
 // ---------SERVER LISTEN-------------
 
