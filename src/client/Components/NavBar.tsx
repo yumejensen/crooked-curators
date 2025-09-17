@@ -6,36 +6,45 @@ const { Header } = Layout
 // declare navbar items
 const items = [
     {
-        key: "home-1",
+        key: "Homepage",
         label: "Home"
     },
     {
-        key: "profile-1",
+        key: "Profile",
         label: "Profile"
     },
     {
-        key: "sign-in-1",
+        key: "GameSettings",
+        label: "Game Settings"
+    },
+    {
+        key: "ActiveGame",
+        label: "Game"
+    },
+    {
+        key: "Sign-In",
         label: (<a href='/auth/google/'>Sign-In</a>)
     },
     {
-        key: "sign-out-1",
+        key: "Sign-Out",
         label: "Sign-Out"
     }
 ];
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC = (props) => {
 
-    return (
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={items}
-          style={{ flex: 1, minWidth: 0 }}
-        />
-      </Header>
+  return (
+    <Header style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="demo-logo" />
+      <Menu
+        onClick={props.onClick}
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={['2']}
+        items={items}
+        style={{ flex: 1, minWidth: 0 }}
+      />
+    </Header>
   );
 };
 

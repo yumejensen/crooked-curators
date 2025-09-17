@@ -1,9 +1,15 @@
 import React from 'react';
-
-import Homepage from './Views/Homepage';
-import NavBar from './Components/NavBar';
+import { useState } from 'react';
 
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+
+// -------------------[COMPONENTS]------------------
+import NavBar from './Components/NavBar';
+
+import Homepage from './Views/Homepage';
+import Profile from './Views/Profile';
+import GameSettings from './Views/GameSettings';
+import ActiveGame from './Views/ActiveGame';
 
 const { Header, Content, Footer } = Layout;
 
@@ -13,14 +19,52 @@ const { Header, Content, Footer } = Layout;
 // }));
 
 
+const Views: React.FC = (props) => {
+
+  // --------------------[STATES]---------------------
+  const { view } = props;
+
+  // ---------------[VIEW CONDITIONALS]---------------
+  if(view === "Homepage"){
+    return (<Homepage />)
+
+  } else if(view === "Profile"){
+    return (<Profile />)
+
+  } else if(view === "GameSettings"){
+    return (<GameSettings />)
+
+  } else if(view === "ActiveGame"){
+    return (<ActiveGame />)
+
+  }
+}
+
 const App: React.FC = () => {
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  // --------------------[STATES]---------------------
+  const [view, setView] = useState('Homepage')
+
+  // -------------------[COMPONENTS]------------------
+
+
+
+  // --------------------[HELPERS]--------------------
+
+  const handleClick = (e) => {
+    const { key } = e;
+
+    // set view state to the tab clicked in navbar
+    setView(key);
+  }
+
   return (
     <Layout>
-      <NavBar />
+      <NavBar onClick={handleClick}/>
       <Content style={{ padding: '0 48px' }}>
         <Breadcrumb
           style={{ margin: '16px 0' }}
@@ -36,8 +80,8 @@ const App: React.FC = () => {
         >
           Content
 
-          <Homepage />
-          
+          <Views view={view} />
+
         </div>
 
 
