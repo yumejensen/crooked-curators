@@ -1,1 +1,20 @@
 // Color picker to put beside canvas for brush color
+
+import React from 'react';
+import { generate, green, presetPalettes, red } from '@ant-design/colors';
+import { ColorPicker, theme } from 'antd';
+import type { ColorPickerProps } from 'antd';
+
+type Presets = Required<ColorPickerProps>['presets'][number];
+
+function genPresets(presets = presetPalettes) {
+  return Object.entries(presets).map<Presets>(([label, colors]) => ({ label, colors, key: label }));
+}
+
+const CanvasColorPicker: React.FC = () => {
+  const { token } = theme.useToken();
+  const presets = genPresets({ primary: generate(token.colorPrimary), red, green });
+  return <ColorPicker presets={presets} defaultValue="#940f47ff" />;
+};
+
+export default CanvasColorPicker;
