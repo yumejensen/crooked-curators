@@ -12,28 +12,40 @@ import Reference from '../Components/Reference';
 
 
 const ActiveGame: React.FC = () => {
-    return(
-    
+  return(
+    <>
       <Row gutter={2}>
+
         <Col span={3}>
           <Card title="Col 1" variant="borderless">
             Card content
           </Card>
         </Col>
+
         <Col span={18}>
           <Card title="Col 2" variant="borderless">
-            <Reference />
+            <Flex 
+              style={{width: 500}}
+              align='center'
+              justify='center'
+            >
+              <Reference />
+            </Flex>
+            
             <Canvas />
+            
           </Card>
         </Col>
+
         <Col span={3}>
           <Card title="Col 3" variant="borderless">
             Card content
           </Card>
         </Col>
+
       </Row>
-      
-    )
+    </>  
+  )
 }
 
 export default ActiveGame;
