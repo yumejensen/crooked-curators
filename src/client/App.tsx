@@ -1,7 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { 
+  Breadcrumb, Layout, 
+  Menu, theme, Header, 
+  Content, Footer
+} from './antdComponents'
 
 // -------------------[COMPONENTS]------------------
 import NavBar from './Components/NavBar';
@@ -11,7 +15,6 @@ import Profile from './Views/Profile';
 import GameSettings from './Views/GameSettings';
 import ActiveGame from './Views/ActiveGame';
 
-const { Header, Content, Footer } = Layout;
 
 // const items = Array.from({ length: 15 }).map((_, index) => ({
 //   key: index + 1,
