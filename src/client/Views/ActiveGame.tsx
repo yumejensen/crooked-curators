@@ -2,31 +2,31 @@
 
 import React from 'react';
 
-import { Layout } from 'antd';
-
-import { Card, Col, Row } from 'antd';
+import {
+  Card, Col, Row, Flex, Splitter, Typography, Collapse
+} from '../antdComponents';
 
 // COMPONENTS
 import Canvas from '../Components/Canvas';
+import Reference from '../Components/Reference';
 
 
 const ActiveGame: React.FC = () => {
-
-
     return(
     
       <Row gutter={2}>
-        <Col span={5}>
+        <Col span={3}>
           <Card title="Col 1" variant="borderless">
             Card content
           </Card>
         </Col>
-        <Col span={14}>
+        <Col span={18}>
           <Card title="Col 2" variant="borderless">
+            <Reference />
             <Canvas />
           </Card>
         </Col>
-        <Col span={5}>
+        <Col span={3}>
           <Card title="Col 3" variant="borderless">
             Card content
           </Card>
@@ -37,13 +37,3 @@ const ActiveGame: React.FC = () => {
 }
 
 export default ActiveGame;
-
-            // <Sider style={{ background: 'blue' }} width={200}>
-            //     <Menu
-            //     mode="inline"
-            //     defaultSelectedKeys={['1']}
-            //     defaultOpenKeys={['sub1']}
-            //     style={{ height: '100%' }}
-            //     items={items2}
-            //     />              
-            // </Sider>
