@@ -48,6 +48,7 @@ const ActiveGame: React.FC = () => {
                 items={items2}
                 />              
             </Sider>
+            <Canvas />
         </Layout>
     </>
     )
