@@ -8,7 +8,7 @@ import {
   Flex,
   FlexProps,
   Segmented
-} from 'antd';
+} from '../antdComponents';
 
 import ReferenceSearch from './ReferenceSearch'
 import Reference from './Reference'
