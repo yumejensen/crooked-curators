@@ -1,9 +1,5 @@
 // Color picker to put beside canvas for brush color
-
 import React from 'react';
-// import { generate, green, presetPalettes, red } from '@ant-design/colors';
-// import { ColorPicker, theme } from 'antd';
-// import type { ColorPickerProps } from 'antd';
 
 import {
     generate, green, presetPalettes, red,
