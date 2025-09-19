@@ -41,6 +41,7 @@ const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
+  const [lineColor, setLineColor] = React.useState("#df4b26");
 
   const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
   const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
@@ -65,7 +66,7 @@ const Canvas = () => {
     let lastLine = lines[lines.length - 1];
     // add point
     lastLine.points = lastLine.points.concat([point.x, point.y]);
-
+    
     // replace last
     lines.splice(lines.length - 1, 1, lastLine);
     setLines(lines.concat());
@@ -100,7 +101,7 @@ const Canvas = () => {
                 <Line
                   key={i}
                   points={line.points}
-                  stroke="#df4b26"
+                  stroke={lineColor}
                   strokeWidth={5}
                   tension={0.5}
                   lineCap="round"
@@ -112,7 +113,7 @@ const Canvas = () => {
               ))}
             </Layer>
           </Stage>
-          <CanvasColorPicker />
+          <CanvasColorPicker changeColor={setLineColor} />
         </Flex>
       </Flex>
     </div>

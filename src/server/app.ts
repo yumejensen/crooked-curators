@@ -57,7 +57,7 @@ app.use(express.static(CLIENT));
 
 
 // check if a user is logged in
-const isLoggedIn = (req, res, next) => {
+const isLoggedIn = (req: any, res: any, next: any) => {
   // get a user from the session
   const user = req.session.user;
   if (user === null){

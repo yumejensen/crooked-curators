@@ -17,12 +17,14 @@ module.exports = {
     new BundleAnalyzerPlugin()
   ],
   resolve: {
-    modules: [__dirname, "src", "node_modules"],
-    extensions: ["*", ".js", ".jsx", ".tsx", ".ts"],
+    extensions: [".js", ".jsx", ".tsx", ".ts"],
   },
   module: {
     rules: [
-      { test: /\.([cm]?ts|tsx)$/, loader: "ts-loader" },
+      { test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        loader: "ts-loader" 
+      },
       {
         test: /\.(js|jsx|tsx|ts)$/,
         exclude: /node_modules/,
