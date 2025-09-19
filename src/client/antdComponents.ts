@@ -26,6 +26,11 @@ import Breadcrumb from 'antd/es/breadcrumb'
 import Content from 'antd/es/layout'
 import Footer from 'antd/es/layout'
 
+// Homepage
+
+import Button from "antd/es/button";
+import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
+
 // Reference
 
 import Image from 'antd/es/image'
@@ -45,10 +50,11 @@ import Collapse from 'antd/es/collapse'
 
 
 export {
-    Divider, Col, Row, Flex, FlexProps, Segmented, 
+    Divider, Col, Row, Flex, FlexProps, Segmented,
     generate, green, presetPalettes, red,
     ColorPicker, ColorPickerProps, theme,
     Layout, Header, Menu, Breadcrumb, Content, Footer,
+    Button, ReloadOutlined,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse
 }
