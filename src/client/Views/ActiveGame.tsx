@@ -1,9 +1,11 @@
 // The Active Game View that holds that canvas and reference image
 
 import React from 'react';
+import { useState } from 'react';
 
+// 
 import {
-  Card, Col, Row, Flex, Splitter, Typography, Collapse
+  Card, Col, Row, Flex, FlexProps, Splitter, Typography, Collapse
 } from '../antdComponents';
 
 // COMPONENTS
@@ -12,24 +14,30 @@ import Reference from '../Components/Reference';
 
 
 const ActiveGame: React.FC = () => {
+
+  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
+  const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
+
   return(
     <>
       <Row gutter={2}>
 
         <Col span={3}>
-          <Card title="Col 1" variant="borderless">
+          <Card>
             Card content
           </Card>
         </Col>
 
         <Col span={18}>
-          <Card title="Col 2" variant="borderless">
-            <Flex 
-              style={{width: 500}}
-              align='center'
-              justify='center'
-            >
-              <Reference />
+          <Card >
+            <Flex gap="middle" align="center" vertical>
+              <Flex 
+                style={{width: 500}}
+                justify={justify} 
+                align={alignItems}
+              >
+                <Reference />
+              </Flex>
             </Flex>
             
             <Canvas />
@@ -38,7 +46,7 @@ const ActiveGame: React.FC = () => {
         </Col>
 
         <Col span={3}>
-          <Card title="Col 3" variant="borderless">
+          <Card >
             Card content
           </Card>
         </Col>
