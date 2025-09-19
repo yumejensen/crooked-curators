@@ -16,10 +16,17 @@ function genPresets(presets = presetPalettes) {
   return Object.entries(presets).map<Presets>(([label, colors]) => ({ label, colors, key: label }));
 }
 
-const CanvasColorPicker: React.FC = () => {
+// pass down changeColor prop from canvas
+const CanvasColorPicker: React.FC = ({ changeColor }) => {
   const { token } = theme.useToken();
   const presets = genPresets({ primary: generate(token.colorPrimary), red, green });
-  return <ColorPicker presets={presets} defaultValue="#940f47ff" />;
+  return (
+    <ColorPicker 
+      presets={presets} 
+      defaultValue="#940f47ff" 
+      onChange={(value) => {changeColor(value.toHexString())}}
+    />
+  );
 };
 
 export default CanvasColorPicker;
