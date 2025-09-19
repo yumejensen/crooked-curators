@@ -24,7 +24,7 @@ require('./auth');
 
 //----------IMPORT ROUTES-------------
 
-import { authRouter } from './routes';
+import { authRouter, nameRandomizerRouter } from './routes';
 
 // session middleware
 app.use(session({
@@ -41,6 +41,7 @@ app.use(passport.session());
 //----------SET ROUTES-------------
 
 app.use('/auth/google', authRouter);
+app.use('/name-randomizer', nameRandomizerRouter);
 
 // ----------MIDDLEWARE---------------
 
