@@ -20,6 +20,12 @@ import Layout from 'antd/es/layout'
 import Header from 'antd/es/layout'
 import Menu from 'antd/es/menu'
 
+// App
+
+import Breadcrumb from 'antd/es/breadcrumb'
+import Content from 'antd/es/layout'
+import Footer from 'antd/es/layout'
+
 // Reference
 
 import Image from 'antd/es/image'
@@ -42,7 +48,7 @@ export {
     Divider, Col, Row, Flex, FlexProps, Segmented, 
     generate, green, presetPalettes, red,
     ColorPicker, ColorPickerProps, theme,
-    Layout, Header, Menu,
+    Layout, Header, Menu, Breadcrumb, Content, Footer,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse
 }
