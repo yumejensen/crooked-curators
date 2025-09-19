@@ -29,11 +29,9 @@ const Homepage: React.FC = () => {
     return(
         <div>
             <p>This is the homepage!</p>
-            {<Button
-                onClick={handleRandomizeName}
-            >
+            <Button onClick={handleRandomizeName}>
                 <ReloadOutlined />
-            </Button>}
+            </Button>
             {randomName}
         </div>
     )
