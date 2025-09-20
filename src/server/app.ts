@@ -67,6 +67,14 @@ const isLoggedIn = (req: any, res: any, next: any) => {
   }
 }
 
+app.get('/{*any}', (req, res) => {
+  res.sendFile(HTML, (err) => {
+    if(err){
+      res.status(500).send(err);
+    }
+  })
+})
+
 
 // ---------SERVER LISTEN-------------
 
