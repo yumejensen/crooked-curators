@@ -5,8 +5,10 @@ import { Route, Routes } from 'react-router-dom';
 import {
   Breadcrumb, Layout,
   Menu, theme, Header,
-  Content, Footer
+  Content, Footer, ConfigProvider
 } from './antdComponents'
+
+import './CSS/style.module.css'
 
 // -------------------[COMPONENTS]------------------
 import NavBar from './Components/NavBar';
@@ -32,9 +34,26 @@ const App: React.FC = () => {
   const [view, setView] = useState('Homepage')
 
   return (
-    <Layout>
+  <ConfigProvider
+      theme={{
+        token: {
+          // Seed Token
+          colorPrimary: '#058f6fff',
+          colorBgLayout:  '#F0E7CA',
+          borderRadius: 2,
+
+          // Alias Token
+          colorBgContainer: '#ffffffff',
+        },
+      }}
+    >
+    <Layout >
       <NavBar />
-      <Content style={{ padding: '0 48px' }}>
+      <Content style={{ 
+        padding: '0 48px', 
+        color: '#3B262C',
+        
+      }}>
         <Breadcrumb
           style={{ margin: '16px 0' }}
           items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
@@ -63,6 +82,7 @@ const App: React.FC = () => {
         Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
       </Footer>
     </Layout>
+  </ConfigProvider>
   );
 };
 

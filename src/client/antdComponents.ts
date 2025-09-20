@@ -25,6 +25,7 @@ import Menu from 'antd/es/menu'
 import Breadcrumb from 'antd/es/breadcrumb'
 import Content from 'antd/es/layout'
 import Footer from 'antd/es/layout'
+import ConfigProvider from 'antd/es/config-provider';
 
 // Homepage
 
@@ -54,7 +55,7 @@ export {
     generate, green, presetPalettes, red,
     ColorPicker, ColorPickerProps, theme,
     Layout, Header, Menu, Breadcrumb, Content, Footer,
-    Button, ReloadOutlined,
+    ConfigProvider, Button, ReloadOutlined,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse
 }

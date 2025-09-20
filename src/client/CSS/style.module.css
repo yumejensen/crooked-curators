@@ -1,6 +1,6 @@
 /* Color variables */
 :root {
-    --cyan: #7BE3C0;
+    --cyan: #058f6fff;
     --cream: #F0E7CA;
     --yellow: #EDDB98;
     --mauve: #9E6072;
@@ -9,5 +9,5 @@
 }
 
 body {
-    background-color: var(--cream);
+    background-color: var(--cream)
 }
