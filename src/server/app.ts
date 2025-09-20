@@ -59,7 +59,7 @@ app.use(express.static(CLIENT));
 
 
 // check if a user is logged in
-const isLoggedIn = (req, res, next) => {
+const isLoggedIn = (req: any, res: any, next: any) => {
   // get a user from the session
   const user = req.session.user;
   if (user === null){
@@ -68,6 +68,14 @@ const isLoggedIn = (req, res, next) => {
     next();
   }
 }
+
+app.get('/{*any}', (req, res) => {
+  res.sendFile(HTML, (err) => {
+    if(err){
+      res.status(500).send(err);
+    }
+  })
+})
 
 
 // ---------SERVER LISTEN-------------

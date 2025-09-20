@@ -4,7 +4,7 @@ import Divider from 'antd/es/divider';
 import Col from 'antd/es/col';
 import Row from 'antd/es/row';
 import Flex from 'antd/es/flex';
-import FlexProps from 'antd/es/flex';
+import { FlexProps } from 'antd/es/index';
 import Segmented from 'antd/es/segmented';
 
 // CanvasColorPicker
