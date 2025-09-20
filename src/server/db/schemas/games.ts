@@ -1,21 +1,22 @@
-import sequelize from '../index';
-import { DataTypes } from 'sequelize';
+import sequelize from "../index";
+import { DataTypes } from "sequelize";
 
-import { User } from './users';
+import { User } from "./users";
 
-const Game = sequelize.define('game', {
-    gameCode: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
+const Game = sequelize.define("game", {
+  gameCode: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
-User.hasMany(Game)
+Game.belongsToMany(User, { through: "users_games" });
 
-
+// synchronize model to the db
 (async () => {
-  await sequelize.sync({ force: true });
-  // Code here
+  await Game.sync({ force: true });
+  console.log("Game model synchronized successfully.");
+  // console.log(sequelize.models)
 })();
 
 export { Game };
