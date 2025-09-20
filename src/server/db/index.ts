@@ -20,4 +20,11 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   })
 
-export default sequelize;
+  export default sequelize;
+
+
+// -------INITIALIZE MODELS----------
+
+// require all sequelize models
+const User = require('./schemas/users') 
+const Game = require('./schemas/games')

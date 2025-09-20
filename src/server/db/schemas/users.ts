@@ -1,7 +1,6 @@
 import sequelize from '../index';
 import { DataTypes } from 'sequelize';
 
-
 const User = sequelize.define('user', {
   username: {
     type: DataTypes.STRING,
@@ -22,9 +21,10 @@ const User = sequelize.define('user', {
 
 });
 
+// synchronize model to the db
 (async () => {
-  await sequelize.sync({ force: true });
-  // Code here
+  await User.sync({ force: true });
+    console.log('User model synchronized successfully.');
 })();
 
 export { User };
