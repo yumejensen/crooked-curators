@@ -31,6 +31,7 @@ import ConfigProvider from 'antd/es/config-provider';
 
 import Button from "antd/es/button";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
+import { Space } from 'antd/es/index';
 
 // Reference
 
@@ -55,7 +56,7 @@ export {
     generate, green, presetPalettes, red,
     ColorPicker, ColorPickerProps, theme,
     Layout, Header, Menu, Breadcrumb, Content, Footer,
-    ConfigProvider, Button, ReloadOutlined,
+    ConfigProvider, Button, ReloadOutlined, Space,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse
 }
