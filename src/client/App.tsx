@@ -1,9 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-import { 
-  Breadcrumb, Layout, 
-  Menu, theme, Header, 
+import {
+  Breadcrumb, Layout,
+  Menu, theme, Header,
   Content, Footer
 } from './antdComponents'
 
@@ -21,28 +22,6 @@ import ActiveGame from './Views/ActiveGame';
 //   label: `nav ${index + 1}`,
 // }));
 
-
-const Views: React.FC = (props) => {
-
-  // --------------------[STATES]---------------------
-  const { view } = props;
-
-  // ---------------[VIEW CONDITIONALS]---------------
-  if(view === "Homepage"){
-    return (<Homepage />)
-
-  } else if(view === "Profile"){
-    return (<Profile />)
-
-  } else if(view === "GameSettings"){
-    return (<GameSettings />)
-
-  } else if(view === "ActiveGame"){
-    return (<ActiveGame />)
-
-  }
-}
-
 const App: React.FC = () => {
 
   const {
@@ -52,22 +31,9 @@ const App: React.FC = () => {
   // --------------------[STATES]---------------------
   const [view, setView] = useState('Homepage')
 
-  // -------------------[COMPONENTS]------------------
-
-
-
-  // --------------------[HELPERS]--------------------
-
-  const handleClick = (e) => {
-    const { key } = e;
-
-    // set view state to the tab clicked in navbar
-    setView(key);
-  }
-
   return (
     <Layout>
-      <NavBar onClick={handleClick}/>
+      <NavBar />
       <Content style={{ padding: '0 48px' }}>
         <Breadcrumb
           style={{ margin: '16px 0' }}
@@ -81,13 +47,17 @@ const App: React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/game-settings" element={<GameSettings />} />
+            <Route path="/game" element={<ActiveGame />} />
+            <Route path="/game-settings" element={<GameSettings />} />
 
-          <Views view={view} />
+            <Route path="*" element={<p>There is nothing here: 404!</p>} />
+          </Routes>
 
         </div>
-
-
       </Content>
       <Footer style={{ textAlign: 'center' }}>
         Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP

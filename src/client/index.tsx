@@ -8,8 +8,6 @@ const app = createRoot(document.getElementById('root'))
 
 app.render(
   <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<App/>} />
-    </Routes>
+    <App />
   </BrowserRouter>
 );
