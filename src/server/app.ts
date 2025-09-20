@@ -1,12 +1,21 @@
+// -------REQUIRES AND IMPORTS-----------
 const express = require('express');
+const app = express();
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+// socket.io
+const http = require('http');
+const server = http.createServer(app)
+const { Server } = require('socket.io');
+const io = new Server(server)
+
 import passport from 'passport';
 
-
+// run the database file
 const db = require('./db/index');
+
 
 // --------------ENV------------------
 
@@ -14,18 +23,18 @@ require('dotenv').config();
 
 const { SESSION_SECRET } = process.env;
 
-// ----------EXPRESS APP--------------
 
-// initialize app
-const app = express();
-
+// ------INIT GOOGLE STRATEGY--------
 // require auth to initialize google strategy
 require('./auth');
+
 
 //----------IMPORT ROUTES-------------
 
 import { authRouter, nameRandomizerRouter, curatorRouter } from './routes';
 
+
+// ----------MIDDLEWARE---------------
 // session middleware
 app.use(session({
   resave: false,
@@ -37,9 +46,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
-// ----------MIDDLEWARE---------------
 
 // path to files
 const CLIENT = path.resolve(__dirname, '../../dist');
@@ -78,13 +84,27 @@ app.get('/{*any}', (req, res) => {
 })
 
 
+
 // ---------SERVER LISTEN-------------
+
 
 // port and listening
 const port = 3000;
 
-app.listen(port, () => {
+server.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
 });
 
-export { app };
+
+
+// ----------SOCKET IO--------------
+
+io.on('connection', (socket) => {
+  console.log('A player connected');
+  socket.on('disconnect', () => {
+    console.log('A player disconnected')
+  })
+})
+
+
+export { app, io };
