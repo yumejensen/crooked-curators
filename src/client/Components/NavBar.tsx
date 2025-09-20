@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 
-import { Layout, Menu } from 'antd'
+import { Layout, Menu } from '../antdComponents'
 const { Header } = Layout
 
 // declare navbar items
@@ -34,7 +34,7 @@ const items = [
 
 const NavBar: React.FC = (props) => {
   return (
-    <Header style={{ display: 'flex', alignItems: 'center' }}>
+    <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: '#3B262C'}}>
       <div className="demo-logo" />
       <Menu
         onClick={props.onClick}
@@ -42,7 +42,7 @@ const NavBar: React.FC = (props) => {
         mode="horizontal"
         defaultSelectedKeys={['2']}
         items={items}
-        style={{ flex: 1, minWidth: 0 }}
+        style={{ flex: 1, minWidth: 0, backgroundColor: '#3B262C' }}
       />
     </Header>
   );
