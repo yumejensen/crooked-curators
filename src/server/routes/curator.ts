@@ -6,9 +6,9 @@ const curatorRouter = Router()
 
 let query = 'Starry Night'
 
-curatorRouter.get('/', (req, res)=>{
-  // console.log(req.body.title)
-  query = req.body.title
+curatorRouter.get('/:title', (req, res)=>{
+  console.log(req.params)
+  query = req.params.title
   axios.get(`https://api.harvardartmuseums.org/object?apikey=${HARVARD_API_KEY}&hasimage=1&title=${query}&sortorder=desc`)
     .then(({ data })=>{
       //transform the data from the api into something useful for the game
@@ -26,7 +26,8 @@ curatorRouter.get('/', (req, res)=>{
       })
       // remove pieces without images and shuffle the results
       pieces = pieces.filter(({ image }) => (image ? true : false)).sort(()=> 0.5 - Math.random())
-        // get four random pieces and send them to curator
+      //TODO - handle no results
+      // get four random pieces and send them to curator
         let selection = pieces.slice(0, 4)
         res.send(selection)
     },

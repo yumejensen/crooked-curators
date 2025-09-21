@@ -8,9 +8,9 @@ import type { GetProps } from '../antdComponents';
 const { Search } = Input
 
 type SearchProps = GetProps<typeof Input.Search>;
-const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
+const onSearch: SearchProps['onSearch'] = (value, _e, info) => value;
 
-const ReferenceSearch = () => {
+const ReferenceSearch = ({ handleSearch }) => {
   return (
     <>
       <Search 
@@ -18,7 +18,9 @@ const ReferenceSearch = () => {
       allowClear
       enterButton="Search"
       size="large"
-      onSearch={onSearch}
+      onSearch={(...args)=>{
+        handleSearch(onSearch(...args))
+      }}
       />
     </>
   )
