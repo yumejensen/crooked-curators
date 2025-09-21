@@ -54,24 +54,25 @@ If the user is...:
 
   - An Artist:
 
-    - artist sees a screen with the curator-chosen reference image,  a canvas to draw on, and a 'done' button
-    - (not yet implemented) artist sees a sidebar with all player icons - the player icon will have a checkmark if they have hit 'done'
-    - (not yet implemented) there is a timer on the screen with how much time an artist has to draw
-    - (not yet implemented) the artist will draw from the reference image and hit 'done' to submit their piece early
-    - (not yet implemented) if the artist does not hit 'done' the piece will be automatically submitted once the timer is up
+    [x] artist sees a screen with the curator-chosen reference image,  a canvas to draw on, and a 'done' button
+    [ ] artist sees a sidebar with all player icons - the player icon will have a checkmark if they have hit 'done'
+    [ ] there is a timer on the screen with how much time an artist has to draw
+    [ ] the artist will draw from the reference image and hit 'done' to submit their piece early
+    [ ] if the artist does not hit 'done' the piece will be automatically submitted once the timer is up
 
   - A Curator:
 
-    - The curator sees a screen with a search input field, an image box,  a 're-roll' button, and a 'select' button
-    - The curator can search a keyword, which will show a fine art piece in the image box
+    [ ] The curator sees a screen with a search input field, an image box,  a 're-roll' button, and a 'select' button
+    [ ] The curator can search a keyword, which will show a fine art piece in the image box
     if the curator does not like the first image, they can hit 're-roll' to bring up another image from the search
-    - The curator gets 3 're-rolls' and then they must pick the last image
+    [ ] The curator gets 3 're-rolls' and then they must pick the last image
     when the curator hits, 'select' the fine art image is sent to the artists to draw from
+    [ ] Once the image is selected, the curator can spy on the artists as they are working, by clicking their avatars
 
 Once the timer runs out for the artists, all participants are brought to the Judging view:
 
-  - The curator will be granted three ribbons, a Blue Ribbon (positive), White Ribbon (neutral), and Red Ribbon (negative), to award to artists of the round. An artwork can only be awarded one ribbon in the judging stage.
-  - All artworks awarded a ribbon will be featured in the ending gallery.
+  [ ] (not yet implemented) The curator will be granted three ribbons, a Blue Ribbon (positive), White Ribbon (neutral), and Red Ribbon (negative), to award to artists of the round. An artwork can only be awarded one ribbon in the judging stage.
+  [ ] (not yet implemented) All artworks awarded a ribbon will be featured in the ending gallery.
 
 Ribbons:
 
@@ -113,6 +114,31 @@ After all rounds are complete, everyone is redirected to a gallery view, where a
 Users will be able to save their artworks awarded ribbons to their profile, if they are logged in, as well as the entire gallery to their profile to show off which galleries their artworks were a part of.
 
 ***
+
+**Game Modes**
+
+Timer Modes:
+  - Beginner:
+    - 2 minute timer
+
+  - Professional:
+    - 1 minute timer
+
+  - Cracked Artists:
+    - Unlimited timer
+
+Modifiers:
+  - No Negativity:
+    - Negative (Red) Ribbons off
+
+  - Designated Curator:
+    - Only one curator for the whole game
+
+  - Random Curator:
+    - random curator every round (can have one person be the curator multiple times, and some never the curator)
+
+  - Curator Sabotage:
+    - Curator has 5 brush strokes per round to affect someone's canvas
 
 **Deployment**
 
@@ -165,5 +191,12 @@ Helpful video links:
 
 [AWS EC2](https://www.youtube.com/watch?v=YH_DVenJHII)
 [PuTTY](https://www.youtube.com/watch?v=051Jdka8piY)
+
+***
+
+**Known Bugs**
+
+Canvas:
+  - When canvas is completely emptied of lines, the lines cannot be redone as using spread operator to re-assign only the last line to the lines state makes it "not iterable". Without adding a separate condition to add just the one line back to the empty lines array, the page crashes and user has to reload.
 
 ***

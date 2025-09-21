@@ -12,7 +12,15 @@ import {
   Row,
   Col,
   Card,
+  Input,
+  Space,
 } from '../antdComponents'
+
+import { FaArrowCircleRight } from "react-icons/fa";
+
+import AvatarPicker from "../Components/AvatarPicker";
+
+// styling
 
 const largeStyle: React.CSSProperties = {
   width: '100%',
@@ -34,6 +42,11 @@ const joinCreateStyle: React.CSSProperties = {
   borderRadius: 6,
   border: '3px solid #3B262C',
 };
+
+const buttonStyle: React.CSSProperties = {
+  width: '100%',
+  height: 50
+}
 
 const Homepage: React.FC = () => {
 
@@ -85,7 +98,22 @@ const Homepage: React.FC = () => {
           </Row>
           <Row>
             <Flex style={joinCreateStyle} justify="center" align="center">
-              <Button href="/game">Join Game</Button>
+              <Col>
+                <Row>
+                  <Flex style={buttonStyle} justify="center" align="center">
+                    <Button href="/game-settings">Create Game</Button>
+                  </Flex>
+                </Row>
+                <p />
+                <Row>
+                  <Space.Compact style={{ width: '100%' }}>
+                    <Input defaultValue="Game Code" disabled/>
+                    <Button href="/game">
+                      <FaArrowCircleRight />
+                    </Button>
+                  </Space.Compact>
+                </Row>
+              </Col>
             </Flex>
           </Row>
         </Col>

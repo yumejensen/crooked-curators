@@ -25,11 +25,13 @@ import Menu from 'antd/es/menu'
 import Breadcrumb from 'antd/es/breadcrumb'
 import Content from 'antd/es/layout'
 import Footer from 'antd/es/layout'
+import ConfigProvider from 'antd/es/config-provider';
 
 // Homepage
 
 import Button from "antd/es/button";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
+import { Space } from 'antd/es/index';
 
 // Reference
 
@@ -54,7 +56,7 @@ export {
     generate, green, presetPalettes, red,
     ColorPicker, ColorPickerProps, theme,
     Layout, Header, Menu, Breadcrumb, Content, Footer,
-    Button, ReloadOutlined,
+    ConfigProvider, Button, ReloadOutlined, Space,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse
 }

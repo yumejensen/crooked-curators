@@ -19,7 +19,7 @@ const CanvasColorPicker: React.FC = ({ changeColor }) => {
   return (
     <ColorPicker 
       presets={presets} 
-      defaultValue="#940f47ff" 
+      defaultValue="#000000"
       onChange={(value) => {changeColor(value.toHexString())}}
     />
   );
