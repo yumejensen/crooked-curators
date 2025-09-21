@@ -19,7 +19,7 @@ import {
 import { FaArrowCircleRight } from "react-icons/fa";
 
 import AvatarPicker from "../Components/AvatarPicker";
-
+import CreateGameButton from "../Components/CreateGameButton";
 // styling
 
 const largeStyle: React.CSSProperties = {
@@ -100,9 +100,7 @@ const Homepage: React.FC = () => {
             <Flex style={joinCreateStyle} justify="center" align="center">
               <Col>
                 <Row>
-                  <Flex style={buttonStyle} justify="center" align="center">
-                    <Button href="/game-settings">Create Game</Button>
-                  </Flex>
+                  <CreateGameButton />
                 </Row>
                 <p />
                 <Row>

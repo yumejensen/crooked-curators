@@ -104,6 +104,13 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('A player disconnected')
   })
+
+  socket.on('createGame', () => {
+    const gameId = socket.id.substring(1, 6)
+    console.log(`Creating a game, room ${gameId}`)
+    //rooms[gameId] = {}
+    socket.join(gameId)
+  })
 })
 
 
