@@ -48,7 +48,10 @@ const Canvas = () => {
 
   const isDrawing = React.useRef(false);
 
-  // --------------------[HELPERS]--------------------
+  // history
+  const [history, setHistory] = useState([])
+
+  // -------------------[HANDLERS]--------------------
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -72,8 +75,37 @@ const Canvas = () => {
     setLines(lines.concat());
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e) => {
     isDrawing.current = false;
+  };
+
+  const handleUndo = () => {
+
+    // remove last line
+    let lastLine = lines.pop();
+
+    // update state without the last line & add last line to history
+    setLines([...lines]);
+    setHistory([...history, lastLine])
+  };
+
+  const handleRedo = () => {
+
+    if(history.length !== 0){
+
+      // remove last line from the history
+      let lastLine = history.pop()
+
+      // update history without the last line
+      setHistory([...history]);
+
+      // add last line back to lines
+      if(lines.length === 0){
+        setLines([...lastLine]);
+      } else {
+        setLines([...lines, lastLine]);
+      }
+    }
   };
 
   // --------------------[RENDER]---------------------
@@ -85,7 +117,12 @@ const Canvas = () => {
       </Divider>
       <Flex gap="middle" align="center" vertical>
         <Flex style={boxStyle} justify={justify} align={alignItems}>
-          <CanvasTools tool={tool} setTool={setTool} />
+          <CanvasTools
+            tool={tool}
+            setTool={setTool}
+            handleUndo={handleUndo}
+            handleRedo={handleRedo}
+          />
           <Stage
             width={900}
             height={500}
