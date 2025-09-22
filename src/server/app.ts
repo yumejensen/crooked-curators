@@ -24,7 +24,7 @@ require('./auth');
 
 //----------IMPORT ROUTES-------------
 
-import { authRouter, nameRandomizerRouter } from './routes';
+import { authRouter, nameRandomizerRouter, curatorRouter } from './routes';
 
 // session middleware
 app.use(session({
@@ -38,10 +38,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-//----------SET ROUTES-------------
-
-app.use('/auth/google', authRouter);
-app.use('/name-randomizer', nameRandomizerRouter);
 
 // ----------MIDDLEWARE---------------
 
@@ -51,6 +47,12 @@ const HTML = path.resolve(__dirname, '../../dist/index.html');
 
 // parsing
 app.use(bodyParser.json());
+
+//----------SET ROUTES-------------
+
+app.use('/auth/google', authRouter);
+app.use('/name-randomizer', nameRandomizerRouter);
+app.use('/curator', curatorRouter);
 
 // serve static files from client
 app.use(express.static(CLIENT));

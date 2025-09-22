@@ -39,27 +39,20 @@ const boxStyle: React.CSSProperties = {
 const Canvas = () => {
 
   // --------------------[STATES]---------------------
-  // let sceneWidth = 800;
-  // let sceneHeight = 500;
-  
-  // // current scale + dimensions
-  // const [stageSize, setStageSize] = useState({
-  //   width: sceneWidth,
-  //   height: sceneHeight,
-  //   scale: 1
-  // });
-  const containerRef = useRef(null);
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
-  const [lineColor, setLineColor] = React.useState("#df4b26");
+  const [lineColor, setLineColor] = React.useState("#000000");
 
   const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
   const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
 
   const isDrawing = React.useRef(false);
 
-  // --------------------[HELPERS]--------------------
+  // history
+  const [history, setHistory] = useState([])
+
+  // -------------------[HANDLERS]--------------------
 
   // const updateSize = () => {
   //   if (!containerRef.current) return;
@@ -92,7 +85,7 @@ const Canvas = () => {
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+    setLines([...lines, { tool, points: [pos.x, pos.y], stroke: lineColor }]);
   };
 
   const handleMouseMove = (e) => {
@@ -105,31 +98,44 @@ const Canvas = () => {
     let lastLine = lines[lines.length - 1];
     // add point
     lastLine.points = lastLine.points.concat([point.x, point.y]);
-    
+
     // replace last
     lines.splice(lines.length - 1, 1, lastLine);
     setLines(lines.concat());
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e) => {
     isDrawing.current = false;
   };
 
-//   function fitStageIntoParentContainer() {
-//     // Get the container element
-//     const container = document.getElementById('canvasBorder');
-//     // Make the container take up the full width
-//     container.style.width = '100%';
-//     // Get current container width
-//     const containerWidth = container.offsetWidth;
-//     // Calculate scale based on virtual width vs actual width
-//     const scale = containerWidth / sceneWidth;
-    
-//     // Set stage dimensions and scale
-//     stage.width(sceneWidth * scale);
-//     stage.height(sceneHeight * scale);
-//     stage.scale({ x: scale, y: scale });
-// }
+  const handleUndo = () => {
+
+    // remove last line
+    let lastLine = lines.pop();
+
+    // update state without the last line & add last line to history
+    setLines([...lines]);
+    setHistory([...history, lastLine])
+  };
+
+  const handleRedo = () => {
+
+    if(history.length !== 0){
+
+      // remove last line from the history
+      let lastLine = history.pop()
+
+      // update history without the last line
+      setHistory([...history]);
+
+      // add last line back to lines
+      if(lines.length === 0){
+        setLines([...lastLine]);
+      } else {
+        setLines([...lines, lastLine]);
+      }
+    }
+  };
 
   // --------------------[RENDER]---------------------
 
@@ -140,6 +146,12 @@ const Canvas = () => {
       </Divider>
       <Flex gap="middle" align="center" vertical>
         <Flex style={boxStyle} justify={justify} align={alignItems}>
+          <CanvasTools
+            tool={tool}
+            setTool={setTool}
+            handleUndo={handleUndo}
+            handleRedo={handleRedo}
+          />
           <CanvasTools tool={tool} setTool={setTool} />
           <div ref={containerRef} style={boxStyle}>
           <Stage
@@ -157,7 +169,7 @@ const Canvas = () => {
                 <Line
                   key={i}
                   points={line.points}
-                  stroke={lineColor}
+                  stroke={line.stroke}
                   strokeWidth={5}
                   tension={0.5}
                   lineCap="round"

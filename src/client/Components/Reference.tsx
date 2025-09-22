@@ -3,11 +3,27 @@
 import React from 'react'
 import { Image } from '../antdComponents'
 
-const Reference = () => {
+type props = {
+  title: string,
+  image: string,
+  description: string
+}
+
+
+const Reference = (props) => {
+  let { title, image, description } = props;
+  if(!title){
+    title = 'Wait for the Curator'
+    image = 'https://weirdal.wpenginepowered.com/wp-content/themes/weirdal/dist/assets/images/2025/al.png'
+    description = 'Weird Al!'
+  }
   return(
-    <>
-      <Image src='https://www.farmersalmanac.com/wp-content/uploads/2020/11/Starry-Night-Van-Gogh-Which-Stars-GoogleArtProject-1536x817.jpg' />
-    </>
+    <div>
+    <h3>
+    {title}
+    </h3>  
+      <Image src={image} />
+    </div>
   )
 };
 
