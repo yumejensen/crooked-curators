@@ -1,5 +1,4 @@
 // import { io } from './app'
-// const { Server } = require('socket.io');
 
 // // ----------SOCKET IO--------------
 
@@ -7,5 +6,12 @@
 //   console.log('A player connected');
 //   socket.on('disconnect', () => {
 //     console.log('A player disconnected')
+//   })
+
+//   socket.on('createGame', () => {
+//     const gameId = socket.id.substring(1, 6)
+//     console.log(`Creating a game, room ${gameId}`)
+//     //rooms[gameId] = {}
+//     socket.join(gameId)
 //   })
 // })
