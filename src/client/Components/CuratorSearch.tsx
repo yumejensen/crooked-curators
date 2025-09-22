@@ -40,6 +40,10 @@ const CuratorSearch = () => {
     axios.get(`/curator/${query}`)
     .then(({data})=>{
       console.log(data)
+      setResults(data)
+    })
+    .then(()=>{
+      setSelected(results[0])
     })
     .catch((err)=>{
       console.error(err)
@@ -51,7 +55,7 @@ const CuratorSearch = () => {
         <ReferenceSearch handleSearch={handleSearch}/>
       </Divider>
       <Divider>
-        <Reference title={selected.title} />
+        <Reference title={selected.title} image={selected.image} />
       </Divider>
     </Flex>
   )
