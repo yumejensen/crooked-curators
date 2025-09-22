@@ -12,6 +12,8 @@ const buttonStyle: React.CSSProperties = {
 const CreateGameButton = () => {
 
   const createGame = () => {
+    // access session cookie to ID the host 
+    // send to server
     socket.emit('createGame')
   }
 
