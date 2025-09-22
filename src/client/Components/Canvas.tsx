@@ -1,7 +1,7 @@
 // Canvas for artists to draw on during the game
 
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Divider,
   Col,
@@ -19,7 +19,8 @@ import CanvasColorPicker from './ColorPicker';
 
 const boxStyle: React.CSSProperties = {
   width: '100%',
-  height: 550,
+  //height: 550,
+  height: '100%',
   borderRadius: 6,
   border: '3px solid #3B262C',
 };
@@ -38,6 +39,16 @@ const boxStyle: React.CSSProperties = {
 const Canvas = () => {
 
   // --------------------[STATES]---------------------
+  // let sceneWidth = 800;
+  // let sceneHeight = 500;
+  
+  // // current scale + dimensions
+  // const [stageSize, setStageSize] = useState({
+  //   width: sceneWidth,
+  //   height: sceneHeight,
+  //   scale: 1
+  // });
+  const containerRef = useRef(null);
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
@@ -49,6 +60,34 @@ const Canvas = () => {
   const isDrawing = React.useRef(false);
 
   // --------------------[HELPERS]--------------------
+
+  // const updateSize = () => {
+  //   if (!containerRef.current) return;
+    
+  //   // Get container width
+  //   const containerWidth = containerRef.current.offsetWidth;
+    
+  //   // Calculate scale
+  //   const scale = containerWidth / sceneWidth;
+    
+  //   // Update state with new dimensions
+  //   setStageSize({
+  //     width: sceneWidth * scale,
+  //     height: sceneHeight * scale,
+  //     scale: scale
+  //   });
+  // };
+  
+  // // Update on mount and when window resizes
+  // useEffect(() => {
+  //   updateSize();
+  //   window.addEventListener('resize', updateSize);
+    
+  //   return () => {
+  //     window.removeEventListener('resize', updateSize);
+  //   };
+  // }, []);
+
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -76,6 +115,22 @@ const Canvas = () => {
     isDrawing.current = false;
   };
 
+//   function fitStageIntoParentContainer() {
+//     // Get the container element
+//     const container = document.getElementById('canvasBorder');
+//     // Make the container take up the full width
+//     container.style.width = '100%';
+//     // Get current container width
+//     const containerWidth = container.offsetWidth;
+//     // Calculate scale based on virtual width vs actual width
+//     const scale = containerWidth / sceneWidth;
+    
+//     // Set stage dimensions and scale
+//     stage.width(sceneWidth * scale);
+//     stage.height(sceneHeight * scale);
+//     stage.scale({ x: scale, y: scale });
+// }
+
   // --------------------[RENDER]---------------------
 
   return (
@@ -86,6 +141,7 @@ const Canvas = () => {
       <Flex gap="middle" align="center" vertical>
         <Flex style={boxStyle} justify={justify} align={alignItems}>
           <CanvasTools tool={tool} setTool={setTool} />
+          <div ref={containerRef} style={boxStyle}>
           <Stage
             width={900}
             height={500}
@@ -113,6 +169,7 @@ const Canvas = () => {
               ))}
             </Layer>
           </Stage>
+          </div>
           <CanvasColorPicker changeColor={setLineColor} />
         </Flex>
       </Flex>
