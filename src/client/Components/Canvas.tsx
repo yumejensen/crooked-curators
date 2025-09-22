@@ -15,9 +15,16 @@ import { Stage, Layer, Line, Text } from 'react-konva';
 
 // -------------------[COMPONENTS]------------------
 import CanvasTools from './CanvasTools';
-import CanvasColorPicker from './ColorPicker';
+
 
 const boxStyle: React.CSSProperties = {
+  width: '100%',
+  //height: 550,
+  height: '100%',
+  borderRadius: 6,
+};
+
+const canvasBoxStyle: React.CSSProperties = {
   width: '100%',
   //height: 550,
   height: '100%',
@@ -40,6 +47,16 @@ const Canvas = () => {
 
   // --------------------[STATES]---------------------
 
+  // reference to canvas container
+  const containerRef = useRef(null);
+
+  // State to track current scale and dimensions
+  // const [stageSize, setStageSize] = useState({
+  //   width: sceneWidth,
+  //   height: sceneHeight,
+  //   scale: 1
+  // });
+  
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
   const [lineColor, setLineColor] = React.useState("#000000");
@@ -53,6 +70,15 @@ const Canvas = () => {
   const [history, setHistory] = useState([])
 
   // -------------------[HANDLERS]--------------------
+
+
+  // Define virtual size for our scene
+
+  // const sceneWidth = 900;
+  // const sceneHeight = 500;
+
+
+  // Function to handle resize
 
   // const updateSize = () => {
   //   if (!containerRef.current) return;
@@ -71,7 +97,9 @@ const Canvas = () => {
   //   });
   // };
   
-  // // Update on mount and when window resizes
+
+  // Update on mount and when window resizes
+
   // useEffect(() => {
   //   updateSize();
   //   window.addEventListener('resize', updateSize);
@@ -147,13 +175,14 @@ const Canvas = () => {
       <Flex gap="middle" align="center" vertical>
         <Flex style={boxStyle} justify={justify} align={alignItems}>
           <CanvasTools
+            changeColor={setLineColor}
             tool={tool}
             setTool={setTool}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
-          />
-          <CanvasTools tool={tool} setTool={setTool} />
-          <div ref={containerRef} style={boxStyle}>
+            />
+        
+          <div ref={containerRef} style={canvasBoxStyle}>
           <Stage
             width={900}
             height={500}
@@ -182,7 +211,7 @@ const Canvas = () => {
             </Layer>
           </Stage>
           </div>
-          <CanvasColorPicker changeColor={setLineColor} />
+
         </Flex>
       </Flex>
     </div>
