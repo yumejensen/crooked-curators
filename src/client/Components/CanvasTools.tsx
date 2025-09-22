@@ -12,6 +12,7 @@ import { IoArrowUndoSharp, IoArrowRedoSharp } from "react-icons/io5";
 import { FaPenNib, FaEraser } from 'react-icons/fa';
 
 // COMPONENTS
+import CanvasColorPicker from './ColorPicker';
 
 const CanvasTools: React.FC = (props) => {
 
@@ -20,6 +21,7 @@ const CanvasTools: React.FC = (props) => {
     setTool,
     handleUndo,
     handleRedo,
+    changeColor
   } = props;
 
   // --------------------[STATES]---------------------
@@ -76,6 +78,11 @@ const CanvasTools: React.FC = (props) => {
         >
           <FaEraser />
         </Button>
+      </Row>
+      <br />
+      <br />
+      <Row>
+        <CanvasColorPicker changeColor={changeColor} />
       </Row>
     </Col>
     )

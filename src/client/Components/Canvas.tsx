@@ -1,7 +1,7 @@
 // Canvas for artists to draw on during the game
 
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Divider,
   Col,
@@ -15,11 +15,19 @@ import { Stage, Layer, Line, Text } from 'react-konva';
 
 // -------------------[COMPONENTS]------------------
 import CanvasTools from './CanvasTools';
-import CanvasColorPicker from './ColorPicker';
+
 
 const boxStyle: React.CSSProperties = {
   width: '100%',
-  height: 550,
+  //height: 550,
+  height: '100%',
+  borderRadius: 6,
+};
+
+const canvasBoxStyle: React.CSSProperties = {
+  width: '100%',
+  //height: 550,
+  height: '100%',
   borderRadius: 6,
   border: '3px solid #3B262C',
 };
@@ -39,6 +47,16 @@ const Canvas = () => {
 
   // --------------------[STATES]---------------------
 
+  // reference to canvas container
+  const containerRef = useRef(null);
+
+  // State to track current scale and dimensions
+  // const [stageSize, setStageSize] = useState({
+  //   width: sceneWidth,
+  //   height: sceneHeight,
+  //   scale: 1
+  // });
+  
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
   const [lineColor, setLineColor] = React.useState("#000000");
@@ -52,6 +70,45 @@ const Canvas = () => {
   const [history, setHistory] = useState([])
 
   // -------------------[HANDLERS]--------------------
+
+
+  // Define virtual size for our scene
+
+  // const sceneWidth = 900;
+  // const sceneHeight = 500;
+
+
+  // Function to handle resize
+
+  // const updateSize = () => {
+  //   if (!containerRef.current) return;
+    
+  //   // Get container width
+  //   const containerWidth = containerRef.current.offsetWidth;
+    
+  //   // Calculate scale
+  //   const scale = containerWidth / sceneWidth;
+    
+  //   // Update state with new dimensions
+  //   setStageSize({
+  //     width: sceneWidth * scale,
+  //     height: sceneHeight * scale,
+  //     scale: scale
+  //   });
+  // };
+  
+
+  // Update on mount and when window resizes
+
+  // useEffect(() => {
+  //   updateSize();
+  //   window.addEventListener('resize', updateSize);
+    
+  //   return () => {
+  //     window.removeEventListener('resize', updateSize);
+  //   };
+  // }, []);
+
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -118,11 +175,14 @@ const Canvas = () => {
       <Flex gap="middle" align="center" vertical>
         <Flex style={boxStyle} justify={justify} align={alignItems}>
           <CanvasTools
+            changeColor={setLineColor}
             tool={tool}
             setTool={setTool}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
-          />
+            />
+        
+          <div ref={containerRef} style={canvasBoxStyle}>
           <Stage
             width={900}
             height={500}
@@ -150,7 +210,8 @@ const Canvas = () => {
               ))}
             </Layer>
           </Stage>
-          <CanvasColorPicker changeColor={setLineColor} />
+          </div>
+
         </Flex>
       </Flex>
     </div>
