@@ -14,7 +14,7 @@ const Reference = (props) => {
   let { title, image, description } = props;
   if(!title){
     title = 'Wait for the Curator'
-    image = 'https://weirdal.wpenginepowered.com/wp-content/themes/weirdal/dist/assets/images/2025/al.png'
+    image = 'https://www.farmersalmanac.com/wp-content/uploads/2020/11/Starry-Night-Van-Gogh-Which-Stars-GoogleArtProject-1536x817.jpg'
     description = 'Weird Al!'
   }
   return(
