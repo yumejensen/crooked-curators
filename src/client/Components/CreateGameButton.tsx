@@ -18,11 +18,7 @@ const CreateGameButton = ({username}) => {
     // send the username to the server
     socket.emit('createGame', {username: username})
 
-    // receive new game from server
-    socket.on("newGame", (data) => {
-      let roomCode;
-      roomCode = data.roomCode
-    })
+ 
   }
   //
 
@@ -33,7 +29,7 @@ const CreateGameButton = ({username}) => {
           <Button onClick={createGame} >
             Create Game
           </Button>
-          
+
         </Link>
     </Flex>
   )

@@ -26,6 +26,7 @@ io.engine.use(session({
 
 io.on("connection", (socket) => {
   console.log(`A player: ${socket.id} connected`);
+  socket.emit('joinedEvent')
 
   socket.on("disconnect", () => {
     console.log("A player disconnected");
@@ -40,16 +41,18 @@ io.on("connection", (socket) => {
     
     // make a gameId (use first 5 of socket id)
     const roomCode = socket.id.substring(0, 5);
+    
     console.log(`${gameInfo.username} created room ${roomCode}`)
-
+    
     // add roomCode as a key
     rooms[roomCode] = roomCode
-
+    
+    // server emits a new game
+    socket.emit("newGame", {roomCode: "roomCodePlaceholder"})
+    
     // create and join the room
     socket.join(roomCode)
-
-    // server emits a new game
-    socket.emit("newGame", {roomCode: roomCode})
+    
     
   });
 
@@ -61,15 +64,18 @@ io.on("connection", (socket) => {
     if (rooms[joinAttempt.roomCode]){
       // if it does, join the room
       socket.join(joinAttempt.roomCode)
-
-      // inside the room, emit the players who connected
-      socket.to(joinAttempt.roomCode).emit("playersConnected", {})
-
-      // emit playersConnected
-      socket.emit("playersConnected")
+      
+      let player = joinAttempt.username
+      socket.to(joinAttempt.roomCode).emit("playerConnection", {username: player})
     }
   })
-
+  
+        // inside the room, emit the players who connected
+        //socket.to(joinAttempt.roomCode).emit("playersConnected", {})
+  
+        // emit playersConnected
+        //socket.emit("playersConnected")
+  
   
   // // the cb is passed from the client side
   // // server side invokes cb
