@@ -6,4 +6,4 @@ s3UrlRouter.get("/", (req, res) => {
 
 })
 
-export default s3UrlRouter;
+export { s3UrlRouter };
