@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Flex } from '../antdComponents';
 
-// make a reference to the global socket
 const socket = global.io()
 
 const buttonStyle: React.CSSProperties = {
@@ -9,19 +9,28 @@ const buttonStyle: React.CSSProperties = {
   height: 50
 }
 
-const CreateGameButton = () => {
+
+const CreateGameButton = ({username}) => {
 
   const createGame = () => {
     // access session cookie to ID the host 
-    // send to server
-    socket.emit('createGame')
+    
+    // send the username to the server
+    socket.emit('createGame', {username: username})
+
+ 
   }
+  //
 
   return (
     <Flex style={buttonStyle} justify="center" align="center">
-        <Button onClick={createGame}>
-          Create Game
-        </Button>
+        <Link to='/game-settings' >
+
+          <Button onClick={createGame} >
+            Create Game
+          </Button>
+
+        </Link>
     </Flex>
   )
 }

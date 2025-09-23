@@ -20,7 +20,8 @@ import { FaArrowCircleRight } from "react-icons/fa";
 
 import AvatarPicker from "../Components/AvatarPicker";
 import CreateGameButton from "../Components/CreateGameButton";
-import JoinGameButton from "../Components/JoinGameButton";
+import GameCodeJoin from "../Components/GameCodeJoin";
+
 // styling
 
 const largeStyle: React.CSSProperties = {
@@ -56,7 +57,7 @@ const Homepage: React.FC = () => {
   const [alignItems, setAlignItems] = useState<FlexProps['align']>('flex-start');
 
   // --------------------[HANDLERS]--------------------
-
+  
   const handleRandomizeName = () => {
     axios.get('/name-randomizer')
       .then((res) => {
@@ -101,19 +102,11 @@ const Homepage: React.FC = () => {
             <Flex style={joinCreateStyle} justify="center" align="center">
               <Col>
                 <Row>
-                  <CreateGameButton />
-                </Row>
-                <Row>
-                  <JoinGameButton />
+                  <CreateGameButton username={randomName}/>
                 </Row>
                 <p />
                 <Row>
-                  <Space.Compact style={{ width: '100%' }}>
-                    <Input defaultValue="Game Code" disabled/>
-                    <Button href="/game">
-                      <FaArrowCircleRight />
-                    </Button>
-                  </Space.Compact>
+                  <GameCodeJoin username={randomName}/>
                 </Row>
               </Col>
             </Flex>

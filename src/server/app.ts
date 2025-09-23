@@ -5,13 +5,11 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-// socket.io
+// socket.io server
 const http = require("http");
 const server = http.createServer(app);
-const { Server } = require("socket.io");
 
 
-import { type Request } from "express";
 import passport from "passport";
 
 // run the database file
@@ -95,51 +93,7 @@ server.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
 });
 
-// ----------SOCKET IO--------------
 
-const io = new Server(server, {
-  connectionStateRecovery: {
-    // the backup duration of the sessions and the packets
-    maxDisconnectionDuration: 60 * 1000,
-    // whether to skip middlewares upon successful recovery
-    skipMiddlewares: true,
-  }
-});
-
-io.engine.use(session({
-    resave: false,
-    secret: SESSION_SECRET,
-    saveUninitialized: false,
-}));
-
-io.on("connection", (socket) => {
-
-  console.log(`A player: ${socket.id.substring(0, 5)} connected`);
-
-  socket.on("disconnect", () => {
-    console.log("A player disconnected");
-  });
-  
-  socket.on("createGame", () => {
-    console.log('socket session:', socket.request.session.id)
-
-    // IN PROGRESS - making a gameId and join a room
-    // const gameId = socket.id.substring(0, 5);
-    // console.log(`Creating a game, room ${gameId}`);
-    // //rooms[gameId] = {}
-    // socket.join(gameId);
-
-
-    // NOT WORKING - attempted to use reload to maintain session connection
-    // socket.request.session.reload((err) => {
-    //   if (err) {
-    //     return socket.disconnect();
-    //   }
-    //   socket.request.session.count++;
-    //   socket.request.session.save();
-    // });
-
-  });
-});
-
-export { app, io };
+// run the sockets/index.ts file 
+require('./sockets')
+export { app, server };
