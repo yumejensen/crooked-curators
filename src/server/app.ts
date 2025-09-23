@@ -29,7 +29,12 @@ require("./auth");
 
 //----------IMPORT ROUTES-------------
 
-import { authRouter, nameRandomizerRouter, curatorRouter } from "./routes";
+import {
+  authRouter,
+  nameRandomizerRouter,
+  curatorRouter,
+  s3UrlRouter,
+} from "./routes";
 
 // ----------MIDDLEWARE---------------
 // session middleware
@@ -57,6 +62,7 @@ app.use(bodyParser.json());
 app.use("/auth/google", authRouter);
 app.use("/name-randomizer", nameRandomizerRouter);
 app.use("/curator", curatorRouter);
+app.use("/s3Url", s3UrlRouter);
 
 // serve static files from client
 app.use(express.static(CLIENT));
