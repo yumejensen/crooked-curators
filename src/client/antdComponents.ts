@@ -50,6 +50,8 @@ import Splitter from 'antd/es/splitter'
 import Typography from 'antd/es/typography'
 import Collapse from 'antd/es/collapse'
 
+// Gallery
+import { Carousel } from 'antd/es/index';
 
 export {
     Divider, Col, Row, Flex, FlexProps, Segmented,
@@ -58,5 +60,6 @@ export {
     Layout, Header, Menu, Breadcrumb, Content, Footer,
     ConfigProvider, Button, ReloadOutlined, Space,
     GetProps, Image, Input, Search,
-    Card, Splitter, Typography, Collapse
+    Card, Splitter, Typography, Collapse,
+    Carousel,
 }
