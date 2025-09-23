@@ -3,13 +3,11 @@ import React from "react";
 import { Button, Input, Space, Typography } from "../antdComponents";
 import { FaArrowCircleRight } from "react-icons/fa";
 
-// make a reference to the global socket
-const socket = global.io()
 
 const GameCodeJoin = () => {
 
   const joinGame = () => {
-    socket.emit('joinGame')
+    global.socket.emit('joinGame')
   }
 
   return (
