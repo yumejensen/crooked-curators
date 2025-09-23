@@ -4,24 +4,32 @@ import React from 'react';
 import { useState } from 'react';
 
 // ui
-import { Col, Row } from '../antdComponents';
-import { Button } from '../antdComponents'
+import { Col, Row, Button, Tooltip } from '../antdComponents';
 
 // icons
 import { IoArrowUndoSharp, IoArrowRedoSharp } from "react-icons/io5";
-import { FaPenNib, FaEraser } from 'react-icons/fa';
+import { FaPenNib, FaEraser, FaRegSave, FaDownload } from 'react-icons/fa';
 
 // COMPONENTS
 import CanvasColorPicker from './ColorPicker';
 
-const CanvasTools: React.FC = (props) => {
+// types
+type propsTypes = {
+  handleSave: () => void;
+  handleDownload: () => void;
+  handleUndo: () => void;
+  handleRedo: () => void;
+  setTool: (string) => void;
+  changeColor: () => void;
+}
+
+const CanvasTools: React.FC = (props: propsTypes) => {
 
   const {
-    tool,
+    handleSave, handleDownload,
+    handleUndo, handleRedo,
     setTool,
-    handleUndo,
-    handleRedo,
-    changeColor
+    changeColor,
   } = props;
 
   // --------------------[STATES]---------------------
@@ -49,35 +57,60 @@ const CanvasTools: React.FC = (props) => {
   return(
     <Col>
       <Row>
-        <Button onClick={handleUndo}>
-          <IoArrowUndoSharp />
-        </Button>
+        <Tooltip title="Save to profile">
+          <Button onClick={handleSave}>
+            <FaRegSave />
+          </Button>
+        </Tooltip>
       </Row>
       <p />
       <Row>
-        <Button onClick={handleRedo}>
-          <IoArrowRedoSharp />
-        </Button>
+        <Tooltip title="Download">
+          <Button onClick={handleDownload}>
+            <FaDownload />
+          </Button>
+        </Tooltip>
+      </Row>
+      <br />
+      <br />
+      <Row>
+        <Tooltip title="Undo">
+          <Button onClick={handleUndo}>
+            <IoArrowUndoSharp />
+          </Button>
+        </Tooltip>
       </Row>
       <p />
       <Row>
-        <Button
-          color="default"
-          variant={penSelected}
-          onClick={handlePen}
-        >
-          <FaPenNib />
-        </Button>
+        <Tooltip title="Redo">
+          <Button onClick={handleRedo}>
+            <IoArrowRedoSharp />
+          </Button>
+        </Tooltip>
       </Row>
       <p />
       <Row>
-        <Button
-          color="default"
-          variant={eraserSelected}
-          onClick={handleEraser}
-        >
-          <FaEraser />
-        </Button>
+        <Tooltip title="Pen">
+          <Button
+            color="default"
+            variant={penSelected}
+            onClick={handlePen}
+          >
+            <FaPenNib />
+          </Button>
+        </Tooltip>
+      </Row>
+      <p />
+      <Row>
+        <Tooltip title="Eraser">
+          <Button
+            color="default"
+            variant={eraserSelected}
+            onClick={handleEraser}
+          >
+            <FaEraser />
+          </Button>
+        </Tooltip>
       </Row>
       <br />
       <br />
@@ -85,7 +118,7 @@ const CanvasTools: React.FC = (props) => {
         <CanvasColorPicker changeColor={changeColor} />
       </Row>
     </Col>
-    )
+  )
 }
 
 export default CanvasTools;

@@ -6,6 +6,7 @@ import Row from 'antd/es/row';
 import Flex from 'antd/es/flex';
 import { FlexProps } from 'antd/es/index';
 import Segmented from 'antd/es/segmented';
+import { Tooltip } from 'antd/es/index';
 
 // CanvasColorPicker
 
@@ -61,5 +62,5 @@ export {
     ConfigProvider, Button, ReloadOutlined, Space,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse,
-    Carousel,
+    Carousel, Tooltip,
 }
