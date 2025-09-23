@@ -20,7 +20,8 @@ import { FaArrowCircleRight } from "react-icons/fa";
 
 import AvatarPicker from "../Components/AvatarPicker";
 import CreateGameButton from "../Components/CreateGameButton";
-import JoinGameButton from "../Components/JoinGameButton";
+
+import GameCodeJoin from "../Components/GameCodeJoin";
 // styling
 
 const largeStyle: React.CSSProperties = {
@@ -103,17 +104,9 @@ const Homepage: React.FC = () => {
                 <Row>
                   <CreateGameButton />
                 </Row>
-                <Row>
-                  <JoinGameButton />
-                </Row>
                 <p />
                 <Row>
-                  <Space.Compact style={{ width: '100%' }}>
-                    <Input defaultValue="Game Code" disabled/>
-                    <Button href="/game">
-                      <FaArrowCircleRight />
-                    </Button>
-                  </Space.Compact>
+                  <GameCodeJoin />
                 </Row>
               </Col>
             </Flex>
