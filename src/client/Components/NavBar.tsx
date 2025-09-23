@@ -21,6 +21,14 @@ const items = [
     key: "ActiveGame",
     label: (<Link to='/game'>Game</Link>)
   },
+    {
+    key: "RoundJudging",
+    label: (<Link to='/judging'>Judging</Link>)
+  },
+  {
+    key: "Gallery",
+    label: (<Link to='/gallery'>Gallery</Link>)
+  },
   {
     key: "Sign-In",
     label: (<SignInButton />)
