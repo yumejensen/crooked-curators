@@ -1,1 +1,0 @@
-// Random name generator for homepage that will randomize a first and last name combination from the randomUsernames.json
