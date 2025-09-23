@@ -1,9 +1,8 @@
 import React from 'react'
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
-
 import { Layout, Menu } from '../antdComponents'
 const { Header } = Layout
-
+import { SignInButton } from './SignInButton';
 // declare navbar items
 const items = [
   {
@@ -23,24 +22,13 @@ const items = [
     label: (<Link to='/game'>Game</Link>)
   },
   {
-    key: "RoundJudging",
-    label: (<Link to='/judging'>Judging</Link>)
-  },
-  {
-    key: "Gallery",
-    label: (<Link to='/gallery'>Gallery</Link>)
-  },
-  {
     key: "Sign-In",
-    label: (<a href='/auth/google/'>Sign-In</a>)
-  },
-  {
-    key: "Sign-Out",
-    label: "Sign-Out"
+    label: (<SignInButton />)
   }
 ];
 
 const NavBar: React.FC = (props) => {
+
   return (
     <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: '#3B262C'}}>
       <div className="demo-logo" />
