@@ -17,7 +17,8 @@ import Homepage from './Views/Homepage';
 import Profile from './Views/Profile';
 import GameSettings from './Views/GameSettings';
 import ActiveGame from './Views/ActiveGame';
-
+import RoundJudging from './Components/RoundJudging';
+import Gallery from './Components/Gallery';
 
 // const items = Array.from({ length: 15 }).map((_, index) => ({
 //   key: index + 1,
@@ -49,10 +50,9 @@ const App: React.FC = () => {
     >
     <Layout >
       <NavBar />
-      <Content style={{ 
-        padding: '0 48px', 
+      <Content style={{
+        padding: '0 48px',
         color: '#3B262C',
-        
       }}>
         <Breadcrumb
           style={{ margin: '16px 0' }}
@@ -71,7 +71,8 @@ const App: React.FC = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/game-settings" element={<GameSettings />} />
             <Route path="/game" element={<ActiveGame />} />
-            <Route path="/game-settings" element={<GameSettings />} />
+            <Route path="/judging" element={<RoundJudging />} />
+            <Route path="/gallery" element={<Gallery />} />
 
             <Route path="*" element={<p>There is nothing here: 404!</p>} />
           </Routes>
