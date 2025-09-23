@@ -1,0 +1,11 @@
+{
+  "blueRibbons": [
+    "./ArtRibbon_BLUE_BLANK.png"
+  ],
+  "whiteRibbons": [
+    "./ArtRibbon_WHITE_BLANK.png"
+  ],
+  "redRibbons": [
+    "./ArtRibbon_RED_BLANK.png"
+  ]
+}
