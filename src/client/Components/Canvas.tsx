@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+
 import {
   Divider,
   Col,
@@ -9,7 +10,7 @@ import {
   Flex,
   FlexProps,
   Segmented
-} from 'antd';
+} from '../antdComponents';
 
 import { Stage, Layer, Line, Text } from 'react-konva';
 
