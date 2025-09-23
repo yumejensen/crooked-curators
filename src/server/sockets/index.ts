@@ -1,3 +1,4 @@
+import { selectDisplayedStackedData } from 'recharts/types/state/selectors/axisSelectors';
 import { server } from '../app'
 const { Server } = require("socket.io");
 const session = require("express-session");
@@ -22,32 +23,71 @@ io.engine.use(session({
     saveUninitialized: false,
 }));
 
-io.on("connection", (socket) => {
 
+io.on("connection", (socket) => {
   console.log(`A player: ${socket.id} connected`);
 
   socket.on("disconnect", () => {
     console.log("A player disconnected");
   });
   
-  socket.on("createGame", () => {
+  // make rooms object
+  let rooms = {}
+
+  socket.on("createGame", (gameInfo) => {
     // socket session id variable
-    const sessionId = socket.request.session.id
-
-    // make a gameId (use socket id)
+    // const sessionId = socket.request.session.id
+    
+    // make a gameId (use first 5 of socket id)
     const roomCode = socket.id.substring(0, 5);
-    console.log(`Creating a game, room ${roomCode}`)
-    // add the code to rooms
+    console.log(`${gameInfo.username} created room ${roomCode}`)
+
+    // add roomCode as a key
+    rooms[roomCode] = roomCode
+
+    // create and join the room
     socket.join(roomCode)
-    
-    
-    
-});
 
-socket.on("joinGame", () => {
-    console.log('joining a game now')
-})
+    // server emits a new game
+    socket.emit("newGame", {roomCode: roomCode})
+    
+  });
 
+
+  socket.on("joinGame", (joinAttempt) => {
+    // destructure room code from object
+
+    // check if the room exists
+    if (rooms[joinAttempt.roomCode]){
+      // if it does, join the room
+      socket.join(joinAttempt.roomCode)
+
+      // inside the room, emit the players who connected
+      socket.to(joinAttempt.roomCode).emit("playersConnected", {})
+
+      // emit playersConnected
+      socket.emit("playersConnected")
+    }
+  })
+
+  
+  // // the cb is passed from the client side
+  // // server side invokes cb
+  // socket.on("joinGame", (roomCode, username, cb) => {
+  //   let players = []
+
+  //   socket.join(roomCode)
+  //   const player = {
+  //     username,
+  //     id: socket.id
+  //   }
+  //   // add to players array
+  //   players.push(player)
+  //   // show players who have joined
+  //   io.emit("new player", players)
+
+  // })
+  
 });
 
 
