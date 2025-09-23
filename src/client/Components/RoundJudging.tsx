@@ -60,7 +60,6 @@ const RoundJudging: React.FC = (props) => {
     <>
       <Flex gap="middle" align="center" vertical>
         <Flex style={ribbonsStyle} justify={justify} align={alignItems}>
-          Judging Ribbons go here
           <JudgingRibbons setRibbons={setRibbons}/>
         </Flex>
       </Flex>
