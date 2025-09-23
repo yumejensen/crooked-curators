@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import JoinedPlayers from '../Components/JoinedPlayers';
+
 //Temporarily including Curator Search here
 import CuratorSearch from '../Components/CuratorSearch'
 
@@ -12,9 +14,9 @@ const GameSettings: React.FC = () => {
     return(
         <div>
             <CuratorSearch />
-            <p>Replace with user list</p>
             <p>Replace with game settings</p>
-            <p>Replace with start game button</p>
+            
+            <JoinedPlayers />
         </div>
     )
 }
