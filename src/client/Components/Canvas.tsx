@@ -32,17 +32,6 @@ const canvasBoxStyle: React.CSSProperties = {
   border: '3px solid #3B262C',
 };
 
-// const justifyOptions = [
-//   'flex-start',
-//   'center',
-//   'flex-end',
-//   'space-between',
-//   'space-around',
-//   'space-evenly',
-// ];
-
-// const alignOptions = ['flex-start', 'center', 'flex-end'];
-
 const Canvas = () => {
 
   // --------------------[STATES]---------------------
@@ -56,21 +45,27 @@ const Canvas = () => {
   //   height: sceneHeight,
   //   scale: 1
   // });
-  
-  const [tool, setTool] = React.useState('pen');
+
+  // lines
   const [lines, setLines] = React.useState([]);
+
+  // tools
+  const [tool, setTool] = React.useState('pen');
   const [lineColor, setLineColor] = React.useState("#000000");
 
+  // flex justify
   const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
   const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
-
-  const isDrawing = React.useRef(false);
 
   // history
   const [history, setHistory] = useState([])
 
+  // export
+  const stageRef = React.useRef(null);
+
   // -------------------[HANDLERS]--------------------
 
+  const isDrawing = React.useRef(false);
 
   // Define virtual size for our scene
 
@@ -82,13 +77,13 @@ const Canvas = () => {
 
   // const updateSize = () => {
   //   if (!containerRef.current) return;
-    
+
   //   // Get container width
   //   const containerWidth = containerRef.current.offsetWidth;
-    
+
   //   // Calculate scale
   //   const scale = containerWidth / sceneWidth;
-    
+
   //   // Update state with new dimensions
   //   setStageSize({
   //     width: sceneWidth * scale,
@@ -96,20 +91,20 @@ const Canvas = () => {
   //     scale: scale
   //   });
   // };
-  
+
 
   // Update on mount and when window resizes
 
   // useEffect(() => {
   //   updateSize();
   //   window.addEventListener('resize', updateSize);
-    
+
   //   return () => {
   //     window.removeEventListener('resize', updateSize);
   //   };
   // }, []);
 
-
+  // drawing
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
@@ -136,6 +131,7 @@ const Canvas = () => {
     isDrawing.current = false;
   };
 
+  // undo and redo
   const handleUndo = () => {
 
     // remove last line
@@ -165,6 +161,24 @@ const Canvas = () => {
     }
   };
 
+  // export to pull image from canvas
+  const handleSaveToProfile = () => {
+
+    const uri = stageRef.current.toDataURL();
+    console.log(uri);
+    // we also can save uri as file
+    // downloadURI(uri, 'stage.png');
+  };
+
+
+  const handleDownload = () => {
+
+    const uri = stageRef.current.toDataURL();
+    console.log(uri);
+    // we also can save uri as file
+    // downloadURI(uri, 'stage.png');
+  };
+
   // --------------------[RENDER]---------------------
 
   return (
@@ -180,12 +194,14 @@ const Canvas = () => {
             setTool={setTool}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
+            handleSave={handleSaveToProfile}
+            handleDownload={handleDownload}
             />
-        
           <div ref={containerRef} style={canvasBoxStyle}>
           <Stage
             width={900}
             height={500}
+            ref={stageRef}
             onMouseDown={handleMouseDown}
             onMousemove={handleMouseMove}
             onMouseup={handleMouseUp}
@@ -211,7 +227,6 @@ const Canvas = () => {
             </Layer>
           </Stage>
           </div>
-
         </Flex>
       </Flex>
     </div>
