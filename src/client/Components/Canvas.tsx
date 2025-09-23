@@ -166,7 +166,7 @@ const Canvas = () => {
   const handleSaveToProfile = () => {
 
     const uri = stageRef.current.toDataURL();
-    console.log(uri);
+    // console.log(uri);
     // we also can save uri as file
     // downloadURI(uri, 'stage.png');
   };
@@ -175,7 +175,7 @@ const Canvas = () => {
   const handleDownload = () => {
 
     const uri = stageRef.current.toDataURL();
-    console.log(uri);
+    // console.log(uri);
     // we also can save uri as file
     // downloadURI(uri, 'stage.png');
   };
