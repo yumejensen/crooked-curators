@@ -26,12 +26,12 @@ io.engine.use(session({
 
 io.on("connection", (socket) => {
 
-  // console.log(`A player: ${socket.id} connected`);
+  console.log(`A player: ${socket.id} connected`);
   // // socket.emit('joinedEvent') // was using for testing
 
-  // socket.on("disconnect", () => {
-  //   console.log("A player disconnected");
-  // });
+  socket.on("disconnect", () => {
+    console.log("A player disconnected");
+  });
   
   // make rooms object
   let rooms = {}

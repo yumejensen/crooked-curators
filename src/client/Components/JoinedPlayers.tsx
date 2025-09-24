@@ -1,9 +1,8 @@
 // contains a list of usernames from joined users on game settings page
 import React, { useEffect, useState } from "react";
 
+import { socket } from '../socket'
 
-
-const socket = global.io()
 
 socket.on("newGame", (newGameInfo) => {
   // display the room code

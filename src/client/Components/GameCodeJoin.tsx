@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button, Input, Space, Typography } from "../antdComponents";
 import { FaArrowCircleRight } from "react-icons/fa";
 
-const socket = global.io()
+import { socket } from '../socket'
 
 const GameCodeJoin = ({username}) => {
   // state for input field
