@@ -65,6 +65,8 @@ const Canvas = () => {
   // export
   const stageRef = React.useRef(null);
 
+  const [image, setImage] = useState('');
+
   // -------------------[HANDLERS]--------------------
 
   const isDrawing = React.useRef(false);
@@ -166,7 +168,8 @@ const Canvas = () => {
   // export to pull image from canvas
   const handleSaveToProfile = () => {
 
-    const uri = stageRef.current.toDataURL();
+    
+    let imageUrl = '';
 
     function dataURLtoFile(dataurl: string, filename: string) {
       let arr = dataurl.split(","),
@@ -177,16 +180,43 @@ const Canvas = () => {
       while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
       }
+      console.log(mime)
       return new File([u8arr], filename, { type: mime });
     }
+
+    // no file type
+    const uri = stageRef.current.toDataURL();
+    // no file type
+    const imageFile = dataURLtoFile(uri, 'artwork.png');
+    // no file type
+    const imageStage = stageRef.current;
 
     // make request to server to send the URI to our cloud storage
     axios.get('/s3Url').then((res) => {
 
-      // 
-      console.log(res.data);
+      console.log(res.data)
+      imageUrl = res.data.split('?')[0];
 
       console.log('Successful GET request to s3Url: CLIENT');
+
+      // make PUT request to the s3 bucket with url from request
+      axios.put(res.data, {
+          body: uri
+        },
+        {
+          headers: {
+            "Content-Type": "image/png"
+        },
+      }).then((res) => {
+
+        console.log('Successful PUT request to s3Url: CLIENT:');
+        console.log(imageUrl);
+        setImage(imageUrl);
+
+      }).catch((err) => {
+        console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+      })
+
     }).catch((err) => {
       console.error('Failed GET request to s3Url: CLIENT:', err);
     })
@@ -194,7 +224,7 @@ const Canvas = () => {
 
   const handleDownload = () => {
 
-    const uri = stageRef.current.toDataURL();
+    const uri = stageRef.current.toDataURL('image/png');
 
     function downloadURI(uri, name) {
       var link = document.createElement('a');
@@ -212,6 +242,7 @@ const Canvas = () => {
 
   return (
     <div>
+      <img src={image} />
       <Divider variant="dotted" style={{ borderColor: '#3B262C' }}>
         Canvas
       </Divider>
