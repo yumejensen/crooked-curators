@@ -47,68 +47,47 @@ io.on("connection", (socket) => {
     await Game.create({ gameCode: roomCode });
     
     // create and join the room
-    socket.join(roomCode)
+    await socket.join(roomCode)
 
+    // log a message for who created what room
     console.log(`${gameInfo.username} created room ${roomCode}`)
-    
-    
-    // server emits a new game
-    socket.emit("newGame", {roomCode: roomCode})
-    
-    
+
+    // emit the room code to that specific room
+    io.to(roomCode).emit("sendRoomCode", {roomCode: roomCode})
     
   });
 
 
   // JOINING A ROOM
   socket.on("joinGame", async (joinAttempt) => {
-
+  
     // variable for checking if the room exists in the db
     const roomExists = await Game.findOne({ where: { gameCode: joinAttempt.roomCode }})
-
-    // if the room exists, join the room
+    
+    // if the room exists, (it is not null)
     if ( roomExists !== null){
+      // join the room
       socket.join(joinAttempt.roomCode)
-      console.log(`player joined room ${joinAttempt.roomCode}!`)
+
+      // log a message for someone joining a room
+      console.log(`player joined room ${joinAttempt.roomCode}`)
+      
+      // to the specific room, emit the room code
+      io.to(joinAttempt.roomCode).emit("sendRoomCode", {roomCode: joinAttempt.roomCode})
+     
     } else {
       // if the room does not exist in the db, don't join
+      console.log('room does not exist in the db')
 
       // emit event back to user informing them the code doesn't work
       // something like: socket.emit("badCode")
-      
-      console.log('room does not exist in the db')
     }
 
-
-    // inside the room, emit the players who connected
-    //socket.to(joinAttempt.roomCode).emit("playersConnected", {})
-  
-    // emit playersConnected
-    //socket.emit("playersConnected")
   })
 
   
   
-  // ANOTHER JOIN GAME FUNCTION
-  // // the cb is passed from the client side
-  // // server side invokes cb
-  // socket.on("joinGame", (roomCode, username, cb) => {
-  //   let players = []
-
-  //   socket.join(roomCode)
-  //   const player = {
-  //     username,
-  //     id: socket.id
-  //   }
-  //   // add to players array
-  //   players.push(player)
-  //   // show players who have joined
-  //   io.emit("new player", players)
-
-  // })
-  
 });
-
 
 
 

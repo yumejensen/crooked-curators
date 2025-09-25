@@ -4,36 +4,33 @@ import React, { useEffect, useState } from "react";
 import { socket } from '../socket'
 
 
-socket.on("newGame", (newGameInfo) => {
-  // display the room code
-  console.log('room code, server to client:', newGameInfo.roomCode)
-  
-})
+// join code variable
+let joinCode = '';
 
-socket.onAny((eventName, ...args) => {
-  console.log(eventName, args)
+// socket listener for the room code
+socket.on("sendRoomCode", (roomCodeObj) => {
+  // receive the joinCode from the socket 
+  // update the variable
+  joinCode = roomCodeObj.roomCode
 })
 
 const JoinedPlayers = () => {
   const [players, setPlayers] = useState([])
   
-  const [roomCode, setRoomCode] = useState('')
 
-
-
-  
-  socket.on("playerConnection", (joinedRoom) => {
-    setPlayers([...joinedRoom.username])
-  })
+  // socket.on("playerConnection", (joinedRoom) => {
+  //   setPlayers([...joinedRoom.username])
+  // })
   
 
   return (
     <div>
-      <h3>Room code is: {}</h3>
+      <h3>Room code is: {joinCode} </h3>
       <h3>Joined players:</h3>
       <h4>{players}</h4>
     </div>
   );
+
 };
 
 export default JoinedPlayers;
