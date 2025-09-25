@@ -59,16 +59,18 @@ io.on("connection", (socket) => {
 
 
   socket.on("joinGame", (joinAttempt) => {
-    // destructure room code from object
 
-    // check if the room exists
-    if (rooms[joinAttempt.roomCode]){
-      // if it does, join the room
-      socket.join(joinAttempt.roomCode)
+    socket.join(joinAttempt.roomCode)
+    console.log(socket.rooms)
+    console.log(`player joined room ${joinAttempt.roomCode}!`)
+
+    // // check if the room exists
+    // if (rooms[joinAttempt.roomCode]){
+    //   // if it does, join the room
       
-      let player = joinAttempt.username
-      socket.to(joinAttempt.roomCode).emit("playerConnection", {username: player})
-    }
+    //   // let player = joinAttempt.username
+    //   // socket.to(joinAttempt.roomCode).emit("playerConnection", {username: player})
+    // }
   })
   
         // inside the room, emit the players who connected
