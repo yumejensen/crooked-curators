@@ -30,29 +30,27 @@ io.engine.use(session({
 io.on("connection", (socket) => {
 
   console.log(`A player: ${socket.id} connected`);
-  // // socket.emit('joinedEvent') // was using for testing
 
   socket.on("disconnect", () => {
     console.log("A player disconnected");
   });
   
   // CREATING A ROOM
-  socket.on("createGame", (gameInfo) => {
+  socket.on("createGame", async (gameInfo) => {
     // socket session id variable
     // const sessionId = socket.request.session.id
     
     // make a gameId (use first 5 of socket id)
     const roomCode = socket.id.substring(0, 5);
-    // create and join the room
-    socket.join(roomCode)
     
     // add the room to the database
-    Game.create({ gameCode: roomCode });
+    await Game.create({ gameCode: roomCode });
     
+    // create and join the room
+    socket.join(roomCode)
 
     console.log(`${gameInfo.username} created room ${roomCode}`)
     
-    // add the room code to the database
     
     // server emits a new game
     socket.emit("newGame", {roomCode: roomCode})
@@ -63,45 +61,24 @@ io.on("connection", (socket) => {
 
 
   // JOINING A ROOM
-  socket.on("joinGame", (joinAttempt) => {
+  socket.on("joinGame", async (joinAttempt) => {
 
-    // // check if the room exists in the database ATTEMPT 2
-    // const roomExists = (str) => {
-    //   Game.findOne({ where: { gameCode: str }})
-    //   .then((result) => {
-    //     if (result === null){
-    //       console.log('this room does not exist')
-    //     }
-    //   })
-    //   .then(() => {
-    //     socket.join(str),
-    //     console.log(`player joined room ${str}`)
-    //   })
-    //   .catch((err) => {
-    //     console.log('join error', err)
-    //   })
-    // } 
-    
-    // roomExists(joinAttempt.roomCode)
+    // variable for checking if the room exists in the db
+    const roomExists = await Game.findOne({ where: { gameCode: joinAttempt.roomCode }})
 
-
-    // check if room exists in db before ATTEMPT 1
-    if ( Game.findOne({ where: { gameCode: joinAttempt.roomCode }}) !== null){
+    // if the room exists, join the room
+    if ( roomExists !== null){
       socket.join(joinAttempt.roomCode)
       console.log(`player joined room ${joinAttempt.roomCode}!`)
     } else {
-      // if the room exists, join it
+      // if the room does not exist in the db, don't join
+
+      // emit event back to user informing them the code doesn't work
+      // something like: socket.emit("badCode")
+      
       console.log('room does not exist in the db')
     }
 
-
-    // // check if the room exists
-    // if (rooms[joinAttempt.roomCode]){
-    //   // if it does, join the room
-      
-    //   // let player = joinAttempt.username
-    //   // socket.to(joinAttempt.roomCode).emit("playerConnection", {username: player})
-    // }
 
     // inside the room, emit the players who connected
     //socket.to(joinAttempt.roomCode).emit("playersConnected", {})
