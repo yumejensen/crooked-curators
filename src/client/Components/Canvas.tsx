@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 import {
   Divider,
@@ -12,7 +13,7 @@ import {
   Segmented
 } from '../antdComponents';
 
-import { Stage, Layer, Line, Text } from 'react-konva';
+import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 
 // -------------------[COMPONENTS]------------------
 import CanvasTools from './CanvasTools';
@@ -145,7 +146,7 @@ const Canvas = () => {
 
   const handleRedo = () => {
 
-    if(history.length !== 0){
+    if (history.length !== 0) {
 
       // remove last line from the history
       let lastLine = history.pop()
@@ -154,7 +155,7 @@ const Canvas = () => {
       setHistory([...history]);
 
       // add last line back to lines
-      if(lines.length === 0){
+      if (lines.length === 0) {
         setLines([...lastLine]);
       } else {
         setLines([...lines, lastLine]);
@@ -166,18 +167,45 @@ const Canvas = () => {
   const handleSaveToProfile = () => {
 
     const uri = stageRef.current.toDataURL();
-    // console.log(uri);
-    // we also can save uri as file
-    // downloadURI(uri, 'stage.png');
-  };
 
+    function dataURLtoFile(dataurl: string, filename: string) {
+      let arr = dataurl.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[arr.length - 1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    }
+
+    // make request to server to send the URI to our cloud storage
+    axios.get('/s3Url').then((res) => {
+
+      // 
+      console.log(res.data);
+
+      console.log('Successful GET request to s3Url: CLIENT');
+    }).catch((err) => {
+      console.error('Failed GET request to s3Url: CLIENT:', err);
+    })
+  };
 
   const handleDownload = () => {
 
     const uri = stageRef.current.toDataURL();
-    // console.log(uri);
-    // we also can save uri as file
-    // downloadURI(uri, 'stage.png');
+
+    function downloadURI(uri, name) {
+      var link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    downloadURI(uri, 'artwork.png');
   };
 
   // --------------------[RENDER]---------------------
@@ -197,36 +225,39 @@ const Canvas = () => {
             handleRedo={handleRedo}
             handleSave={handleSaveToProfile}
             handleDownload={handleDownload}
-            />
+          />
           <div ref={containerRef} style={canvasBoxStyle}>
-          <Stage
-            width={900}
-            height={500}
-            ref={stageRef}
-            onMouseDown={handleMouseDown}
-            onMousemove={handleMouseMove}
-            onMouseup={handleMouseUp}
-            onTouchStart={handleMouseDown}
-            onTouchMove={handleMouseMove}
-            onTouchEnd={handleMouseUp}
-          >
-            <Layer>
-              {lines.map((line, i) => (
-                <Line
-                  key={i}
-                  points={line.points}
-                  stroke={line.stroke}
-                  strokeWidth={5}
-                  tension={0.5}
-                  lineCap="round"
-                  lineJoin="round"
-                  globalCompositeOperation={
-                    line.tool === 'eraser' ? 'destination-out' : 'source-over'
-                  }
-                />
-              ))}
-            </Layer>
-          </Stage>
+            <Stage
+              width={900}
+              height={500}
+              ref={stageRef}
+              onMouseDown={handleMouseDown}
+              onMousemove={handleMouseMove}
+              onMouseup={handleMouseUp}
+              onTouchStart={handleMouseDown}
+              onTouchMove={handleMouseMove}
+              onTouchEnd={handleMouseUp}
+            >
+              <Layer>
+                <Rect x={0} y={0} width={900} height={500} fill="white" />
+              </Layer>
+              <Layer>
+                {lines.map((line, i) => (
+                  <Line
+                    key={i}
+                    points={line.points}
+                    stroke={line.stroke}
+                    strokeWidth={5}
+                    tension={0.5}
+                    lineCap="round"
+                    lineJoin="round"
+                    globalCompositeOperation={
+                      line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                    }
+                  />
+                ))}
+              </Layer>
+            </Stage>
           </div>
         </Flex>
       </Flex>
