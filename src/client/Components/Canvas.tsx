@@ -175,7 +175,6 @@ const Canvas = () => {
     // make request to server to send the URI to our cloud storage
     axios.get('/s3Url').then((res) => {
 
-      console.log(res.data)
       imageUrl = res.data.split('?')[0];
 
       console.log('Successful GET request to s3Url: CLIENT');
