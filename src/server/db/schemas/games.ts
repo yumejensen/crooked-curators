@@ -14,7 +14,7 @@ Game.belongsToMany(User, { through: "users_games" });
 
 // synchronize model to the db
 (async () => {
-  await Game.sync({ force: true });
+  await Game.sync({ alter: true });
   console.log("Game model synchronized successfully.");
   // console.log(sequelize.models)
 })();

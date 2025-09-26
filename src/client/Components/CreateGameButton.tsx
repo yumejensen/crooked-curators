@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Flex } from '../antdComponents';
 
-const socket = global.io()
+import { socket } from '../socket'
 
 const buttonStyle: React.CSSProperties = {
   width: '100%',
