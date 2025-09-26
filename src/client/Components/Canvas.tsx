@@ -168,7 +168,6 @@ const Canvas = () => {
   // export to pull image from canvas
   const handleSaveToProfile = () => {
 
-    
     let imageUrl = '';
 
     function dataURLtoFile(dataurl: string, filename: string) {
@@ -201,13 +200,9 @@ const Canvas = () => {
 
       // make PUT request to the s3 bucket with url from request
       axios.put(res.data, {
+          'Content-Type': "image/png",
           body: uri
-        },
-        {
-          headers: {
-            "Content-Type": "image/png"
-        },
-      }).then((res) => {
+        }).then((res) => {
 
         console.log('Successful PUT request to s3Url: CLIENT:');
         console.log(imageUrl);
