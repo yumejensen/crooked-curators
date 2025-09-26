@@ -24,6 +24,7 @@ import GameSettings from "./Views/GameSettings";
 import ActiveGame from "./Views/ActiveGame";
 import RoundJudging from "./Components/RoundJudging";
 import Gallery from "./Components/Gallery";
+import CuratorSearch from "./Components/CuratorSearch";
 
 // const items = Array.from({ length: 15 }).map((_, index) => ({
 //   key: index + 1,
@@ -88,6 +89,7 @@ const App: React.FC = () => {
                 <Route path="/game" element={<ActiveGame />} />
                 <Route path="/judging" element={<RoundJudging />} />
                 <Route path="/gallery" element={<Gallery />} />
+                <Route path="/curator" element={<CuratorSearch />} />
 
                 <Route path="*" element={<p>There is nothing here: 404!</p>} />
               </Routes>

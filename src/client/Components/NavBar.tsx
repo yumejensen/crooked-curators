@@ -18,6 +18,10 @@ const items = [
     label: (<Link to='/game-settings'>Game Settings</Link>)
   },
   {
+    key: "CuratorSearch",
+    label: (<Link to='/curator'>Curator</Link>)
+  },
+  {
     key: "ActiveGame",
     label: (<Link to='/game'>Game</Link>)
   },
