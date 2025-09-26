@@ -3,6 +3,9 @@ import { server } from '../app'
 const { Server } = require("socket.io");
 const session = require("express-session");
 
+// DB GAME MODEL
+import { Game } from '../db/schemas/games'
+
 require("dotenv").config();
 const { SESSION_SECRET } = process.env;
 
@@ -26,77 +29,65 @@ io.engine.use(session({
 
 io.on("connection", (socket) => {
 
-  // console.log(`A player: ${socket.id} connected`);
-  // // socket.emit('joinedEvent') // was using for testing
+  console.log(`A player: ${socket.id} connected`);
 
-  // socket.on("disconnect", () => {
-  //   console.log("A player disconnected");
-  // });
+  socket.on("disconnect", () => {
+    console.log("A player disconnected");
+  });
   
-  // make rooms object
-  let rooms = {}
-
-  socket.on("createGame", (gameInfo) => {
+  // CREATING A ROOM
+  socket.on("createGame", async (gameInfo) => {
     // socket session id variable
     // const sessionId = socket.request.session.id
     
     // make a gameId (use first 5 of socket id)
     const roomCode = socket.id.substring(0, 5);
     
-    console.log(`${gameInfo.username} created room ${roomCode}`)
-    
-    // add roomCode as a key
-    rooms[roomCode] = roomCode
-    
-    // server emits a new game
-    socket.emit("newGame", {roomCode: "roomCodePlaceholder"})
+    // add the room to the database
+    await Game.create({ gameCode: roomCode });
     
     // create and join the room
-    socket.join(roomCode)
-    
+    await socket.join(roomCode)
+
+    // log a message for who created what room
+    console.log(`${gameInfo.username} created room ${roomCode}`)
+
+    // emit the room code to that specific room
+    io.to(roomCode).emit("sendRoomCode", {roomCode: roomCode})
     
   });
 
 
-  socket.on("joinGame", (joinAttempt) => {
-    // destructure room code from object
-
-    // check if the room exists
-    if (rooms[joinAttempt.roomCode]){
-      // if it does, join the room
+  // JOINING A ROOM
+  socket.on("joinGame", async (joinAttempt) => {
+  
+    // variable for checking if the room exists in the db
+    const roomExists = await Game.findOne({ where: { gameCode: joinAttempt.roomCode }})
+    
+    // if the room exists, (it is not null)
+    if ( roomExists !== null){
+      // join the room
       socket.join(joinAttempt.roomCode)
+
+      // log a message for someone joining a room
+      console.log(`player joined room ${joinAttempt.roomCode}`)
       
-      let player = joinAttempt.username
-      socket.to(joinAttempt.roomCode).emit("playerConnection", {username: player})
+      // to the specific room, emit the room code
+      io.to(joinAttempt.roomCode).emit("sendRoomCode", {roomCode: joinAttempt.roomCode})
+     
+    } else {
+      // if the room does not exist in the db, don't join
+      console.log('room does not exist in the db')
+
+      // emit event back to user informing them the code doesn't work
+      // something like: socket.emit("badCode")
     }
+
   })
-  
-        // inside the room, emit the players who connected
-        //socket.to(joinAttempt.roomCode).emit("playersConnected", {})
-  
-        // emit playersConnected
-        //socket.emit("playersConnected")
-  
-  
-  // // the cb is passed from the client side
-  // // server side invokes cb
-  // socket.on("joinGame", (roomCode, username, cb) => {
-  //   let players = []
 
-  //   socket.join(roomCode)
-  //   const player = {
-  //     username,
-  //     id: socket.id
-  //   }
-  //   // add to players array
-  //   players.push(player)
-  //   // show players who have joined
-  //   io.emit("new player", players)
-
-  // })
+  
   
 });
-
 
 
 
