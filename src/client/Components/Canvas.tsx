@@ -166,29 +166,11 @@ const Canvas = () => {
   };
 
   // export to pull image from canvas
-  const handleSaveToProfile = () => {
+  const handleSaveImage = () => {
 
     let imageUrl = '';
 
-    function dataURLtoFile(dataurl: string, filename: string) {
-      let arr = dataurl.split(","),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[arr.length - 1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      console.log(mime)
-      return new File([u8arr], filename, { type: mime });
-    }
-
-    // no file type
     const uri = stageRef.current.toDataURL();
-    // no file type
-    const imageFile = dataURLtoFile(uri, 'artwork.png');
-    // no file type
-    const imageStage = stageRef.current;
 
     // make request to server to send the URI to our cloud storage
     axios.get('/s3Url').then((res) => {
@@ -202,11 +184,14 @@ const Canvas = () => {
       axios.put(res.data, {
           'Content-Type': "image/png",
           body: uri
-        }).then((res) => {
+        }).then(() => {
 
-        console.log('Successful PUT request to s3Url: CLIENT:');
-        console.log(imageUrl);
-        setImage(imageUrl);
+          console.log('Successful PUT request to s3Url: CLIENT:');
+
+          // image Url needs to be saved to the artwork
+          // to get the image, a request must be made to the
+          // link and accessed by link.body (or whatever variable name is)
+          console.log(imageUrl);
 
       }).catch((err) => {
         console.error('Failed PUT request to s3 bucket: CLIENT:', err);
@@ -249,7 +234,7 @@ const Canvas = () => {
             setTool={setTool}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
-            handleSave={handleSaveToProfile}
+            handleSave={handleSaveImage}
             handleDownload={handleDownload}
           />
           <div ref={containerRef} style={canvasBoxStyle}>
