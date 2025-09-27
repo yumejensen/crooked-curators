@@ -1,4 +1,4 @@
-import { selectDisplayedStackedData } from 'recharts/types/state/selectors/axisSelectors';
+
 import { server } from '../app'
 const { Server } = require("socket.io");
 const session = require("express-session");
@@ -47,13 +47,13 @@ io.on("connection", (socket) => {
     await Game.create({ gameCode: roomCode });
     
     // create and join the room
-    await socket.join(roomCode)
+    await socket.join(roomCode);
 
     // log a message for who created what room
-    console.log(`${gameInfo.username} created room ${roomCode}`)
+    console.log(`${gameInfo.username} created room ${roomCode}`);
 
     // emit the room code to that specific room
-    io.to(roomCode).emit("sendRoomCode", {roomCode: roomCode})
+    io.to(roomCode).emit("sendRoomCode", {roomCode: roomCode});
     
   });
 
@@ -67,28 +67,24 @@ io.on("connection", (socket) => {
     // if the room exists, (it is not null)
     if ( roomExists !== null){
       // join the room
-      socket.join(joinAttempt.roomCode)
+      socket.join(joinAttempt.roomCode);
 
       // log a message for someone joining a room
-      console.log(`player joined room ${joinAttempt.roomCode}`)
+      console.log(`player joined room ${joinAttempt.roomCode}`);
       
       // to the specific room, emit the room code
-      io.to(joinAttempt.roomCode).emit("sendRoomCode", {roomCode: joinAttempt.roomCode})
+      io.to(joinAttempt.roomCode).emit("sendRoomCode", {roomCode: joinAttempt.roomCode});
      
     } else {
       // if the room does not exist in the db, don't join
-      console.log('room does not exist in the db')
-
+      console.log('room does not exist in the db');
       // emit event back to user informing them the code doesn't work
       // something like: socket.emit("badCode")
     }
 
-  })
-
-  
+  }); 
   
 });
-
 
 
 
