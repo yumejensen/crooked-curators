@@ -50,30 +50,30 @@ io.on("connection", async (socket) => {
   });
   
   // CREATING A ROOM
-  socket.on("createGame", async (gameInfo) => {
-    // socket session id variable
-    // const sessionId = socket.request.session.id
+  // socket.on("createGame", async (gameInfo) => {
+  //   // socket session id variable
+  //   // const sessionId = socket.request.session.id
     
-    // make a gameId (use first 5 of socket id)
-    const gameCode = socket.id.substring(0, 5);
+  //   // make a gameId (use first 5 of socket id)
+  //   const gameCode = socket.id.substring(0, 5);
     
-    // add the room to the database
-    await Game.create({ gameCode: gameCode });
-    const currentGame = await Game.findOne({ where: { gameCode: gameCode}})
+  //   // add the room to the database
+  //   await Game.create({ gameCode: gameCode });
+  //   const currentGame = await Game.findOne({ where: { gameCode: gameCode}})
 
-    // add game to map
-    gamesPlayersMap.set(gameCode, [])
+  //   // add game to map
+  //   gamesPlayersMap.set(gameCode, [])
 
-    // create and join the room
-    await socket.join(gameCode);
+  //   // create and join the room
+  //   await socket.join(gameCode);
 
-    // log a message for who created what room
-    console.log(`${gameInfo.username} created room ${gameCode}`);
+  //   // log a message for who created what room
+  //   console.log(`${gameInfo.username} created room ${gameCode}`);
 
-    // emit the room code to that specific room
-    io.to(gameCode).emit("sendRoomCode", {roomCode: gameCode, game: currentGame, type: 'create'});
+  //   // emit the room code to that specific room
+  //   io.to(gameCode).emit("sendRoomCode", {roomCode: gameCode, game: currentGame, type: 'create'});
     
-  });
+  // });
 
 
   // JOINING A ROOM

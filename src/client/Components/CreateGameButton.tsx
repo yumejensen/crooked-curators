@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Flex } from '../antdComponents';
 
+import axios from 'axios'
 import { socket } from '../socket'
 
 const buttonStyle: React.CSSProperties = {
@@ -20,13 +21,24 @@ const CreateGameButton = ({username}) => {
 
  
   }
-  //
+  
+  // send a request to /create-game
+  const handleCreateGame = () => {
+    axios.post('/games/create')
+    .then(({data}) => {
+      console.log(data)
+    })
+    .catch((err) => {
+      // can add client message for user (little popup)
+      console.error('create game failed', err)
+    })
+  }
 
   return (
     <Flex style={buttonStyle} justify="center" align="center">
         <Link to='/game-settings' >
 
-          <Button onClick={createGame} >
+          <Button onClick={handleCreateGame} >
             Create Game
           </Button>
 
