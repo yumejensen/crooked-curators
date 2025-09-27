@@ -1,3 +1,4 @@
+import { doesNotMatch } from 'assert';
 import passport from 'passport';
 const GoogleStrategy = require( 'passport-google-oauth20' ).Strategy;
 const { User } = require('./db/schemas/users');
@@ -29,7 +30,8 @@ passport.use(new GoogleStrategy({
         email: profile.emails[0].value 
       } 
     })
-      .then((user: userTypes) => {
+      .then((results) => {
+        const user = results[0].dataValues
         return cb(null, user);
       })
       .catch((err: () => void) => {
@@ -39,19 +41,21 @@ passport.use(new GoogleStrategy({
     }
   ));
   
-  passport.serializeUser(function(user: userTypes, cb) {
+  passport.serializeUser(async function(user: userTypes, cb) {
+
     process.nextTick(function() {
-    return cb(null, {
-      googleId: user.id,
-      username: user.username,
-      email: user.email,
-      profilePic: user.profilePic
+      return cb(null, user.googleId);
     });
-  });
 });
 
-passport.deserializeUser(function(user: userTypes, cb) {
-  process.nextTick(function() {
-    return cb(null, user);
-  });
+passport.deserializeUser( async function(userId, cb) {
+  try{
+
+    const user = await User.findOne({where: {'googleId' : userId}})
+    cb(null, user.dataValues)
+  }catch (err){
+    console.error('Error deserializing user', err)
+    cb(err, null)
+  }
+
 });
