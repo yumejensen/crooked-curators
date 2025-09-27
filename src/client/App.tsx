@@ -11,7 +11,7 @@ import {
   Content,
   Footer,
   ConfigProvider,
-  Button
+  Button,
 } from "./antdComponents";
 
 import "./CSS/style.module.css";
@@ -35,8 +35,6 @@ import Gallery from "./Components/Gallery";
 import { User, UserContext, useUserContext, fetchUser } from "./context";
 
 const App: React.FC = () => {
-
-
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -44,10 +42,25 @@ const App: React.FC = () => {
   // --------------------[STATES]---------------------
   const [view, setView] = useState("Homepage");
   const [user, setUser] = useState<User>({
-    username: "Guest",
+    username: null,
     loggedIn: false,
   });
+  function updateUser() {
+    fetchUser()
+      .then(({ data }) => {
+        if (data) {
+          setUser({ username: data.username, loggedIn: true });
+        }
+      })
+      .catch((err) => {
+        setUser({ username: null, loggedIn: false });
+      });
+  }
 
+  useEffect(() => {
+    updateUser();
+    return;
+  }, []);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <ConfigProvider
@@ -95,7 +108,7 @@ const App: React.FC = () => {
                 <Route path="*" element={<p>There is nothing here: 404!</p>} />
               </Routes>
             </div>
-            <Button onClick={fetchUser} >Fetch User</Button>
+            <Button onClick={updateUser}>Fetch User</Button>
           </Content>
           <Footer style={{ textAlign: "center" }}>
             Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
