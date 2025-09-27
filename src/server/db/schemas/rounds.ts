@@ -1,8 +1,8 @@
 import sequelize from '../index';
 import { DataTypes } from 'sequelize';
 
-import { Artwork } from './artworks';
 import { Game } from './games'
+import { User } from './users';
 
 const Round = sequelize.define('round', {
   id: {
@@ -22,30 +22,32 @@ const Round = sequelize.define('round', {
   game_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: 'game',
-    referencesKey: 'id'
+    references: {
+      model: Game,
+      key: 'id'
+    }
   },
   curator_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: 'user',
-    referencesKey: 'id'
+    references: {
+      model: User,
+      key: 'id'
+    }
   },
   winner_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: 'user',
-    referencesKey: 'id'
+    references: {
+      model: User,
+      key: 'id'
+    }
   }
 });
 
-// establish relationships
-Round.belongsTo(Game);
-Round.hasMany(Artwork);
-
 (async () => {
-  await Round.sync({ force: true });
-    console.log('Artwork model synchronized successfully.');
+  await Round.sync();
+    console.log('Round model synchronized successfully.');
 })();
 
 export { Round };

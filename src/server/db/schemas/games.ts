@@ -17,12 +17,9 @@ const Game = sequelize.define("game", {
   },
 });
 
-// establish relationships
-Game.belongsToMany(User, { through: User_Game });
-
 // synchronize model to the db
 (async () => {
-  await Game.sync({ alter: true });
+  await Game.sync();
   console.log("Game model synchronized successfully.");
   // console.log(sequelize.models)
 })();
