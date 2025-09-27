@@ -34,6 +34,7 @@ import {
   nameRandomizerRouter,
   curatorRouter,
   s3UrlRouter,
+  createGameRouter,
 } from "./routes";
 
 // ----------MIDDLEWARE---------------
@@ -63,6 +64,7 @@ app.use("/auth/google", authRouter);
 app.use("/name-randomizer", nameRandomizerRouter);
 app.use("/curator", curatorRouter);
 app.use("/s3Url", s3UrlRouter);
+app.use("/create-game", createGameRouter);
 
 // serve static files from client
 app.use(express.static(CLIENT));
