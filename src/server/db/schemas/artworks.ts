@@ -39,10 +39,5 @@ const Artwork = sequelize.define('artwork', {
   // }
 });
 
-// synchronize model to the db
-(async () => {
-  await Artwork.sync();
-    console.log('Artwork model synchronized successfully.');
-})();
 
 export { Artwork };

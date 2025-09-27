@@ -17,11 +17,5 @@ const Game = sequelize.define("game", {
   },
 });
 
-// synchronize model to the db
-(async () => {
-  await Game.sync();
-  console.log("Game model synchronized successfully.");
-  // console.log(sequelize.models)
-})();
 
 export { Game };

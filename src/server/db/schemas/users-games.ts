@@ -27,10 +27,5 @@ const User_Game = sequelize.define('user_game', {
   },
 }, { timestamps: false });
 
-// synchronize model to the db
-(async () => {
-  await User_Game.sync();
-    console.log('User_Game model synchronized successfully.');
-})();
 
 export { User_Game };
