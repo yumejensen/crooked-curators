@@ -26,5 +26,7 @@ sequelize.authenticate()
 // -------INITIALIZE MODELS----------
 
 // require all sequelize models
-const User = require('./schemas/users') 
-const Game = require('./schemas/games')
+const User = require('./schemas/users');
+const Game = require('./schemas/games');
+const Artwork = require('./schemas/artworks');
+const Round = require('./schemas/rounds');
