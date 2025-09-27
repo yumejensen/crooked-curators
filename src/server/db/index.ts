@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize')
+import { DataTypes } from "sequelize";
 
 // when making db locally, name it "crooked_curators"
 
@@ -23,10 +24,27 @@ sequelize.authenticate()
   export default sequelize;
 
 
+
 // -------INITIALIZE MODELS----------
 
 // require all sequelize models
-const User = require('./schemas/users');
-const Game = require('./schemas/games');
-const Artwork = require('./schemas/artworks');
-const Round = require('./schemas/rounds');
+
+import { User } from './schemas/users';
+import { Game } from './schemas/games';
+import { Artwork } from './schemas/artworks';
+import { Round } from './schemas/rounds'
+import { User_Game } from './schemas/users-games';
+
+// establish relationships
+
+User.belongsToMany(Game, { through: User_Game });
+Game.belongsToMany(User, { through: User_Game });
+
+User.hasMany(User_Game);
+User_Game.belongsTo(User);
+
+Game.hasMany(User_Game);
+User_Game.belongsTo(Game);
+
+User.hasMany(Artwork);
+Artwork.belongsTo(Round);
