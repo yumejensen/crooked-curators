@@ -5,23 +5,21 @@ import axios from "axios";
 
 export const SignInButton = () => {
   const { user, setUser } = useUserContext();
-  let i = 0;
-  // const handleSignIn = () => {
-  //   setUser({
-  //     username: `User${i++}`,
-  //     loggedIn: true,
-  //   });
-  //   console.log(`welcome, ${user.username}`);
-  // };
 
   const handleSignOut = () => {
-    axios.get('/auth/google')
+    axios.get('/auth/google/logout')
+      .then(()=>{
+        setUser({username: null, loggedIn: false})
+      })
+      .catch((err)=>{
+        console.error(err)
+      })
   };
 
   return (
     <>
       {user.loggedIn ? (
-        <Link to="/" >
+        <Link onClick={handleSignOut} to="/" >
           Sign Out
         </Link>
       ) : (
