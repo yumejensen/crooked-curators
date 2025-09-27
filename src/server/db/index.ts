@@ -48,3 +48,30 @@ User_Game.belongsTo(Game);
 
 User.hasMany(Artwork);
 Artwork.belongsTo(Round);
+
+
+// synchronize models individually
+
+const syncModels = async () => {
+  try {
+    await User.sync();
+    await Game.sync();
+    await User_Game.sync();
+    await Round.sync();
+    await Artwork.sync();
+      console.log('All models synchronized successfully')
+  } catch (err) {
+    console.error('failed to sync models', err)
+  }
+}
+
+syncModels();
+
+// synchronize all models at once - drop tables/ add new fields
+
+// (async () => {
+//   await sequelize.sync({force: true});
+//     console.log('All models synchronized successfully.');
+// })();
+
+

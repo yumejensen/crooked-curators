@@ -1,0 +1,54 @@
+import { io } from '../sockets/index'
+import { Router } from 'express'
+
+// Game model from DB
+import { Game } from '../db/schemas/games'
+import { User } from '../db/schemas/users'
+
+
+/**
+ * game router -> /games
+ */
+export const gamesRouter = Router()
+
+
+// make a random string to make a game code with
+// 8 characters long 
+const randomString = Math.random().toString(36).slice(2, 10)
+
+// handle request to create a game
+gamesRouter.post('/create', (req, res) => {
+  // create a room in the database with the random string
+  Game.create({ gameCode: randomString })
+    .then((game) => {
+      res.json(game)
+    })
+    .catch((err) => {
+      console.log('could not add game to db', err)
+    })
+
+})
+
+gamesRouter.post('/join', (req, res) => {
+  // emit a join game event to the server
+  // get the socket id from the DB
+  
+  const userObj = User.findOne({ where: { id: 1} })
+  const socketId = userObj.socketId
+
+  // emit a joingame event to that socket
+  io.sockets.sockets[socketId].emit('joinGame')
+  res.sendStatus(200)
+
+})
+
+/*
+   // get the socket id from the DB
+      const userObj = User.findOne({ where: { id: 1} })
+      const socketId = userObj.socketId
+
+      // emit a joingame event to that socket
+      io.sockets.sockets[socketId].emit('joinGame')
+
+
+*/

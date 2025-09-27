@@ -23,13 +23,13 @@ const User = sequelize.define('user', {
   email: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  socketId: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
+  
 });
 
-// synchronize model to the db
-(async () => {
-  await User.sync();
-    console.log('User model synchronized successfully.');
-})();
 
 export { User };

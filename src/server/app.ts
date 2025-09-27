@@ -1,4 +1,8 @@
 // -------REQUIRES AND IMPORTS-----------
+
+// initialize the dotenv config
+import 'dotenv/config'
+
 const express = require("express");
 const app = express();
 const session = require("express-session");
@@ -17,8 +21,6 @@ const db = require("./db/index");
 
 // --------------ENV------------------
 
-require("dotenv").config();
-
 const { SESSION_SECRET } = process.env;
 
 // ------INIT GOOGLE STRATEGY--------
@@ -32,6 +34,7 @@ import {
   nameRandomizerRouter,
   curatorRouter,
   s3UrlRouter,
+  gamesRouter,
 } from "./routes";
 
 // ----------MIDDLEWARE---------------
@@ -61,6 +64,7 @@ app.use("/auth/google", authRouter);
 app.use("/name-randomizer", nameRandomizerRouter);
 app.use("/curator", curatorRouter);
 app.use("/s3Url", s3UrlRouter);
+app.use("/games", gamesRouter);
 
 // serve static files from client
 app.use(express.static(CLIENT));

@@ -2,6 +2,8 @@ import React from "react";
 import { useState, useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
+import { socket } from './socket'
+
 import {
   Breadcrumb,
   Layout,
@@ -25,6 +27,7 @@ import GameSettings from "./Views/GameSettings";
 import ActiveGame from "./Views/ActiveGame";
 import RoundJudging from "./Components/RoundJudging";
 import Gallery from "./Components/Gallery";
+import CuratorSearch from "./Components/CuratorSearch";
 
 // const items = Array.from({ length: 15 }).map((_, index) => ({
 //   key: index + 1,
@@ -57,10 +60,39 @@ const App: React.FC = () => {
       });
   }
 
+  // socket connection state
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  // game code state
+  const [roomCode, setRoomCode] = useState('');
+
+  // put socket listeners inside useEffect
   useEffect(() => {
     updateUser();
-    return;
-  }, []);
+    // functions to pass into listeners
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function getRoomCode(roomCodeObj){
+      console.log('game info from server', roomCodeObj);
+      
+      setRoomCode(roomCodeObj.roomCode);
+    }
+
+
+    // socket listeners
+    socket.on('connection', onConnect);
+    socket.on('sendRoomCode', getRoomCode);
+
+    // socket.off for listeners
+    return () => {
+      socket.off('connection', onConnect);
+      socket.off('sendRoomCode', getRoomCode);
+    };
+
+  }, [])
+
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <ConfigProvider
@@ -100,10 +132,11 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/game-settings" element={<GameSettings />} />
+                <Route path="/game-settings" element={<GameSettings roomCode={roomCode}/>} />
                 <Route path="/game" element={<ActiveGame />} />
                 <Route path="/judging" element={<RoundJudging />} />
                 <Route path="/gallery" element={<Gallery />} />
+                <Route path="/curator" element={<CuratorSearch />} />
 
                 <Route path="*" element={<p>There is nothing here: 404!</p>} />
               </Routes>

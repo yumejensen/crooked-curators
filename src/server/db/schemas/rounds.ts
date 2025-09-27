@@ -45,9 +45,5 @@ const Round = sequelize.define('round', {
   }
 });
 
-(async () => {
-  await Round.sync();
-    console.log('Round model synchronized successfully.');
-})();
 
 export { Round };

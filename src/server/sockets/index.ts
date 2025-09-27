@@ -1,17 +1,17 @@
-import { selectDisplayedStackedData } from 'recharts/types/state/selectors/axisSelectors';
 import { server } from '../app'
-const { Server } = require("socket.io");
-const session = require("express-session");
+import { Server } from "socket.io";
+import session from "express-session";
 
 // DB GAME MODEL
 import { Game } from '../db/schemas/games'
+import { User } from '../db/schemas/users'
 
-require("dotenv").config();
+// session secret for express session
 const { SESSION_SECRET } = process.env;
 
 // ----------SOCKET IO--------------
 
-const io = new Server(server, {
+export const io = new Server(server, {
   connectionStateRecovery: {
     // the backup duration of the sessions and the packets
     maxDisconnectionDuration: 60 * 1000,
@@ -26,8 +26,22 @@ io.engine.use(session({
     saveUninitialized: false,
 }));
 
+// hold games and players (temporarily)
+const gamesPlayersMap = new Map()
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
+  // if a user is signed in
+  // add the socket id to the db in relation to a user
+  // making it just my user for now
+  await User.update(
+    {socketId: socket.id},
+    {
+      where : {
+        id: 1
+      }
+    }
+  );
+
 
   console.log(`A player: ${socket.id} connected`);
 
@@ -36,26 +50,30 @@ io.on("connection", (socket) => {
   });
   
   // CREATING A ROOM
-  socket.on("createGame", async (gameInfo) => {
-    // socket session id variable
-    // const sessionId = socket.request.session.id
+  // socket.on("createGame", async (gameInfo) => {
+  //   // socket session id variable
+  //   // const sessionId = socket.request.session.id
     
-    // make a gameId (use first 5 of socket id)
-    const roomCode = socket.id.substring(0, 5);
+  //   // make a gameId (use first 5 of socket id)
+  //   const gameCode = socket.id.substring(0, 5);
     
-    // add the room to the database
-    await Game.create({ gameCode: roomCode });
-    
-    // create and join the room
-    await socket.join(roomCode)
+  //   // add the room to the database
+  //   await Game.create({ gameCode: gameCode });
+  //   const currentGame = await Game.findOne({ where: { gameCode: gameCode}})
 
-    // log a message for who created what room
-    console.log(`${gameInfo.username} created room ${roomCode}`)
+  //   // add game to map
+  //   gamesPlayersMap.set(gameCode, [])
 
-    // emit the room code to that specific room
-    io.to(roomCode).emit("sendRoomCode", {roomCode: roomCode})
+  //   // create and join the room
+  //   await socket.join(gameCode);
+
+  //   // log a message for who created what room
+  //   console.log(`${gameInfo.username} created room ${gameCode}`);
+
+  //   // emit the room code to that specific room
+  //   io.to(gameCode).emit("sendRoomCode", {roomCode: gameCode, game: currentGame, type: 'create'});
     
-  });
+  // });
 
 
   // JOINING A ROOM
@@ -67,28 +85,30 @@ io.on("connection", (socket) => {
     // if the room exists, (it is not null)
     if ( roomExists !== null){
       // join the room
-      socket.join(joinAttempt.roomCode)
+      socket.join(joinAttempt.roomCode);
+
+      // add player to map
+      const playersSocketIds = gamesPlayersMap.get(joinAttempt.roomCode) || [];
+      playersSocketIds.push(socket.id)
+
+      gamesPlayersMap.set(joinAttempt.roomCode, playersSocketIds)
 
       // log a message for someone joining a room
-      console.log(`player joined room ${joinAttempt.roomCode}`)
+      console.log(`player joined room ${joinAttempt.roomCode}`);
       
       // to the specific room, emit the room code
-      io.to(joinAttempt.roomCode).emit("sendRoomCode", {roomCode: joinAttempt.roomCode})
+      io.to(joinAttempt.roomCode).emit("sendRoomCode", {roomCode: joinAttempt.roomCode, game: roomExists, type: 'join', player: playersSocketIds});
      
     } else {
       // if the room does not exist in the db, don't join
-      console.log('room does not exist in the db')
-
+      console.log('room does not exist in the db');
       // emit event back to user informing them the code doesn't work
       // something like: socket.emit("badCode")
     }
 
-  })
-
-  
+  }); 
   
 });
-
 
 
 

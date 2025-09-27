@@ -37,6 +37,7 @@
     "scss": "^0.2.4",
     "sequelize": "^6.37.7",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "webpack-bundle-analyzer": "^4.10.2"
   },
   "devDependencies": {
