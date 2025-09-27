@@ -1,4 +1,8 @@
 // -------REQUIRES AND IMPORTS-----------
+
+// initialize the dotenv config
+import 'dotenv/config'
+
 const express = require("express");
 const app = express();
 const session = require("express-session");
@@ -16,8 +20,6 @@ import passport from "passport";
 const db = require("./db/index");
 
 // --------------ENV------------------
-
-require("dotenv").config();
 
 const { SESSION_SECRET } = process.env;
 
