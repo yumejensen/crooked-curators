@@ -3,6 +3,7 @@ import { Router } from 'express'
 
 // Game model from DB
 import { Game } from '../db/schemas/games'
+import { User } from '../db/schemas/users'
 
 // create game router -> /create-game
 export const createGameRouter = Router()
@@ -17,6 +18,9 @@ createGameRouter.post('/', (req, res) => {
   Game.create({ gameCode: randomString })
     .then(() => {
       // emit a createGame event?
+      // get the socket id from the DB
+      const userObj = User.findOne({ where: { id: 1} })
+      const socketId = userObj.socketId
     })
     .catch((err) => {
       console.log('could not add game to db', err)

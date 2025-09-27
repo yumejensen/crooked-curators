@@ -4,6 +4,7 @@ import session from "express-session";
 
 // DB GAME MODEL
 import { Game } from '../db/schemas/games'
+import { User } from '../db/schemas/users'
 
 // session secret for express session
 const { SESSION_SECRET } = process.env;
@@ -28,7 +29,19 @@ io.engine.use(session({
 // hold games and players (temporarily)
 const gamesPlayersMap = new Map()
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
+  // if a user is signed in
+  // add the socket id to the db in relation to a user
+  // making it just my user for now
+  await User.update(
+    {socketId: socket.id},
+    {
+      where : {
+        id: 1
+      }
+    }
+  );
+
 
   console.log(`A player: ${socket.id} connected`);
 
