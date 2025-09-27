@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import axios from 'axios'
 
 // USER CONTEXT HANDLING
 
@@ -24,4 +25,13 @@ export function useUserContext() {
   return user
 }
 
-// export const 
+export function fetchUser(){
+  axios.get('/auth/google/user')
+    .then(({ data })=>{
+      //set user context
+      console.log('user data fetched', data)
+    })
+    .catch((err)=>{
+      console.error('failed to retrieve user data')
+    })
+}
