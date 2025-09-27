@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import {
@@ -11,6 +11,7 @@ import {
   Content,
   Footer,
   ConfigProvider,
+  Button,
 } from "./antdComponents";
 
 import "./CSS/style.module.css";
@@ -31,7 +32,7 @@ import Gallery from "./Components/Gallery";
 // }));
 
 // Context imports
-import { User, UserContext, useUserContext } from "./context";
+import { User, UserContext, useUserContext, fetchUser } from "./context";
 
 const App: React.FC = () => {
   const {
@@ -41,10 +42,25 @@ const App: React.FC = () => {
   // --------------------[STATES]---------------------
   const [view, setView] = useState("Homepage");
   const [user, setUser] = useState<User>({
-    username: "Guest",
+    username: null,
     loggedIn: false,
   });
+  function updateUser() {
+    fetchUser()
+      .then(({ data }) => {
+        if (data) {
+          setUser({ username: data.username, loggedIn: true });
+        }
+      })
+      .catch((err) => {
+        setUser({ username: null, loggedIn: false });
+      });
+  }
 
+  useEffect(() => {
+    updateUser();
+    return;
+  }, []);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <ConfigProvider
@@ -92,6 +108,7 @@ const App: React.FC = () => {
                 <Route path="*" element={<p>There is nothing here: 404!</p>} />
               </Routes>
             </div>
+            <Button onClick={updateUser}>Fetch User</Button>
           </Content>
           <Footer style={{ textAlign: "center" }}>
             Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP

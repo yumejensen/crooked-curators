@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import axios from 'axios'
 
 // USER CONTEXT HANDLING
 
@@ -24,4 +25,7 @@ export function useUserContext() {
   return user
 }
 
-// export const 
+export async function fetchUser() {
+  const data = await axios.get('/auth/google/user')
+  return data
+}
