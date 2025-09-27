@@ -182,6 +182,33 @@ What you need on the VM:
 
 DONE! This is not a continuous deployment, so any changes will need to be pulled down into the deployed instance.
 
+
+AWS S3 Bucket - Cloud Storage for artwork saving
+
+1) Make an account to use AWS.
+2) From the homepage, search `S3` and hit `Create bucket`.
+3) Name the bucket, without any capitals and only dashes `-` and underscores `_`.
+4) In `Object Ownership`, select `ACLs` enabled and select `Object writer`.
+5) In `Block Public Access settings`, uncheck `Block all public access` and check off the acknowledgement in the yellow box.
+6) Create bucket and then open it.
+7) Go to permissions > Bucket policy > Edit. Insert the following for policy:
+
+```
+// final policy here
+```
+
+- You could also generate a custom policy with the following steps:
+  - Click Policy Generator
+  - Type of policy: `S3 Bucket`
+  - Principal: `*`
+  - Actions: 
+    - `GetObject`
+    - `GetObjectAcl`
+    - `PutObject`
+    - `PutObjectAcl`
+  - insert the ARN (Amazon Resource Name)
+
+
 Helpful docs:
 
 [MySql]()

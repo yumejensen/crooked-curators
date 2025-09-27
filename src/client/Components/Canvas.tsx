@@ -65,6 +65,8 @@ const Canvas = () => {
   // export
   const stageRef = React.useRef(null);
 
+  const [image, setImage] = useState('');
+
   // -------------------[HANDLERS]--------------------
 
   const isDrawing = React.useRef(false);
@@ -164,29 +166,36 @@ const Canvas = () => {
   };
 
   // export to pull image from canvas
-  const handleSaveToProfile = () => {
+  const handleSaveImage = () => {
+
+    let imageUrl = '';
 
     const uri = stageRef.current.toDataURL();
-
-    function dataURLtoFile(dataurl: string, filename: string) {
-      let arr = dataurl.split(","),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[arr.length - 1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], filename, { type: mime });
-    }
 
     // make request to server to send the URI to our cloud storage
     axios.get('/s3Url').then((res) => {
 
-      // 
-      console.log(res.data);
+      imageUrl = res.data.split('?')[0];
 
       console.log('Successful GET request to s3Url: CLIENT');
+
+      // make PUT request to the s3 bucket with url from request
+      axios.put(res.data, {
+          'Content-Type': "image/png",
+          body: uri
+        }).then(() => {
+
+          console.log('Successful PUT request to s3Url: CLIENT:');
+
+          // image Url needs to be saved to the artwork
+          // to get the image, a request must be made to the
+          // link and accessed by link.body (or whatever variable name is)
+          console.log(imageUrl);
+
+      }).catch((err) => {
+        console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+      })
+
     }).catch((err) => {
       console.error('Failed GET request to s3Url: CLIENT:', err);
     })
@@ -194,7 +203,7 @@ const Canvas = () => {
 
   const handleDownload = () => {
 
-    const uri = stageRef.current.toDataURL();
+    const uri = stageRef.current.toDataURL('image/png');
 
     function downloadURI(uri, name) {
       var link = document.createElement('a');
@@ -212,6 +221,7 @@ const Canvas = () => {
 
   return (
     <div>
+      <img src={image} />
       <Divider variant="dotted" style={{ borderColor: '#3B262C' }}>
         Canvas
       </Divider>
@@ -223,7 +233,7 @@ const Canvas = () => {
             setTool={setTool}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
-            handleSave={handleSaveToProfile}
+            handleSave={handleSaveImage}
             handleDownload={handleDownload}
           />
           <div ref={containerRef} style={canvasBoxStyle}>
