@@ -52,15 +52,20 @@ Artwork.belongsTo(Round);
 
 // synchronize models individually
 
-(async () => {
-  await User.sync();
-  await Game.sync();
-  await User_Game.sync();
-  await Round.sync();
-  await Artwork.sync();
-    console.log('All models synchronized successfully')
-})();
+const syncModels = async () => {
+  try {
+    await User.sync();
+    await Game.sync();
+    await User_Game.sync();
+    await Round.sync();
+    await Artwork.sync();
+      console.log('All models synchronized successfully')
+  } catch (err) {
+    console.error('failed to sync models', err)
+  }
+}
 
+syncModels();
 
 // synchronize all models at once - drop tables/ add new fields
 
