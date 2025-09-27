@@ -37,4 +37,9 @@ curatorRouter.get('/:title', (req, res)=>{
   })
 })
 
+curatorRouter.post('/select', (req, res)=>{
+  // update reference in db
+  res.sendStatus(201)
+})
+
 export { curatorRouter }
