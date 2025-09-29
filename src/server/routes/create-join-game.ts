@@ -14,12 +14,12 @@ export const gamesRouter = Router()
 
 // make a random string to make a game code with
 // 8 characters long 
-const randomString = Math.random().toString(36).slice(2, 10)
+const randomString = () => { return Math.random().toString(36).slice(2, 10) }
 
 // handle request to create a game
 gamesRouter.post('/create', (req, res) => {
   // create a room in the database with the random string
-  Game.create({ gameCode: randomString })
+  Game.create({ gameCode: randomString() })
     .then((game) => {
       res.json(game)
     })

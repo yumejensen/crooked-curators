@@ -36,13 +36,13 @@ const CreateGameButton = ({username}) => {
 
   return (
     <Flex style={buttonStyle} justify="center" align="center">
-        <Link to='/game-settings' >
+        {/* <Link to='/game-settings' > */}
 
           <Button onClick={handleCreateGame} >
             Create Game
           </Button>
 
-        </Link>
+        {/* </Link> */}
     </Flex>
   )
 }
