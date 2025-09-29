@@ -58,7 +58,7 @@ const CanvasTools: React.FC = (props: propsTypes) => {
     <Col>
       <Row>
         <Tooltip title="Save to profile">
-          <Button onClick={handleSave}>
+          <Button onClick={handleSave} disabled>
             <FaRegSave />
           </Button>
         </Tooltip>
