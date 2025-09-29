@@ -36,6 +36,7 @@ import CuratorSearch from "./Components/CuratorSearch";
 
 // Context imports
 import { User, UserContext, useUserContext, fetchUser } from "./context";
+import { RawPurePanel } from "antd/es/popover/PurePanel";
 
 const App: React.FC = () => {
   const {
@@ -64,6 +65,8 @@ const App: React.FC = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   // game code state
   const [roomCode, setRoomCode] = useState('');
+  // players state
+  const [players, setPlayers] = useState([])
 
   // put socket listeners inside useEffect
   useEffect(() => {
@@ -77,6 +80,7 @@ const App: React.FC = () => {
       console.log('game info from server', roomCodeObj);
       
       setRoomCode(roomCodeObj.roomCode);
+      setPlayers(roomCodeObj.player)
     }
 
 
@@ -132,7 +136,7 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/game-settings" element={<GameSettings roomCode={roomCode}/>} />
+                <Route path="/game-settings" element={<GameSettings roomCode={roomCode} players={players} />} />
                 <Route path="/game" element={<ActiveGame />} />
                 <Route path="/judging" element={<RoundJudging />} />
                 <Route path="/gallery" element={<Gallery />} />
