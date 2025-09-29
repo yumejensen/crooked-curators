@@ -17,6 +17,7 @@ import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 
 // -------------------[COMPONENTS]------------------
 import CanvasTools from './CanvasTools';
+import SubmitArtwork from './SubmitArtwork';
 
 
 const boxStyle: React.CSSProperties = {
@@ -34,7 +35,9 @@ const canvasBoxStyle: React.CSSProperties = {
   border: '3px solid #3B262C',
 };
 
-const Canvas = () => {
+const Canvas = (props) => {
+
+  const { handleDone } = props
 
   // --------------------[STATES]---------------------
 
@@ -166,10 +169,64 @@ const Canvas = () => {
   };
 
   // export to pull image from canvas
-  const handleSaveImage = () => {
+  const handleSaveToProfile = () => {
 
     let imageUrl = '';
 
+    const uri = stageRef.current.toDataURL();
+
+    // make request to server to send the URI to our cloud storage
+    axios.get('/s3Url').then((res) => {
+
+      imageUrl = res.data.split('?')[0];
+
+      console.log('Successful GET request to s3Url: CLIENT');
+
+      // make PUT request to the s3 bucket with url from request
+      axios.put(res.data, {
+          'Content-Type': "image/png",
+          body: uri
+        }).then(() => {
+
+          console.log('Successful PUT request to s3Url: CLIENT:');
+
+          // image Url needs to be saved to the artwork
+          // to get the image, a request must be made to the
+          // link and accessed by link.body (or whatever variable name is)
+          setImage(uri);
+          console.log(imageUrl);
+
+      }).catch((err) => {
+        console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+      })
+
+    }).catch((err) => {
+      console.error('Failed GET request to s3Url: CLIENT:', err);
+    })
+  };
+
+  const handleDownload = () => {
+
+    const uri = stageRef.current.toDataURL('image/png');
+
+    function downloadURI(uri, name) {
+      var link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    downloadURI(uri, 'artwork.png');
+  };
+
+  const handleSubmitImage = () => {
+
+    // later sets to the link provided from the S3 request to have accessible in outer scope
+    let imageUrl = '';
+
+    // converts canvas image to a URI to save to the S3 bucket
     const uri = stageRef.current.toDataURL();
 
     // make request to server to send the URI to our cloud storage
@@ -199,29 +256,12 @@ const Canvas = () => {
     }).catch((err) => {
       console.error('Failed GET request to s3Url: CLIENT:', err);
     })
-  };
-
-  const handleDownload = () => {
-
-    const uri = stageRef.current.toDataURL('image/png');
-
-    function downloadURI(uri, name) {
-      var link = document.createElement('a');
-      link.download = name;
-      link.href = uri;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    downloadURI(uri, 'artwork.png');
-  };
+  }
 
   // --------------------[RENDER]---------------------
 
   return (
     <div>
-      <img src={image} />
       <Divider variant="dotted" style={{ borderColor: '#3B262C' }}>
         Canvas
       </Divider>
@@ -233,7 +273,7 @@ const Canvas = () => {
             setTool={setTool}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
-            handleSave={handleSaveImage}
+            handleSave={handleSaveToProfile}
             handleDownload={handleDownload}
           />
           <div ref={containerRef} style={canvasBoxStyle}>
@@ -269,6 +309,7 @@ const Canvas = () => {
               </Layer>
             </Stage>
           </div>
+          <SubmitArtwork handleSubmitImage={handleSubmitImage} handleDone={handleDone}/>
         </Flex>
       </Flex>
     </div>
