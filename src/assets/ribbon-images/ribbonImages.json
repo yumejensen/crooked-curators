@@ -1,11 +1,11 @@
 {
   "blueRibbons": [
-    "./ArtRibbon_BLUE_BLANK.png"
+    "https://crooked-curators.s3.us-east-2.amazonaws.com/ribbons/ArtRibbon_BLUE_BLANK.png"
   ],
   "whiteRibbons": [
-    "./ArtRibbon_WHITE_BLANK.png"
+    "https://crooked-curators.s3.us-east-2.amazonaws.com/ribbons/ArtRibbon_RED_BLANK.png"
   ],
   "redRibbons": [
-    "./ArtRibbon_RED_BLANK.png"
+    "https://crooked-curators.s3.us-east-2.amazonaws.com/ribbons/ArtRibbon_WHITE_BLANK.png"
   ]
 }
