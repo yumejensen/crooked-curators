@@ -51,12 +51,10 @@ const buttonStyle: React.CSSProperties = {
 };
 
 const Homepage: React.FC = () => {
-  const [randomName, setRandomName] = useState('');
-  // why are styles in state?
-  // also add eslint/formatter
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] =
-    useState<FlexProps['align']>('flex-start');
+
+  // --------------------[STATES]---------------------
+
+  const [randomName, setRandomName] = useState('')
 
   // --------------------[HANDLERS]--------------------
 
@@ -70,9 +68,11 @@ const Homepage: React.FC = () => {
     handleRandomizeName();
   }, []);
 
+  // --------------------[RENDER]---------------------
+
   return (
     <Flex>
-      <Flex style={largeStyle} justify='center' align={alignItems}>
+      <Flex style={largeStyle} justify="center" align='flex-start'>
         <Col>
           <Row>
             <h1>Welcome to Crooked Curators!</h1>

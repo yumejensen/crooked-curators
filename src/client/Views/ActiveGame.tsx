@@ -15,11 +15,9 @@ import ToJudging from '../Components/ToJudging';
 const ActiveGame: React.FC = () => {
 
   // --------------------[STATES]---------------------
+
   const [playerCount, setPlayerCount] = useState(1);
   const [done, setDone] = useState(0);
-
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
 
   // -------------------[HANDLERS]--------------------
 
@@ -42,8 +40,8 @@ const ActiveGame: React.FC = () => {
             <Flex gap="middle" align="center" vertical>
               <Flex
                 style={{width: 500}}
-                justify={justify}
-                align={alignItems}
+                justify='space-evenly'
+                align='center'
               >
                 <Reference />
               </Flex>

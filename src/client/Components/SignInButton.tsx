@@ -4,7 +4,10 @@ import { useUserContext } from "../context";
 import axios from "axios";
 
 export const SignInButton = () => {
+
   const { user, setUser } = useUserContext();
+
+  // -------------------[HANDLERS]--------------------
 
   const handleSignOut = () => {
     axios.get('/auth/google/logout')
@@ -15,6 +18,8 @@ export const SignInButton = () => {
         console.error(err)
       })
   };
+
+  // --------------------[RENDER]---------------------
 
   return (
     <>
