@@ -4,25 +4,45 @@ import { Game } from '../schemas/games'
 import { User_Game } from '../schemas/users-games'
 
 
-// update the User_Game table
-const updateUsersGames = (roomCode) => {
+// update the User_Game table when someone joins a room
 
-  // get user ID from who is currently signed in
-  // variable for user ID
-
+const updateUsersGames = (roomCode, userPk) => {
+  
   // get game ID from Game table according to inputted roomCode
   const game = Game.findOne({ where: { gameCode: roomCode }})
-  const gamePrimaryKey = game.id
+  const gamePk = game.id
   
-
-
-  // insert into the users games join table
-  User_Game.create({
-    include: [
-      { association: gamePrimaryKey ,
-        include: [User]
-      }
-    ]
-  })
-
+  // insert into the users games table 
+  User_Game.create(
+    {
+      user_id: userPk,
+      game_id: gamePk
+    }
+  );
 }
+    
+    
+    /*
+      joinedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: User,
+          key: 'id'
+        },
+        allowNull: false
+      },
+      game_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: Game,
+          key: 'id'
+        },
+        allowNull: false
+      }
+    
+    
+    */

@@ -28,6 +28,7 @@ authRouter.get('/logout', (req, res, next) =>{
 }
 )
 
+// use this to make user context on frontend as well
 authRouter.get('/user', (req, res)=>{
   res.send(req.user)
 })

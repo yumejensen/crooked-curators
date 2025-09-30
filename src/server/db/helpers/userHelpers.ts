@@ -1,16 +1,10 @@
 import axios from 'axios'
 import { User } from '../schemas/users'
 
-const getUserId = () => {
+// const getUserId = (req) => {
 
-  axios.get('/auth/google/user')
-    .then(({data}) => {
-      console.log(data)
-    })
-    .catch((err) => {
-      console.error('Could not get user', err)
-    })
-}
+//   return req.user.id
+// }
 
 // updates the username in the DB based on the player selected name
 // takes in new username and userId

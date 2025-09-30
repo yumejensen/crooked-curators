@@ -32,19 +32,6 @@ io.engine.use(
 const gamesPlayersMap = new Map();
 
 io.on('connection', async socket => {
-  // if a user is signed in
-  // add the socket id to the db in relation to a user
-  // making it just my user for now
-
-  // this can be removed - see added PUT request
-  // await User.update(
-  //   { socketId: socket.id },
-  //   {
-  //     where: {
-  //       id: 1
-  //     }
-  //   }
-  // );
 
   console.log(`A player: ${socket.id} connected`);
 

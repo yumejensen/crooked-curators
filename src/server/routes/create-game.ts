@@ -18,30 +18,36 @@ const randomString = () => {
 
 // handle request to create a game
 gamesRouter.post('/create', (req, res) => {
+  const room = randomString()
+
   console.log('user in game: ', req.user);
   //@ts-ignore
   console.log('session in game: ', req.session);
   // create a room in the database with the random string
-  Game.create({ gameCode: randomString() })
+  Game.create({ gameCode: room })
     .then(game => {
       res.json(game);
     })
     .catch(err => {
       console.log('could not add game to db', err);
     });
+
 });
 
-gamesRouter.post('/join', (req, res) => {
-  // emit a join game event to the server
-  // get the socket id from the DB
 
-  const userObj = User.findOne({ where: { id: 1 } });
-  const socketId = userObj.socketId;
+// think ill get rid of this
 
-  // emit a joingame event to that socket
-  io.sockets.sockets[socketId].emit('joinGame');
-  res.sendStatus(200);
-});
+// gamesRouter.post('/join', (req, res) => {
+//   // emit a join game event to the server
+//   // get the socket id from the DB
+
+//   const userObj = User.findOne({ where: { id: 1 } });
+//   const socketId = userObj.socketId;
+
+//   // emit a joingame event to that socket
+//   io.sockets.sockets[socketId].emit('joinGame');
+//   res.sendStatus(200);
+// });
 
 /*
    // get the socket id from the DB
@@ -50,6 +56,4 @@ gamesRouter.post('/join', (req, res) => {
 
       // emit a joingame event to that socket
       io.sockets.sockets[socketId].emit('joinGame')
-
-
 */
