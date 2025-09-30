@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 // import { createSocket } from './socket';
@@ -7,13 +7,10 @@ import { Route, Routes } from 'react-router-dom';
 import {
   Breadcrumb,
   Layout,
-  Menu,
   theme,
-  Header,
   Content,
   Footer,
-  ConfigProvider,
-  Button
+  ConfigProvider
 } from './antdComponents';
 
 import './CSS/style.module.css';
@@ -38,6 +35,7 @@ import CuratorSearch from './Components/CuratorSearch';
 import { User, UserContext, useUserContext, fetchUser } from './context';
 import { Socket, io } from 'socket.io-client';
 import axios from 'axios';
+import { RawPurePanel } from 'antd/es/popover/PurePanel';
 
 const App: React.FC = () => {
   const socketRef = React.useRef<Socket | null>(null);
@@ -74,6 +72,8 @@ const App: React.FC = () => {
   const [isConnected, setIsConnected] = useState(socket?.connected || false);
   // game code state
   const [roomCode, setRoomCode] = useState('');
+  // players state
+  const [players, setPlayers] = useState([]);
 
   // put socket listeners inside useEffect
   useEffect(() => {
@@ -84,6 +84,7 @@ const App: React.FC = () => {
     function getRoomCode(roomCodeObj) {
       console.log('game info from server', roomCodeObj);
       setRoomCode(roomCodeObj.roomCode);
+      setPlayers(roomCodeObj.player);
     }
 
     // socket listeners
@@ -184,7 +185,9 @@ const App: React.FC = () => {
                 <Route path='/profile' element={<Profile />} />
                 <Route
                   path='/game-settings'
-                  element={<GameSettings roomCode={roomCode} />}
+                  element={
+                    <GameSettings roomCode={roomCode} players={players} />
+                  }
                 />
                 <Route path='/game' element={<ActiveGame />} />
                 <Route path='/judging' element={<RoundJudging />} />

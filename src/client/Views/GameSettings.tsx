@@ -7,12 +7,12 @@ import { Button } from '../antdComponents'
 import JoinedPlayers from "../Components/JoinedPlayers";
 
 
-const GameSettings = ({roomCode}) => {
+const GameSettings = ({roomCode, players}) => {
 
   return (
     <div>
       <h2> ROOM CODE: {roomCode} </h2>
-      <JoinedPlayers />
+      <JoinedPlayers players={players} />
 
       <br></br>
       <Button>START GAME</Button>
