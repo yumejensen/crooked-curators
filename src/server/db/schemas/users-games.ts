@@ -5,10 +5,6 @@ import { User } from "./users";
 import { Game } from './games'
 
 const User_Game = sequelize.define('user_game', {
-  joinedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
   user_id: {
     type: DataTypes.INTEGER,
     references: {
@@ -25,7 +21,7 @@ const User_Game = sequelize.define('user_game', {
     },
     allowNull: false
   },
-}, { timestamps: false });
+}, { timestamps: true });
 
 
 export { User_Game };

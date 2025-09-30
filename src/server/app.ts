@@ -1,23 +1,22 @@
 // -------REQUIRES AND IMPORTS-----------
 
 // initialize the dotenv config
-import 'dotenv/config'
+import 'dotenv/config';
 
-const express = require("express");
+const express = require('express');
 const app = express();
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const path = require("path");
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const path = require('path');
 
 // socket.io server
-const http = require("http");
+const http = require('http');
 const server = http.createServer(app);
 
-
-import passport from "passport";
+import passport from 'passport';
 
 // run the database file
-const db = require("./db/index");
+const db = require('./db/index');
 
 // --------------ENV------------------
 
@@ -25,7 +24,7 @@ const { SESSION_SECRET } = process.env;
 
 // ------INIT GOOGLE STRATEGY--------
 // require auth to initialize google strategy
-require("./auth");
+require('./auth');
 
 //----------IMPORT ROUTES-------------
 
@@ -34,8 +33,9 @@ import {
   nameRandomizerRouter,
   curatorRouter,
   s3UrlRouter,
-  gamesRouter,
-} from "./routes";
+  gamesRouter
+} from './routes';
+import { User } from './db/schemas/users';
 
 // ----------MIDDLEWARE---------------
 // session middleware
@@ -43,7 +43,7 @@ app.use(
   session({
     resave: false,
     secret: SESSION_SECRET,
-    saveUninitialized: false,
+    saveUninitialized: false
   })
 );
 
@@ -52,36 +52,52 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // path to files
-const CLIENT = path.resolve(__dirname, "../../dist");
-const HTML = path.resolve(__dirname, "../../dist/index.html");
+const CLIENT = path.resolve(__dirname, '../../dist');
+const HTML = path.resolve(__dirname, '../../dist/index.html');
 
 // parsing
 app.use(bodyParser.json());
 
 //----------SET ROUTES-------------
 
-app.use("/auth/google", authRouter);
-app.use("/name-randomizer", nameRandomizerRouter);
-app.use("/curator", curatorRouter);
-app.use("/s3Url", s3UrlRouter);
-app.use("/games", gamesRouter);
+app.use('/auth/google', authRouter);
+app.use('/name-randomizer', nameRandomizerRouter);
+app.use('/curator', curatorRouter);
+app.use('/s3Url', s3UrlRouter);
+app.use('/games', gamesRouter);
 
 // serve static files from client
 app.use(express.static(CLIENT));
+
+app.put('/api/user/socketId', (req, res) => {
+  const { socketId } = req.body;
+  if (!socketId) {
+    return res.status(400).send('Socket ID is required');
+  }
+  // Update the user's socket ID in the database
+  User.update({ socketId }, { where: { id: req.user.id } })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(err => {
+      console.error('Error updating socket ID:', err);
+      res.sendStatus(500);
+    });
+});
 
 // check if a user is logged in
 const isLoggedIn = (req: any, res: any, next: any) => {
   // get a user from the session
   const user = req.session.user;
   if (user === null) {
-    res.redirect("/");
+    res.redirect('/');
   } else {
     next();
   }
 };
 
-app.get("/{*any}", (req, res) => {
-  res.sendFile(HTML, (err) => {
+app.get('/{*any}', (req, res) => {
+  res.sendFile(HTML, err => {
     if (err) {
       res.status(500).send(err);
     }
@@ -97,7 +113,6 @@ server.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
 });
 
-
-// run the sockets/index.ts file 
-require('./sockets')
+// run the sockets/index.ts file
+require('./sockets');
 export { app, server };

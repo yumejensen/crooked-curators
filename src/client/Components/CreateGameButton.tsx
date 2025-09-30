@@ -14,12 +14,8 @@ const buttonStyle: React.CSSProperties = {
 const CreateGameButton = ({username}) => {
 
   const createGame = () => {
-    // access session cookie to ID the host 
-    
     // send the username to the server
     socket.emit('createGame', {username: username})
-
- 
   }
   
   // send a request to /create-game
@@ -27,22 +23,26 @@ const CreateGameButton = ({username}) => {
     axios.post('/games/create')
     .then(({data}) => {
       console.log(data)
+      // emit a join game from here
+      // 
+      // socket.emit('joinGame', {username: username, roomCode: data.gameCode})
     })
     .catch((err) => {
       // can add client message for user (little popup)
       console.error('create game failed', err)
     })
+    
   }
 
   return (
     <Flex style={buttonStyle} justify="center" align="center">
-        <Link to='/game-settings' >
+        {/* <Link to='/game-settings' > */}
 
           <Button onClick={handleCreateGame} >
             Create Game
           </Button>
 
-        </Link>
+        {/* </Link> */}
     </Flex>
   )
 }

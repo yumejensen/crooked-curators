@@ -37,14 +37,15 @@ import { User_Game } from './schemas/users-games';
 
 // establish relationships
 
-User.belongsToMany(Game, { through: User_Game });
-Game.belongsToMany(User, { through: User_Game });
+// NOTE: user_games table seems to work fine w/o these relationships
+// User.belongsToMany(Game, { through: User_Game });
+// Game.belongsToMany(User, { through: User_Game });
 
-User.hasMany(User_Game);
-User_Game.belongsTo(User);
+// User.hasMany(User_Game);
+// User_Game.belongsTo(User);
 
-Game.hasMany(User_Game);
-User_Game.belongsTo(Game);
+// Game.hasMany(User_Game);
+// User_Game.belongsTo(Game);
 
 User.hasMany(Artwork);
 Artwork.belongsTo(Round);

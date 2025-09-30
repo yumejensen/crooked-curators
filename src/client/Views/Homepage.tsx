@@ -1,8 +1,8 @@
 // Page that holds the choose avatar, join game, create a game menu
 
-import React, { useEffect } from "react";
-import { useState } from "react";
-import axios from "axios";
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 
 import {
   Button,
@@ -13,28 +13,28 @@ import {
   Col,
   Card,
   Input,
-  Space,
-} from '../antdComponents'
+  Space
+} from '../antdComponents';
 
-import { FaArrowCircleRight } from "react-icons/fa";
+import { FaArrowCircleRight } from 'react-icons/fa';
 
-import AvatarPicker from "../Components/AvatarPicker";
-import CreateGameButton from "../Components/CreateGameButton";
-import GameCodeJoin from "../Components/GameCodeJoin";
+import AvatarPicker from '../Components/AvatarPicker';
+import CreateGameButton from '../Components/CreateGameButton';
+import GameCodeJoin from '../Components/GameCodeJoin';
 
 // styling
 
 const largeStyle: React.CSSProperties = {
   width: '100%',
   height: 500,
-  borderRadius: 6,
+  borderRadius: 6
   //   border: '3px solid #3B262C',
 };
 
 const randomizerStyle: React.CSSProperties = {
   width: '100%',
   height: 75,
-  borderRadius: 6,
+  borderRadius: 6
   //   border: '3px solid #3B262C',
 };
 
@@ -42,13 +42,13 @@ const joinCreateStyle: React.CSSProperties = {
   width: '100%',
   height: 350,
   borderRadius: 6,
-  border: '3px solid #3B262C',
+  border: '3px solid #3B262C'
 };
 
 const buttonStyle: React.CSSProperties = {
   width: '100%',
   height: 50
-}
+};
 
 const Homepage: React.FC = () => {
 
@@ -59,15 +59,14 @@ const Homepage: React.FC = () => {
   // --------------------[HANDLERS]--------------------
 
   const handleRandomizeName = () => {
-    axios.get('/name-randomizer')
-      .then((res) => {
-        setRandomName(res.data);
-      })
-  }
+    axios.get('/name-randomizer').then(res => {
+      setRandomName(res.data);
+    });
+  };
 
   useEffect(() => {
     handleRandomizeName();
-  }, [])
+  }, []);
 
   // --------------------[RENDER]---------------------
 
@@ -79,16 +78,18 @@ const Homepage: React.FC = () => {
             <h1>Welcome to Crooked Curators!</h1>
           </Row>
           <Row gutter={15}>
-            <Flex style={randomizerStyle} justify="center" align="center">
+            <Flex style={randomizerStyle} justify='center' align='center'>
               <Col>
                 <Card
-                  style={{ width: 250, height: 50, textAlign: "center" }}
-                  size="small"
+                  style={{ width: 250, height: 50, textAlign: 'center' }}
+                  size='small'
                 >
-                  <h2 style={{
-                    fontSize: "15px",
-                    marginTop: "1px"
-                  }}>
+                  <h2
+                    style={{
+                      fontSize: '15px',
+                      marginTop: '1px'
+                    }}
+                  >
                     {randomName}
                   </h2>
                 </Card>
@@ -101,14 +102,14 @@ const Homepage: React.FC = () => {
             </Flex>
           </Row>
           <Row>
-            <Flex style={joinCreateStyle} justify="center" align="center">
+            <Flex style={joinCreateStyle} justify='center' align='center'>
               <Col>
                 <Row>
-                  <CreateGameButton username={randomName}/>
+                  <CreateGameButton username={randomName} />
                 </Row>
                 <p />
                 <Row>
-                  <GameCodeJoin username={randomName}/>
+                  <GameCodeJoin username={randomName} />
                 </Row>
               </Col>
             </Flex>
@@ -116,7 +117,7 @@ const Homepage: React.FC = () => {
         </Col>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
 export default Homepage;

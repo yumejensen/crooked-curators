@@ -1,12 +1,14 @@
-import { createContext, useContext } from "react";
-import axios from 'axios'
+import { createContext, useContext } from 'react';
+import axios from 'axios';
 
 // USER CONTEXT HANDLING
 
 export interface User {
+  id?: number;
   username: string;
   loggedIn: boolean;
   // setUser: (user) => void; // I don't really know what void does here, we ball though
+  // ^^ void means nothing is returned
 }
 
 export interface UserContextType {
@@ -14,15 +16,17 @@ export interface UserContextType {
   setUser: React.Dispatch<React.SetStateAction<User>>;
 }
 
-export const UserContext = createContext<UserContextType | null>(null)
+export const UserContext = createContext<UserContextType | null>(null);
 
 export function useUserContext() {
   const user = useContext(UserContext);
 
   if (user === null) {
-    throw new Error('User is not defined. useUserContext must be used within a UserContext')
+    throw new Error(
+      'User is not defined. useUserContext must be used within a UserContext'
+    );
   }
-  return user
+  return user;
 }
 
 export async function fetchUser() {
