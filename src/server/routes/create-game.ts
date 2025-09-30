@@ -26,12 +26,7 @@ gamesRouter.post('/create', (req, res) => {
   console.log('session in game: ', req.session);
   // create a room in the database with the random string
   Game.create(
-    { 
-      gameCode: room,
-    },
-    {
-      include: User_Game 
-    }
+    { gameCode: room }
   )
     .then(game => {
       res.json(game);

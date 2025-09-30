@@ -1,11 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import React from "react";
-import { useState, useContext, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
 
-import { socket } from "./socket";
+import axios from 'axios';
+import { Socket, io } from 'socket.io-client';
+import { RawPurePanel } from 'antd/es/popover/PurePanel';
 
 import {
   Breadcrumb,
@@ -29,11 +28,6 @@ import RoundJudging from './Components/RoundJudging';
 import Gallery from './Components/Gallery';
 import CuratorSearch from './Components/CuratorSearch';
 
-// const items = Array.from({ length: 15 }).map((_, index) => ({
-//   key: index + 1,
-//   label: `nav ${index + 1}`,
-// }));
-
 // Context imports
 import {
   User,
@@ -45,9 +39,7 @@ import {
   GameContext,
   useGameContext,
 } from './context';
-import { Socket, io } from 'socket.io-client';
-import axios from 'axios';
-import { RawPurePanel } from 'antd/es/popover/PurePanel';
+
 
 
 const App: React.FC = () => {
@@ -64,6 +56,7 @@ const App: React.FC = () => {
     username: null,
     loggedIn: false,
   });
+
   function updateUser() {
     fetchUser()
       .then(({ data }) => {
@@ -75,7 +68,25 @@ const App: React.FC = () => {
         setUser({ username: null, loggedIn: false });
       });
   }
+   /* represent connected status with socketId on UI (note: this is reactive as opposed to socketRef. 
+      no re-render will occur for anything related to socketRef - good for performance) */
+  const [userSocketId, setUserSocketId] = useState<string | null>(null);
+  /*
+   * anyone who opens app upon login:
+   * 1. create socket
+   * 2. update user with socket id (add to state)
+   * 3. fetch user
+   *
+   * if creating game
+   * 4. create game - http
+   * 5. join game
+   *
+   * if joining game
+   * 4. join game
+   */
+
   const [game, setGame] = useState<Game>({
+    code: '',
     stage: "lobby",
     curator: null,
     players: [],
@@ -93,13 +104,8 @@ const App: React.FC = () => {
     if (!socket) {
       return;
     }
+    
     // functions to pass into listeners
-    function getRoomCode(roomCodeObj) {
-      console.log('game info from server', roomCodeObj);
-    function onConnect() {
-      setIsConnected(true);
-    }
-
     function getRoomCode(roomCodeObj) {
       console.log("game info from server", roomCodeObj);
 
@@ -109,15 +115,12 @@ const App: React.FC = () => {
 
     // socket listeners
     socket.on('sendRoomCode', getRoomCode);
-    socket.on("connection", onConnect);
-    socket.on("sendRoomCode", getRoomCode);
 
     // socket.off for listeners
     return () => {
       socket.off('sendRoomCode', getRoomCode);
-      socket.off("connection", onConnect);
-      socket.off("sendRoomCode", getRoomCode);
     };
+
   }, []);
 
   useEffect(() => {
@@ -150,13 +153,16 @@ const App: React.FC = () => {
         /* now that we know the socket id we can update the user with it */
         axios.put('/api/user/socketId', { socketId: socket.id });
         setUserSocketId(socket.id);
+
         /* order is important. we need to fetch the user after attaching the socketId if we want access to the socketId on the user in the client (hint, hint) */
         const { data } = await fetchUser();
         setUser({ username: data.username, loggedIn: true });
+
       } catch (err) {
         console.error('Error initializing socket:', err);
         setUser({ username: null, loggedIn: false });
       }
+
     };
 
     const socket = socketRef.current;
@@ -166,8 +172,9 @@ const App: React.FC = () => {
       socket.off('connect', onConnect);
       setUserSocketId(null);
     };
+
   }, []);
-  }, []);
+ 
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -223,7 +230,7 @@ const App: React.FC = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route
                   path="/game-settings"
-                  element={<GameSettings roomCode={roomCode} />}
+                  element={<GameSettings players={players} roomCode={roomCode} />}
                 />
                 <Route path="/game" element={<ActiveGame />} />
                 <Route path="/judging" element={<RoundJudging />} />
@@ -238,7 +245,7 @@ const App: React.FC = () => {
             Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
           </Footer>
         </Layout>
-      </ConfigProvider>{" "}
+      </ConfigProvider>{' '}
       </GameContext.Provider>
     </UserContext.Provider>
   );
