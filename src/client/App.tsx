@@ -2,8 +2,6 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-// import { createSocket } from './socket';
-
 import {
   Breadcrumb,
   Layout,
@@ -61,7 +59,7 @@ const App: React.FC = () => {
    * 3. fetch user
    *
    * if creating game
-   * 4. (maybe) create game - http
+   * 4. create game - http
    * 5. join game
    *
    * if joining game
