@@ -28,12 +28,6 @@ type ArtworkStatusProps = {
 
 export function Forgeries({ status, artworks }: ArtworkStatusProps) {
 
-  // --------------------[STATES]---------------------
-
-  // flex justify
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
-
   // -------------------[HANDLERS]--------------------
 
   const { setNodeRef } = useDroppable({
@@ -46,10 +40,10 @@ export function Forgeries({ status, artworks }: ArtworkStatusProps) {
     <>
       <div ref={setNodeRef}>
         <Flex gap="middle" align="center" vertical >
-          <Flex style={ribbonsStyle} justify={justify} align={alignItems} wrap>
+          <Flex style={ribbonsStyle} justify='space-evenly' align='center' wrap>
             {artworks.map(artwork => {
               return (
-                <Artwork key={artwork.id} artwork={artwork} />
+                <Artwork key={artwork.id} artwork={artwork} size={{ width: 350 }}/>
               )
             })}
           </Flex>

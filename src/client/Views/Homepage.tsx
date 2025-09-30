@@ -52,12 +52,12 @@ const buttonStyle: React.CSSProperties = {
 
 const Homepage: React.FC = () => {
 
+  // --------------------[STATES]---------------------
+
   const [randomName, setRandomName] = useState('')
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] = useState<FlexProps['align']>('flex-start');
 
   // --------------------[HANDLERS]--------------------
-  
+
   const handleRandomizeName = () => {
     axios.get('/name-randomizer')
       .then((res) => {
@@ -69,9 +69,11 @@ const Homepage: React.FC = () => {
     handleRandomizeName();
   }, [])
 
+  // --------------------[RENDER]---------------------
+
   return (
     <Flex>
-      <Flex style={largeStyle} justify="center" align={alignItems}>
+      <Flex style={largeStyle} justify="center" align='flex-start'>
         <Col>
           <Row>
             <h1>Welcome to Crooked Curators!</h1>
