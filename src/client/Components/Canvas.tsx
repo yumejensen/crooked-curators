@@ -58,10 +58,6 @@ const Canvas = (props) => {
   const [tool, setTool] = React.useState('pen');
   const [lineColor, setLineColor] = React.useState("#000000");
 
-  // flex justify
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
-
   // history
   const [history, setHistory] = useState([])
 
@@ -266,7 +262,7 @@ const Canvas = (props) => {
         Canvas
       </Divider>
       <Flex gap="middle" align="center" vertical>
-        <Flex style={boxStyle} justify={justify} align={alignItems}>
+        <Flex style={boxStyle} justify='space-evenly' align='center'>
           <CanvasTools
             changeColor={setLineColor}
             tool={tool}

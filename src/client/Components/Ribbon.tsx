@@ -31,14 +31,6 @@ type RibbonProps = {
 
 export function Ribbon({ribbon, artworks}: RibbonProps) {
 
-  console.log(artworks);
-
-  // --------------------[STATES]---------------------
-
-  // flex justify
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] = useState<FlexProps['align']>('flex-start');
-
   // -------------------[HANDLERS]--------------------
 
   const { setNodeRef } =useDroppable({
@@ -51,14 +43,14 @@ export function Ribbon({ribbon, artworks}: RibbonProps) {
     <>
     <div ref={setNodeRef}>
       <Flex gap="middle" align="center" vertical>
-        <Flex style={ribbonsStyle} justify={justify} align={alignItems}>
+        <Flex style={ribbonsStyle} justify='space-evenly' align='flex-start'>
           <Col>
             <Row>
               <img src={ribbon.source} style={{ width: 100 }}/>
             </Row>
             <Row>
               {artworks.map(artwork => {
-                return <Artwork key={artwork.id} artwork={artwork} />
+                return <Artwork key={artwork.id} artwork={artwork} size={{ width: 350 }} />
               })}
             </Row>
           </Col>
