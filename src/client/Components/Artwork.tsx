@@ -6,11 +6,16 @@ import { useState } from 'react';
 import { Artwork as ArtworkTypes } from './types'
 import { useDraggable } from "@dnd-kit/core";
 
-type ArtworkCardProps = {
-  artwork: ArtworkTypes;
+type StylingTypes = {
+  width: number;
 }
 
-const Artwork: React.FC = ({artwork}: ArtworkCardProps) => {
+type ArtworkCardProps = {
+  artwork: ArtworkTypes;
+  size: StylingTypes;
+}
+
+const Artwork: React.FC = ({ artwork, size }: ArtworkCardProps) => {
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: artwork.id
@@ -24,7 +29,7 @@ const Artwork: React.FC = ({artwork}: ArtworkCardProps) => {
 
   return (
     <>
-    <div 
+    <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
@@ -32,7 +37,7 @@ const Artwork: React.FC = ({artwork}: ArtworkCardProps) => {
     >
       <img
         src={artwork.source}
-        style={{ width: 350}}
+        style={size}
       />
     </div>
     </>
