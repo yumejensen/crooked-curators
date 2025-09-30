@@ -4,6 +4,7 @@ import { Router } from 'express';
 // Game model from DB
 import { Game } from '../db/schemas/games';
 import { User } from '../db/schemas/users';
+import { User_Game } from '../db/schemas/users-games';
 
 /**
  * game router -> /games
@@ -24,7 +25,14 @@ gamesRouter.post('/create', (req, res) => {
   //@ts-ignore
   console.log('session in game: ', req.session);
   // create a room in the database with the random string
-  Game.create({ gameCode: room })
+  Game.create(
+    { 
+      gameCode: room,
+    },
+    {
+      include: User_Game 
+    }
+  )
     .then(game => {
       res.json(game);
     })
