@@ -5,11 +5,12 @@ import { useState } from 'react';
 
 import { Artwork as ArtworkTypes, Ribbon as RibbonTypes } from './types';
 
+import ribbonImages from '../../assets/ribbon-images/ribbonImages.json'
+
+// -------------------[COMPONENTS]------------------
 import Ribbon from './Ribbon';
 import Artwork from './Artwork';
 import Forgeries from './Forgeries';
-
-import ribbonImages from '../../assets/ribbon-images/ribbonImages.json'
 
 import {
   Divider,
@@ -45,17 +46,18 @@ const RIBBONS: RibbonTypes[] =[
     source: ribbonImages.blueRibbons[0]
   },
   {
+    id: 'RED',
+    title: 'Red Ribbon',
+    points: 25,
+    source: ribbonImages.redRibbons[0]
+  },
+  {
     id: 'WHITE',
     title: 'White Ribbon',
     points: 50,
     source: ribbonImages.whiteRibbons[0]
   },
-  {
-    id: 'RED',
-    title: 'Red Ribbon',
-    points: 25,
-    source: ribbonImages.redRibbons[0]
-  }
+
 ]
 
 const STATUS = [
@@ -119,25 +121,13 @@ const FAKE_ARTWORKS: ArtworkTypes[] = [
   }
 ];
 
-/**
- * STATUSES:
- *
- * Forgeries (not yet judged; default)
- * Blue
- * White
- * Red
- */
-
 const RoundJudging: React.FC = (props) => {
 
-  // destructure props
+  // --------------------[STATES]---------------------
 
   const [ribbons, setRibbons] = useState([]);
 
   const [roundArtworks, setRoundArtworks] = useState<ArtworkTypes[]>(FAKE_ARTWORKS);
-
-  const [justify, setJustify] = useState<FlexProps['justify']>('space-evenly');
-  const [alignItems, setAlignItems] = useState<FlexProps['align']>('center');
 
   // -------------------[HANDLERS]--------------------
 
@@ -159,12 +149,13 @@ const RoundJudging: React.FC = (props) => {
     } : artwork))
   }
 
+  // --------------------[RENDER]---------------------
 
   return (
     <>
     <DndContext onDragEnd={handleDragEnd}>
       <Flex gap="middle" align="center" vertical>
-        <Flex style={ribbonsStyle} justify={justify} align={alignItems}>
+        <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
           {RIBBONS.map((ribbon) => {
             return (
               <Ribbon
@@ -179,7 +170,7 @@ const RoundJudging: React.FC = (props) => {
         Forgeries
       </Divider>
       <Flex gap="middle" align="center" vertical>
-        <Flex wrap style={ribbonsStyle} justify={justify} align={alignItems}>
+        <Flex wrap style={ribbonsStyle} justify='space-evenly' align='center'>
           {STATUS.map((status) => {
             return (
               <Forgeries
