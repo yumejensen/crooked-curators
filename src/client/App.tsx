@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { socket } from './socket'
+import { socket } from "./socket";
 
 import {
   Breadcrumb,
@@ -35,7 +35,17 @@ import CuratorSearch from "./Components/CuratorSearch";
 // }));
 
 // Context imports
-import { User, UserContext, useUserContext, fetchUser } from "./context";
+import {
+  User,
+  UserContext,
+  useUserContext,
+  fetchUser,
+  Game,
+  Player,
+  GameContext,
+  useGameContext,
+} from "./context";
+
 
 const App: React.FC = () => {
   const {
@@ -59,11 +69,16 @@ const App: React.FC = () => {
         setUser({ username: null, loggedIn: false });
       });
   }
+  const [game, setGame] = useState<Game>({
+    stage: "lobby",
+    curator: null,
+    players: [],
+  });
 
   // socket connection state
   const [isConnected, setIsConnected] = useState(socket.connected);
   // game code state
-  const [roomCode, setRoomCode] = useState('');
+  const [roomCode, setRoomCode] = useState("");
 
   // put socket listeners inside useEffect
   useEffect(() => {
@@ -73,28 +88,26 @@ const App: React.FC = () => {
       setIsConnected(true);
     }
 
-    function getRoomCode(roomCodeObj){
-      console.log('game info from server', roomCodeObj);
-      
+    function getRoomCode(roomCodeObj) {
+      console.log("game info from server", roomCodeObj);
+
       setRoomCode(roomCodeObj.roomCode);
     }
 
-
     // socket listeners
-    socket.on('connection', onConnect);
-    socket.on('sendRoomCode', getRoomCode);
+    socket.on("connection", onConnect);
+    socket.on("sendRoomCode", getRoomCode);
 
     // socket.off for listeners
     return () => {
-      socket.off('connection', onConnect);
-      socket.off('sendRoomCode', getRoomCode);
+      socket.off("connection", onConnect);
+      socket.off("sendRoomCode", getRoomCode);
     };
-
-  }, [])
-
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
+      <GameContext.Provider value={{ game, setGame }}>
       <ConfigProvider
         theme={{
           token: {
@@ -110,7 +123,7 @@ const App: React.FC = () => {
       >
         <Layout>
           <NavBar />
-          <div>{`CONTEXT: ${user.username}, ${user.loggedIn}`}</div>
+          <div>{`User Context: ${user.username}, ${user.loggedIn} \n Game Context: ${Object.keys(game).map(key=> `${key} : ${game[key]}`)}`}</div>
           <Content
             style={{
               padding: "0 48px",
@@ -132,7 +145,10 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/game-settings" element={<GameSettings roomCode={roomCode}/>} />
+                <Route
+                  path="/game-settings"
+                  element={<GameSettings roomCode={roomCode} />}
+                />
                 <Route path="/game" element={<ActiveGame />} />
                 <Route path="/judging" element={<RoundJudging />} />
                 <Route path="/gallery" element={<Gallery />} />
@@ -148,6 +164,7 @@ const App: React.FC = () => {
           </Footer>
         </Layout>
       </ConfigProvider>{" "}
+      </GameContext.Provider>
     </UserContext.Provider>
   );
 };
