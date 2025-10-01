@@ -7,7 +7,10 @@ import { Button } from '../antdComponents'
 import JoinedPlayers from "../Components/JoinedPlayers";
 
 
-const GameSettings = ({roomCode, players}) => {
+const GameSettings = ({roomCode, players, socket}) => {
+  const startGame = () => {
+    socket.emit('startGame')
+  }
 
   return (
     <div>
@@ -15,7 +18,7 @@ const GameSettings = ({roomCode, players}) => {
       <JoinedPlayers players={players} />
 
       <br></br>
-      <Button>START GAME</Button>
+      <Button onClick={startGame}>START GAME</Button>
     </div>
   );
 };

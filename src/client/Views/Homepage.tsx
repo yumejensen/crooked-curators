@@ -50,7 +50,11 @@ const buttonStyle: React.CSSProperties = {
   height: 50
 };
 
-const Homepage: React.FC = ({socket}) => {
+type HomePageProps = {
+  socket: any
+}
+
+const Homepage: React.FC = ({socket}:HomePageProps) => {
 
   // --------------------[STATES]---------------------
 

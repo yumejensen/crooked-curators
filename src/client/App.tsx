@@ -194,7 +194,7 @@ const App: React.FC = () => {
       >
         <Layout>
           <NavBar />
-          <div>{`User Context: ${user.username}, ${user.loggedIn} \n Game Context: ${Object.keys(game).map(key=> `${key} : ${game[key]}`)}`}</div>
+          <div>{`User Context: ${user.username}, ${user.loggedIn} \n Game Context: ${Object.keys(game).map(key=> key + ':' + game[key])}`}</div>
           <Content
             style={{
               padding: '0 48px',
@@ -223,7 +223,7 @@ const App: React.FC = () => {
                 <Route
                   path='/game-settings'
                   element={
-                    <GameSettings roomCode={roomCode} players={players} />
+                    <GameSettings roomCode={roomCode} players={players} socket={socket}/>
                   }
                 />
                 <Route path='/profile' element={<Profile />} />
