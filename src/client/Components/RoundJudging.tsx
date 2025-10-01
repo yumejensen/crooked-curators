@@ -18,10 +18,11 @@ import {
   Row,
   Flex,
   FlexProps,
-  Segmented
-} from 'antd';
+  Segmented,
+  Button,
+  Tooltip
+} from '../antdComponents';
 
-import Column from 'antd/es/table/Column';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 
 const ribbonsStyle: React.CSSProperties = {
@@ -46,18 +47,17 @@ const RIBBONS: RibbonTypes[] =[
     source: ribbonImages.blueRibbons[0]
   },
   {
-    id: 'RED',
-    title: 'Red Ribbon',
-    points: 25,
-    source: ribbonImages.redRibbons[0]
-  },
-  {
     id: 'WHITE',
     title: 'White Ribbon',
     points: 50,
     source: ribbonImages.whiteRibbons[0]
   },
-
+  {
+    id: 'RED',
+    title: 'Red Ribbon',
+    points: 25,
+    source: ribbonImages.redRibbons[0]
+  },
 ]
 
 const STATUS = [
@@ -153,6 +153,11 @@ const RoundJudging: React.FC = (props) => {
 
   return (
     <>
+    <Flex gap="middle" align="center" vertical>
+      <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
+
+      </Flex>
+    </Flex>
     <DndContext onDragEnd={handleDragEnd}>
       <Flex gap="middle" align="center" vertical>
         <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
