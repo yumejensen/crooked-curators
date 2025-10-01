@@ -214,29 +214,23 @@ const App: React.FC = () => {
               }}
             >
               <Routes>
-                <Route path='/' element={<Homepage />} />
-                <Route path='/profile' element={<Profile />} />
+                <Route 
+                  path='/' 
+                  element={
+                    <Homepage socket={socket}/>
+                  } 
+                />
                 <Route
                   path='/game-settings'
                   element={
                     <GameSettings roomCode={roomCode} players={players} />
                   }
                 />
+                <Route path='/profile' element={<Profile />} />
                 <Route path='/game' element={<ActiveGame />} />
                 <Route path='/judging' element={<RoundJudging />} />
                 <Route path='/gallery' element={<Gallery />} />
                 <Route path='/curator' element={<CuratorSearch />} />
-                <Route path="/" element={<Homepage />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route
-                  path="/game-settings"
-                  element={<GameSettings players={players} roomCode={roomCode} />}
-                />
-                <Route path="/game" element={<ActiveGame />} />
-                <Route path="/judging" element={<RoundJudging />} />
-                <Route path="/gallery" element={<Gallery />} />
-                <Route path="/curator" element={<CuratorSearch />} />
-
                 <Route path='*' element={<p>There is nothing here: 404!</p>} />
               </Routes>
             </div>
