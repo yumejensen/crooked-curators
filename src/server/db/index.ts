@@ -29,11 +29,12 @@ sequelize.authenticate()
 
 // require all sequelize models
 
-import { User } from './schemas/users';
-import { Game } from './schemas/games';
-import { Artwork } from './schemas/artworks';
-import { Round } from './schemas/rounds'
 import { User_Game } from './schemas/users-games';
+import { Artwork } from './schemas/artworks';
+import { Ribbon } from './schemas/ribbons'
+import { User } from './schemas/users';
+import { Round } from './schemas/rounds'
+import { Game } from './schemas/games';
 
 // establish relationships
 
@@ -47,19 +48,20 @@ import { User_Game } from './schemas/users-games';
 // Game.hasMany(User_Game);
 // User_Game.belongsTo(Game);
 
-User.hasMany(Artwork);
-Artwork.belongsTo(Round);
+// User.hasMany(Artwork);
+// Artwork.belongsTo(Round);
 
 
 // synchronize models individually
 
 const syncModels = async () => {
   try {
-    await User.sync();
-    await Game.sync();
+    await Ribbon.sync();
     await User_Game.sync();
-    await Round.sync();
     await Artwork.sync();
+    await Round.sync();
+    await Game.sync();
+    await User.sync();
       console.log('All models synchronized successfully')
   } catch (err) {
     console.error('failed to sync models', err)
