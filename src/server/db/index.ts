@@ -56,12 +56,13 @@ import { Game } from './schemas/games';
 
 const syncModels = async () => {
   try {
-    await Ribbon.sync();
-    await User_Game.sync();
-    await Artwork.sync();
-    await Round.sync();
-    await Game.sync();
     await User.sync();
+    await Game.sync();
+    await User_Game.sync();
+    await Round.sync();
+    await Ribbon.sync();
+    await Artwork.sync();
+
       console.log('All models synchronized successfully')
   } catch (err) {
     console.error('failed to sync models', err)
@@ -69,6 +70,7 @@ const syncModels = async () => {
 }
 
 syncModels();
+
 
 // synchronize all models at once - drop tables/ add new fields
 
