@@ -1,13 +1,15 @@
 import { server } from '../app';
 import { Server } from 'socket.io';
 import session from 'express-session';
+import axios from 'axios';
 
 // DB GAME MODEL
 import { Game } from '../db/schemas/games';
 import { User } from '../db/schemas/users';
+import { User_Game } from '../db/schemas/users-games';
 
 // session secret for express session
-const { SESSION_SECRET } = process.env;
+const { SESSION_SECRET, BASE_URL } = process.env;
 
 // ----------SOCKET IO--------------
 
@@ -67,32 +69,56 @@ io.on('connection', async socket => {
 
   // JOINING A ROOM
   socket.on('joinGame', async joinAttempt => {
+    console.log(socket.request)
+
+    // 0) make sure the room is in the database
     // variable for checking if the room exists in the db
     const roomExists = await Game.findOne({
       where: { gameCode: joinAttempt.roomCode }
+    }).catch((err: any) => {
+      console.error('Error checking if room exists', err)
     });
+
 
     // if the room exists, (it is not null)
     if (roomExists !== null) {
-      // join the room
+
+      // 1) join the room
       socket.join(joinAttempt.roomCode);
-
-      // add player to map
-      const playersSocketIds = gamesPlayersMap.get(joinAttempt.roomCode) || [];
-      playersSocketIds.push(socket.id);
-
-      gamesPlayersMap.set(joinAttempt.roomCode, playersSocketIds);
-
       // log a message for someone joining a room
       console.log(`player joined room ${joinAttempt.roomCode}`);
+      
+      
+      // 2) add the player and game to user_games
+      // find a user according to their socket id
+      await User.findOne({
+        where: { socketId: socket.id }
+      })
+        .then((user) => {
+          // create an entry to the user_games table
+          User_Game.create({
+            user_id: user.id,
+            game_id: roomExists.id
+          })
+        })
+        .catch((err: any) => {
+          console.error('Error adding to user_games', err)
+        })
 
-      // to the specific room, emit the room code
+      // add player to map - TEMP SOLUTION -----------------------------------
+      const playersSocketIds = gamesPlayersMap.get(joinAttempt.roomCode) || [];
+      playersSocketIds.push(socket.id);
+      gamesPlayersMap.set(joinAttempt.roomCode, playersSocketIds);
+      //----------------------------------------------------------------------
+
+      // to the specific room, emit the room code - make it visible for everyone
       io.to(joinAttempt.roomCode).emit('sendRoomCode', {
         roomCode: joinAttempt.roomCode,
         game: roomExists,
         type: 'join',
         player: playersSocketIds
       });
+
     } else {
       // if the room does not exist in the db, don't join
       console.log('room does not exist in the db');
