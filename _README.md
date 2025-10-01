@@ -140,6 +140,14 @@ Modifiers:
   - Curator Sabotage:
     - Curator has 5 brush strokes per round to affect someone's canvas
 
+**Seeding Ribbons to Database**
+
+Generate a seeding file:
+`npx sequelize-cli seed:generate --name demo-ribbons`
+
+Seed all seed files:
+`npx sequelize-cli db:seed:all`
+
 **Deployment**
 
 AWS EC2
