@@ -37,6 +37,9 @@ const gamesPlayersMap = new Map();
 
 // hold the current game
 let currentGame;
+let curator;
+let roundCount = 0
+let allPlayers = [];
 
 io.on('connection', async socket => {
 
@@ -46,7 +49,7 @@ io.on('connection', async socket => {
     console.log('A player disconnected');
   });
 
-  
+
   // JOINING A ROOM
   socket.on('joinGame', async joinAttempt => {
     console.log(socket.request)
@@ -59,25 +62,25 @@ io.on('connection', async socket => {
       console.error('Error checking if room exists', err)
     });
 
-    
+
     // if the room exists, (it is not null)
     if (roomExists !== null) {
 
       // update currentGame variable with room
       currentGame = roomExists;
-      
+
       // 1) join the room
       socket.join(joinAttempt.roomCode);
       // log a message for someone joining a room
       console.log(`player joined room ${joinAttempt.roomCode}`);
-      
-      
+
+
       // 2) add the player and game to user_games
       // find a user according to their socket id
       await User.findOne({
         where: { socketId: socket.id }
       })
-      .then((user) => {
+        .then((user) => {
           // create an entry to the user_games table
           User_Game.create({
             user_id: user.id,
@@ -87,76 +90,103 @@ io.on('connection', async socket => {
         .catch((err: any) => {
           console.error('Error adding to user_games', err)
         })
-        
-        // add player to map - TEMP SOLUTION -----------------------------------
-        const playersSocketIds = gamesPlayersMap.get(joinAttempt.roomCode) || [];
-        playersSocketIds.push(socket.id);
-        gamesPlayersMap.set(joinAttempt.roomCode, playersSocketIds);
-        //----------------------------------------------------------------------
-        
-        // to the specific room, emit the room code - make it visible for everyone
-        io.to(joinAttempt.roomCode).emit('sendRoomCode', {
-          roomCode: joinAttempt.roomCode,
-          game: roomExists,
-          type: 'join',
-          player: playersSocketIds
-        });
-        
-      } else {
-        // if the room does not exist in the db, don't join
-        console.log('room does not exist in the db');
-        // emit event back to user informing them the code doesn't work
-        // something like: socket.emit("badCode")
-      }
-    }); // end of join game
-    
-    // STARTING A GAME
-    socket.on('startGame', async () => {
 
-      // 1) pick who curator is 
-      let curator;
+      // add player to map - TEMP SOLUTION -----------------------------------
+      const playersSocketIds = gamesPlayersMap.get(joinAttempt.roomCode) || [];
+      playersSocketIds.push(socket.id);
+      gamesPlayersMap.set(joinAttempt.roomCode, playersSocketIds);
+      //----------------------------------------------------------------------
 
-      // query user_games table, find users where gameid = current game id
-      // from those users, pick who joined first 
-        await User_Game.findAll({
-          where: {
-            game_id: currentGame.id
-          },
-          //attributes: ['user_id', 'createdAt'],
-          order: [['createdAt', 'ASC']]
-        })
-        .then(async (usersGames) => {
-          // pick the player with the oldest createdAt
-          curator = usersGames[0]
+      // to the specific room, emit the room code - make it visible for everyone
+      io.to(joinAttempt.roomCode).emit('sendRoomCode', {
+        roomCode: joinAttempt.roomCode,
+        game: roomExists,
+        type: 'join',
+        player: playersSocketIds
+      });
 
-          // add the curator and game id to the rounds table
-          Round.create({
-            curator_id: curator.user_id,
-            game_id: currentGame.id
-          })
-          
-        })
-        .catch((err) => {
-          console.error('failed to find users from user_games', err)
-        })
-    
-    // emit to curator - the curator selection view
+    } else {
+      // if the room does not exist in the db, don't join
+      console.log('room does not exist in the db');
+      // emit event back to user informing them the code doesn't work
+      // something like: socket.emit("badCode")
+    }
+  }); // end of join game
 
-    // emit to rest of the room - other view
+  // STARTING A GAME
+  socket.on('startGame', async () => {
+
+    console.log('starting game...')
+
+    // query user_games table, find users where gameid = current game id
+    // from those users, pick who joined first 
+    allPlayers = await User_Game.findAll({
+      where: {
+        game_id: currentGame.id
+      },
+      //attributes: ['user_id', 'createdAt'],
+      order: [['createdAt', 'ASC']]
+    })
+    curator = await User.findOne({
+      where: { id: allPlayers[0].user_id }
+    })
     
-    // 2) make a new entry into rounds table in the db with:
-    // game id - current game, curator id - who is curator
-    
-    
-    // emit a switch view to client
-    
-    
+    console.log('initiating first round')
+    advanceRound(null);
+
+
+
+
+
+
   }) // end of start game
-  
-  
-  
-  
-  
+
+
+  // Round Progression logic
+
+  // emit to curator - the curator selection view
+
+  // emit to rest of the room - other view
+
+  // 2) make a new entry into rounds table in the db with:
+  // game id - current game, curator id - who is curator
+
+
+  // emit a switch view to client
+  async function advanceRound (prevRound) {
+    console.log('advancing round')
+    console.log('curator', curator)
+    if(prevRound === null) {
+      // first round
+      await Round.create({
+        game_id: currentGame.id,
+        curator_id: curator.id
+      })
+    }
+    else {
+      // subsequent rounds
+      roundCount++;
+      // select new curator
+      curator = await User.findOne({
+        where: { id: allPlayers[roundCount].user_id }
+      })
+      await Round.create({
+        game_id: currentGame.id,
+        curator_id: curator.id
+      })
+
+    }
+      // player emit
+    io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', {stage: 'painting', curator: curator});
+      // curator emit
+    io.to(curator.socketId).emit('newRound', {stage: 'curating', curator: curator});
+
+    // determine a new curator
+    // curator should not have previously been curator
+    // 
+  }
+
+
 }); // end of connection
 
 
@@ -194,10 +224,9 @@ io.on('connection', async socket => {
 
 // NOT WORKING - attempted to use reload to maintain session connection
 // socket.request.session.reload((err) => {
-  //   if (err) {
-    //     return socket.disconnect();
-    //   }
-    //   socket.request.session.count++;
-    //   socket.request.session.save();
-    // });
-    
+//   if (err) {
+//     return socket.disconnect();
+//   }
+//   socket.request.session.count++;
+//   socket.request.session.save();
+// });
