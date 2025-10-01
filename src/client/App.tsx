@@ -113,12 +113,17 @@ const App: React.FC = () => {
       setPlayers(roomCodeObj.player);
     }
 
+    function roundAdvance (roundInfo){
+      console.log('round info from server', roundInfo);
+    }
+
     // socket listeners
     socket.on('sendRoomCode', getRoomCode);
-
+    socket.on('newRound', roundAdvance)
     // socket.off for listeners
     return () => {
       socket.off('sendRoomCode', getRoomCode);
+      socket.off('newRound', roundAdvance);
     };
 
   }, []);
