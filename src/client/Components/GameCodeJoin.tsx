@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import { Button, Input, Space, Typography } from "../antdComponents";
 import { FaArrowCircleRight } from "react-icons/fa";
 
-import { socket } from '../socket'
+
 import axios from 'axios'
 
-const GameCodeJoin = ({username}) => {
+const GameCodeJoin = ({username, socket}) => {
   // state for input field
   const [roomCode, setRoomCode] = useState('');
 
@@ -18,19 +18,8 @@ const GameCodeJoin = ({username}) => {
   }
 
   const joinGame = () => {
-    // global.socket.emit('joinGame', {roomCode: roomCode})
     socket.emit('joinGame', {username: username, roomCode: roomCode})
   }
-
-  // const handleJoinGame = () =>{
-  //   axios.post('/games/join')
-  //   .then((res) => {
-  //     console.log(res)
-  //   })
-  //   .catch((err) => {
-  //     console.error('')
-  //   })
-  // }
 
   return (
     <div>
