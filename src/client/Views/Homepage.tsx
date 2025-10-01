@@ -50,7 +50,7 @@ const buttonStyle: React.CSSProperties = {
   height: 50
 };
 
-const Homepage: React.FC = () => {
+const Homepage: React.FC = ({socket}) => {
 
   // --------------------[STATES]---------------------
 
@@ -109,7 +109,7 @@ const Homepage: React.FC = () => {
                 </Row>
                 <p />
                 <Row>
-                  <GameCodeJoin username={randomName} />
+                  <GameCodeJoin username={randomName} socket={socket}/>
                 </Row>
               </Col>
             </Flex>
