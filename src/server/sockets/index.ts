@@ -52,7 +52,6 @@ io.on('connection', async socket => {
 
   // JOINING A ROOM
   socket.on('joinGame', async joinAttempt => {
-    console.log(socket.request)
 
     // 0) make sure the room is in the database
     // variable for checking if the room exists in the db
@@ -132,12 +131,11 @@ io.on('connection', async socket => {
     })
     
     console.log('initiating first round')
-    advanceRound(null);
-
-
-
-
-
+    const firstRound = await Round.create({
+        game_id: currentGame.id,
+        curator_id: curator.id
+      })
+    advanceRound(firstRound);
 
   }) // end of start game
 
@@ -156,26 +154,19 @@ io.on('connection', async socket => {
   async function advanceRound (prevRound) {
     console.log('advancing round')
     console.log('curator', curator)
-    if(prevRound === null) {
-      // first round
-      await Round.create({
-        game_id: currentGame.id,
-        curator_id: curator.id
-      })
-    }
-    else {
+
       // subsequent rounds
-      roundCount++;
       // select new curator
       curator = await User.findOne({
         where: { id: allPlayers[roundCount].user_id }
       })
+      roundCount++;
       await Round.create({
         game_id: currentGame.id,
         curator_id: curator.id
       })
 
-    }
+    
       // player emit
     io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', {stage: 'painting', curator: curator});
       // curator emit
