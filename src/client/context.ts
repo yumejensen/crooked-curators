@@ -4,7 +4,6 @@ import axios from 'axios';
 // USER CONTEXT HANDLING
 
 export interface User {
-  id?: number;
   username: string;
   loggedIn: boolean;
   // setUser: (user) => void; // I don't really know what void does here, we ball though
@@ -44,6 +43,7 @@ export interface Player {
 export interface Game {
   stage: string;
   code: string;
+  role: string;
   curator: Player | null;
   players: Player[];
 }

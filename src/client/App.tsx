@@ -89,6 +89,7 @@ const App: React.FC = () => {
     code: '',
     stage: "lobby",
     curator: null,
+    role: null,
     players: [],
   });
 
@@ -152,7 +153,8 @@ const App: React.FC = () => {
     }
 
     function roundAdvance (roundInfo){
-      console.log('round info from server', roundInfo);
+      console.log('round advancing');
+      setGame(roundInfo)
     }
 
 
