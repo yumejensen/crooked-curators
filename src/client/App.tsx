@@ -99,34 +99,6 @@ const App: React.FC = () => {
   // players state
   const [players, setPlayers] = useState([]);
 
-  // put socket listeners inside useEffect
-  useEffect(() => {
-    if (!socket) {
-      return;
-    }
-    
-    // functions to pass into listeners
-    function getRoomCode(roomCodeObj) {
-      console.log("game info from server", roomCodeObj);
-
-      setRoomCode(roomCodeObj.roomCode);
-      setPlayers(roomCodeObj.player);
-    }
-
-    function roundAdvance (roundInfo){
-      console.log('round info from server', roundInfo);
-    }
-
-    // socket listeners
-    socket.on('sendRoomCode', getRoomCode);
-    socket.on('newRound', roundAdvance)
-    // socket.off for listeners
-    return () => {
-      socket.off('sendRoomCode', getRoomCode);
-      socket.off('newRound', roundAdvance);
-    };
-
-  }, []);
 
   useEffect(() => {
     console.log('looky:', socketRef.current);
@@ -142,6 +114,8 @@ const App: React.FC = () => {
 
     console.log('hua: ', user.id);
 
+
+    // SOCKET FUNCTIONS
     const onConnect = async () => {
       const socket = socketRef.current;
       if (!socket.id) {
@@ -170,11 +144,30 @@ const App: React.FC = () => {
 
     };
 
+    function getRoomCode(roomCodeObj) {
+      console.log("game info from server", roomCodeObj);
+
+      setRoomCode(roomCodeObj.roomCode);
+      setPlayers(roomCodeObj.players);
+    }
+
+    function roundAdvance (roundInfo){
+      console.log('round info from server', roundInfo);
+    }
+
+
+    // SOCKET LISTENERS
     const socket = socketRef.current;
     socket.on('connect', onConnect);
 
+    socket.on('sendRoomCode', getRoomCode);
+    socket.on('newRound', roundAdvance);
+
+    // SOCKET OFF
     return () => {
       socket.off('connect', onConnect);
+      socket.off('sendRoomCode', getRoomCode);
+      socket.off('newRound', roundAdvance);
       setUserSocketId(null);
     };
 
