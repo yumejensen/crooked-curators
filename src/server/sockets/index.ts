@@ -102,7 +102,7 @@ io.on('connection', async socket => {
         roomCode: joinAttempt.roomCode,
         game: roomExists,
         type: 'join',
-        player: playersSocketIds
+        players: playersSocketIds
       });
 
     } else {
