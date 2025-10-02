@@ -81,10 +81,13 @@ io.on('connection', async socket => {
       })
         .then((user) => {
           // create an entry to the user_games table
-          User_Game.create({
-            user_id: user.id,
-            game_id: roomExists.id
-          })
+          user.update({username: joinAttempt.username})
+            .then(()=>{
+              User_Game.create({
+                user_id: user.id,
+                game_id: roomExists.id
+              })
+            })
         })
         .catch((err: any) => {
           console.error('Error adding to user_games', err)
