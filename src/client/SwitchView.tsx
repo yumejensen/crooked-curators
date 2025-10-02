@@ -1,11 +1,15 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 
-const SwitchView: React.FC = () => {
+import { useGameContext } from './context';
+
+const SwitchView: React.FC = ({ startGame }) => {
+
+  const { role } = useGameContext().game;
   
-  if (startGame){
+  if (startGame === true){
     return <Navigate to={'/game'} />
-  }
+  } 
 
 };
 

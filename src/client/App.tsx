@@ -19,6 +19,7 @@ import './CSS/style.module.css';
 
 // -------------------[COMPONENTS]------------------
 import NavBar from './Components/NavBar';
+import SwitchView from './SwitchView';
 
 import Homepage from './Views/Homepage';
 import Profile from './Views/Profile';
@@ -102,6 +103,9 @@ const App: React.FC = () => {
 
   // start game state
   const [startGame, setStartGame] = useState(false)
+
+  // view state
+  const [view, setView] = useState('lobby')
 
 
   useEffect(() => {
@@ -240,14 +244,14 @@ const App: React.FC = () => {
                 <Route
                   path='/game-settings'
                   element={
-                    startGame ? 
-                    (<Navigate to={'/game'} />)
-                    : 
-                    (<GameSettings 
+                    <>
+                    <SwitchView startGame={startGame} />
+                    <GameSettings 
                       roomCode={roomCode} 
                       players={players} 
                       socket={socket}
-                    />) 
+                    />
+                    </>
                   }
                 />
                 <Route path='/profile' element={<Profile />} />
