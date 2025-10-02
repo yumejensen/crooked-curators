@@ -8,8 +8,14 @@ const SwitchView: React.FC = ({ startGame }) => {
   const { role } = useGameContext().game;
   
   if (startGame === true){
-    return <Navigate to={'/game'} />
-  } 
+    if (role === 'curator'){
+      return <Navigate to={'/curator'} />
+    }
+    
+    if (role === 'artist'){
+      return <Navigate to={'/game'} />
+    }
+  }
 
 };
 

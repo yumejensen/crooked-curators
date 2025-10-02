@@ -52,7 +52,7 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   // --------------------[STATES]---------------------
-  const [view, setView] = useState('Homepage');
+ 
   const [user, setUser] = useState<User>({
     username: null,
     loggedIn: false,
@@ -104,8 +104,7 @@ const App: React.FC = () => {
   // start game state
   const [startGame, setStartGame] = useState(false)
 
-  // view state
-  const [view, setView] = useState('lobby')
+
 
 
   useEffect(() => {
