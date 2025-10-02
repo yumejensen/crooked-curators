@@ -32,25 +32,34 @@ io.engine.use(
   })
 );
 
+
+// _______________________________________________________________________________
+// GLOBAL VARIABLES
+
 // hold games and players (temporarily)
 const gamesPlayersMap = new Map();
 
-// hold the current game
+// hold the current game information
 let currentGame;
 let currentRound;
 let curator;
 let roundCount = 0
 let allPlayers = [];
 
+
+// _______________________________________________________________________________
 io.on('connection', async socket => {
 
   console.log(`A player: ${socket.id} connected`);
 
+  // _______________________________________________________________________________
+  // DISCONNECT
   socket.on('disconnect', () => {
     console.log('A player disconnected');
   });
 
 
+  // _______________________________________________________________________________
   // JOINING A ROOM
   socket.on('joinGame', async joinAttempt => {
 
@@ -116,6 +125,8 @@ io.on('connection', async socket => {
     }
   }); // end of join game
 
+
+  // _______________________________________________________________________________
   // STARTING A GAME
   socket.on('startGame', async () => {
 
@@ -130,15 +141,15 @@ io.on('connection', async socket => {
       //attributes: ['user_id', 'createdAt'],
       order: [['createdAt', 'ASC']]
     })
-    curator = await User.findOne({
-      where: { id: allPlayers[0].user_id }
-    })
+
 
     // create the first round
     advanceRound(null);
 
   }) // end of start game
 
+
+  // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
   async function advanceRound(prevRound) {
     console.log('advancing round')
@@ -153,8 +164,11 @@ io.on('connection', async socket => {
       game_id: currentGame.id,
       curator_id: curator.id
     })
+
+    // increment the round by 1
     roundCount++;
 
+    // GAME CONTEXT
     // define the round's state (matches frontend round context)
     let roundState = {
       stage: 'waiting',
@@ -170,16 +184,26 @@ io.on('connection', async socket => {
         return { username: player.username, finished: false }
       })
     }
+
     // player emit - targets game room except curator
     io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', roundState);
+
     // update roundState values for curator
     roundState.role = 'curator'
     roundState.stage = 'reference'
     // curator emit - targets only curator socket
     io.to(curator.socketId).emit('newRound', roundState);
 
+    // SWITCH VIEW
+    // emit a changeView event to the whole room
+    io.to(currentGame.gameCode).emit('switchView')
 
   }
+
+  
+
+  
+  // _______________________________________________________________________________
 
 
 }); // end of connection

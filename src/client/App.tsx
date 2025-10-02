@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
 import axios from 'axios';
 import { Socket, io } from 'socket.io-client';
@@ -100,6 +100,9 @@ const App: React.FC = () => {
   // players state
   const [players, setPlayers] = useState([]);
 
+  // start game state
+  const [startGame, setStartGame] = useState(false)
+
 
   useEffect(() => {
     console.log('looky:', socketRef.current);
@@ -108,12 +111,15 @@ const App: React.FC = () => {
     }
 
     socketRef.current = io();
+
+
+    // ---------------------------------------------------------------debugging logs
     /* we can see the socket but this is value by reference so we don't have access to the id yet but it might look like we do in the browser */
     console.log('looky2:', socketRef.current);
     /* notice this is undefined because the socket connection has not been established yet and we don't have access to the id until then */
     console.log('looky3:', socketRef.current?.id);
-
     console.log('hua: ', user.id);
+    // ---------------------------------------------------------------debugging logs
 
 
     // SOCKET FUNCTIONS
@@ -147,14 +153,22 @@ const App: React.FC = () => {
 
     function getRoomCode(roomCodeObj) {
       console.log("game info from server", roomCodeObj);
-
+      // update the room code
       setRoomCode(roomCodeObj.roomCode);
+      // update players array
       setPlayers(roomCodeObj.players);
     }
 
     function roundAdvance (roundInfo){
       console.log('round advancing');
+      // update the game context
       setGame(roundInfo)
+    }
+    
+    function switchView () {
+      // based on the game context, switch the view the player sees
+      // set startGame to true
+      setStartGame(true)
     }
 
 
@@ -164,12 +178,15 @@ const App: React.FC = () => {
 
     socket.on('sendRoomCode', getRoomCode);
     socket.on('newRound', roundAdvance);
+    socket.on('switchView', switchView);
 
     // SOCKET OFF
     return () => {
       socket.off('connect', onConnect);
       socket.off('sendRoomCode', getRoomCode);
       socket.off('newRound', roundAdvance);
+      socket.off('switchView', switchView);
+
       setUserSocketId(null);
     };
 
@@ -223,7 +240,14 @@ const App: React.FC = () => {
                 <Route
                   path='/game-settings'
                   element={
-                    <GameSettings roomCode={roomCode} players={players} socket={socket}/>
+                    startGame ? 
+                    (<Navigate to={'/game'} />)
+                    : 
+                    (<GameSettings 
+                      roomCode={roomCode} 
+                      players={players} 
+                      socket={socket}
+                    />) 
                   }
                 />
                 <Route path='/profile' element={<Profile />} />
