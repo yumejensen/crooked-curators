@@ -37,6 +37,7 @@ const gamesPlayersMap = new Map();
 
 // hold the current game
 let currentGame;
+let currentRound;
 let curator;
 let roundCount = 0
 let allPlayers = [];
@@ -134,11 +135,11 @@ io.on('connection', async socket => {
     })
     
     console.log('initiating first round')
-    const firstRound = await Round.create({
+    currentRound = await Round.create({
         game_id: currentGame.id,
         curator_id: curator.id
       })
-    advanceRound(firstRound);
+    advanceRound(currentRound);
 
   }) // end of start game
 
@@ -164,20 +165,32 @@ io.on('connection', async socket => {
         where: { id: allPlayers[roundCount].user_id }
       })
       roundCount++;
-      await Round.create({
+      currentRound = await Round.create({
         game_id: currentGame.id,
         curator_id: curator.id
       })
 
-    
+      let roundState = {
+        stage: 'waiting', 
+        role:'artist', 
+        code: currentGame.gameCode,
+        curator: {
+          username: curator.username, 
+          finished: false 
+        },
+        players: allPlayers.map(async ({user_id})=>{
+          const player = await User.findOne({where: {id: user_id}})
+          return { username: player.username, finished: false}
+        })
+      }
       // player emit
-    io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', {stage: 'painting', curator: curator});
+    io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', roundState);
       // curator emit
-    io.to(curator.socketId).emit('newRound', {stage: 'curating', curator: curator});
+      roundState.role = 'curator'
+      roundState.stage = 'reference'
+    io.to(curator.socketId).emit('newRound', roundState);
 
-    // determine a new curator
-    // curator should not have previously been curator
-    // 
+
   }
 
 
