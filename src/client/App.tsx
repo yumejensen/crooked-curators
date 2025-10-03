@@ -228,20 +228,20 @@ const App: React.FC = () => {
               }}
             >
               <Routes>
-                <Route 
-                  path='/' 
+                <Route
+                  path='/'
                   element={
                     <Homepage socket={socket}/>
-                  } 
+                  }
                     />
                 <Route
                   path='/game-settings'
                   element={
                     <>
                     <SwitchView view={view} />
-                    <GameSettings 
-                      roomCode={roomCode} 
-                      players={players} 
+                    <GameSettings
+                      roomCode={roomCode}
+                      players={players}
                       socket={socket}
                       />
                     </>
