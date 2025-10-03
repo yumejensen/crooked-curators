@@ -3,5 +3,6 @@ import { nameRandomizerRouter } from './name-randomizer';
 import { curatorRouter } from './curator';
 import { s3UrlRouter } from './s3-storage'
 import { gamesRouter } from './create-game'
+import { artworkRouter } from './artworks';
 
-export { authRouter, nameRandomizerRouter, curatorRouter, s3UrlRouter, gamesRouter };
+export { authRouter, nameRandomizerRouter, curatorRouter, s3UrlRouter, gamesRouter, artworkRouter };
