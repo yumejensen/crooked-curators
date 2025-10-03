@@ -104,6 +104,8 @@ const App: React.FC = () => {
   // start game state
   const [startGame, setStartGame] = useState(false)
 
+  // view state - tied to game context
+  const [view, setView] = useState({})
 
 
 
@@ -166,13 +168,11 @@ const App: React.FC = () => {
       console.log('round advancing');
       // update the game context
       setGame(roundInfo)
+      // change view to the new stage
+      setView(roundInfo)
     }
     
-    function switchView () {
-      // based on the game context, switch the view the player sees
-      // set startGame to true
-      setStartGame(true)
-    }
+
 
 
     // SOCKET LISTENERS
@@ -181,14 +181,12 @@ const App: React.FC = () => {
 
     socket.on('sendRoomCode', getRoomCode);
     socket.on('newRound', roundAdvance);
-    socket.on('switchView', switchView);
 
     // SOCKET OFF
     return () => {
       socket.off('connect', onConnect);
       socket.off('sendRoomCode', getRoomCode);
       socket.off('newRound', roundAdvance);
-      socket.off('switchView', switchView);
 
       setUserSocketId(null);
     };
@@ -239,22 +237,22 @@ const App: React.FC = () => {
                   element={
                     <Homepage socket={socket}/>
                   } 
-                />
+                    />
                 <Route
                   path='/game-settings'
                   element={
                     <>
-                    <SwitchView startGame={startGame} />
+                    <SwitchView view={view} />
                     <GameSettings 
                       roomCode={roomCode} 
                       players={players} 
                       socket={socket}
-                    />
+                      />
                     </>
                   }
                 />
                 <Route path='/profile' element={<Profile />} />
-                <Route path='/game' element={<ActiveGame />} />
+                <Route path='/game' element={<ActiveGame socket={socket} />} />
                 <Route path='/judging' element={<RoundJudging />} />
                 <Route path='/gallery' element={<Gallery />} />
                 <Route path='/curator' element={<CuratorSearch />} />
