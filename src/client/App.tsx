@@ -1,10 +1,10 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import React from "react";
+import { useState, useEffect } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 
-import axios from 'axios';
-import { Socket, io } from 'socket.io-client';
-import { RawPurePanel } from 'antd/es/popover/PurePanel';
+import axios from "axios";
+import { Socket, io } from "socket.io-client";
+import { RawPurePanel } from "antd/es/popover/PurePanel";
 
 import {
   Breadcrumb,
@@ -12,22 +12,22 @@ import {
   theme,
   Content,
   Footer,
-  ConfigProvider
-} from './antdComponents';
+  ConfigProvider,
+} from "./antdComponents";
 
-import './CSS/style.module.css';
+import "./CSS/style.module.css";
 
 // -------------------[COMPONENTS]------------------
-import NavBar from './Components/NavBar';
-import SwitchView from './SwitchView';
+import NavBar from "./Components/NavBar";
+import SwitchView from "./SwitchView";
 
-import Homepage from './Views/Homepage';
-import Profile from './Views/Profile';
-import GameSettings from './Views/GameSettings';
-import ActiveGame from './Views/ActiveGame';
-import RoundJudging from './Components/RoundJudging';
-import Gallery from './Components/Gallery';
-import CuratorSearch from './Components/CuratorSearch';
+import Homepage from "./Views/Homepage";
+import Profile from "./Views/Profile";
+import GameSettings from "./Views/GameSettings";
+import ActiveGame from "./Views/ActiveGame";
+import RoundJudging from "./Components/RoundJudging";
+import Gallery from "./Components/Gallery";
+import CuratorSearch from "./Components/CuratorSearch";
 
 // Context imports
 import {
@@ -39,20 +39,18 @@ import {
   Player,
   GameContext,
   useGameContext,
-} from './context';
-
-
+  SocketContext,
+} from "./context";
 
 const App: React.FC = () => {
-  const socketRef = React.useRef<Socket | null>(null);
-  const socket = socketRef.current;
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const {
-    token: { colorBgContainer, borderRadiusLG }
+    token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   // --------------------[STATES]---------------------
- 
+
   const [user, setUser] = useState<User>({
     username: null,
     loggedIn: false,
@@ -69,7 +67,7 @@ const App: React.FC = () => {
         setUser({ username: null, loggedIn: false });
       });
   }
-   /* represent connected status with socketId on UI (note: this is reactive as opposed to socketRef. 
+  /* represent connected status with socketId on UI (note: this is reactive as opposed to socketRef. 
       no re-render will occur for anything related to socketRef - good for performance) */
   const [userSocketId, setUserSocketId] = useState<string | null>(null);
   /*
@@ -87,7 +85,7 @@ const App: React.FC = () => {
    */
 
   const [game, setGame] = useState<Game>({
-    code: '',
+    code: "",
     stage: "lobby",
     curator: null,
     role: null,
@@ -102,58 +100,40 @@ const App: React.FC = () => {
   const [players, setPlayers] = useState([]);
 
   // start game state
-  const [startGame, setStartGame] = useState(false)
+  const [startGame, setStartGame] = useState(false);
 
   // view state - tied to game context
-  const [view, setView] = useState({})
-
-
+  const [view, setView] = useState({});
 
   useEffect(() => {
-    console.log('looky:', socketRef.current);
-    if (socketRef.current) {
-      return;
-    }
-
-    socketRef.current = io();
-
-
-    // ---------------------------------------------------------------debugging logs
-    /* we can see the socket but this is value by reference so we don't have access to the id yet but it might look like we do in the browser */
-    console.log('looky2:', socketRef.current);
-    /* notice this is undefined because the socket connection has not been established yet and we don't have access to the id until then */
-    console.log('looky3:', socketRef.current?.id);
-    console.log('hua: ', user.id);
-    // ---------------------------------------------------------------debugging logs
-
+    if (socket) return; // socket already exists
+    const newSocket = io(); // connect to the server that served the page
+    setSocket(newSocket);
 
     // SOCKET FUNCTIONS
     const onConnect = async () => {
-      const socket = socketRef.current;
-      if (!socket.id) {
-        console.error('Socket ID is not available');
+      if (!newSocket.id) {
+        console.error("Socket ID is not available");
         return;
       }
       /* below we know we have access to the id because we are inside the connect listener that tells us a connection has been established successfully */
-      console.log('socket', socket.id);
+      console.log("socket", newSocket.id);
       setIsConnected(true);
 
       try {
-        console.log('SOCKO', socket.id);
+        console.log("SOCKO", newSocket.id);
 
         /* now that we know the socket id we can update the user with it */
-        axios.put('/api/user/socketId', { socketId: socket.id });
+        axios.put("/api/user/socketId", { socketId: newSocket.id });
         setUserSocketId(socket.id);
 
         /* order is important. we need to fetch the user after attaching the socketId if we want access to the socketId on the user in the client (hint, hint) */
         const { data } = await fetchUser();
         setUser({ username: data.username, loggedIn: true });
-
       } catch (err) {
-        console.error('Error initializing socket:', err);
+        console.error("Error initializing socket:", err);
         setUser({ username: null, loggedIn: false });
       }
-
     };
 
     function getRoomCode(roomCodeObj) {
@@ -164,30 +144,28 @@ const App: React.FC = () => {
       setPlayers(roomCodeObj.players);
     }
 
-    function roundAdvance (roundInfo){
-      console.log('round advancing');
+    function roundAdvance(roundInfo) {
+      console.log("round advancing");
       // update the game context
-      setGame(roundInfo)
+      setGame(roundInfo);
       // change view to the new stage
-      setView(roundInfo)
+      setView(roundInfo);
     }
 
     // SOCKET LISTENERS
-    const socket = socketRef.current;
-    socket.on('connect', onConnect);
+    newSocket.on("connect", onConnect);
 
-    socket.on('sendRoomCode', getRoomCode);
-    socket.on('newRound', roundAdvance);
+    newSocket.on("sendRoomCode", getRoomCode);
+    newSocket.on("newRound", roundAdvance);
 
     // SOCKET OFF
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('sendRoomCode', getRoomCode);
-      socket.off('newRound', roundAdvance);
+      newSocket.off("connect", onConnect);
+      newSocket.off("sendRoomCode", getRoomCode);
+      newSocket.off("newRound", roundAdvance);
 
       setUserSocketId(null);
     };
-
   }, []);
 
   // -------------------[ARTWORKS]--------------------
@@ -214,13 +192,14 @@ const App: React.FC = () => {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <GameContext.Provider value={{ game, setGame }}>
-      <ConfigProvider
-        theme={{
-          token: {
-            // Seed Token
-            colorPrimary: '#058f6fff',
-            colorBgLayout: '#F0E7CA',
-            borderRadius: 2,
+        <SocketContext.Provider value={{ socket, setSocket }}>
+          <ConfigProvider
+            theme={{
+              token: {
+                // Seed Token
+                colorPrimary: "#058f6fff",
+                colorBgLayout: "#F0E7CA",
+                borderRadius: 2,
 
             // Alias Token
             colorBgContainer: '#ffffffff'
@@ -249,27 +228,27 @@ const App: React.FC = () => {
               }}
             >
               <Routes>
-                <Route
-                  path='/'
+                <Route 
+                  path='/' 
                   element={
                     <Homepage socket={socket}/>
-                  }
+                  } 
                     />
                 <Route
                   path='/game-settings'
                   element={
                     <>
                     <SwitchView view={view} />
-                    <GameSettings
-                      roomCode={roomCode}
-                      players={players}
+                    <GameSettings 
+                      roomCode={roomCode} 
+                      players={players} 
                       socket={socket}
                       />
                     </>
                   }
                 />
                 <Route path='/profile' element={<Profile />} />
-                <Route path='/game' element={<ActiveGame socket={socket} handleArtworks={handleGetRoundArtworks} />} />
+                <Route path='/game' element={<ActiveGame socket={socket} handleArtworks={handleGetRoundArtworks}/>} />
                 <Route path='/judging' element={<RoundJudging artworks={roundArtworks} setArtworks={setRoundArtworks}/>} />
                 <Route path='/gallery' element={<Gallery />} />
                 <Route path='/curator' element={<CuratorSearch />} />
@@ -282,6 +261,7 @@ const App: React.FC = () => {
           </Footer>
         </Layout>
       </ConfigProvider>{' '}
+      </SocketContext.Provider>
       </GameContext.Provider>
     </UserContext.Provider>
   );
