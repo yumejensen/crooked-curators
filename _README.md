@@ -148,6 +148,57 @@ Generate a seeding file:
 Seed all seed files:
 `npx sequelize-cli db:seed:all`
 
+**A note on synchronizing DB tables**
+
+*If you want to clear tables/ edit fields/ etc*
+1) drop database crooked_curators;
+2) create database crooked_curators;
+3) in db/index.ts run server with this sync:
+
+  ```
+  const syncModels = async () => {
+    try {
+      await User.sync();
+      await Game.sync();
+      await User_Game.sync();
+      await Round.sync();
+      await Ribbon.sync();
+      await Artwork.sync();
+      console.log('All models synchronized successfully')
+    } catch (err) {
+      console.error('failed to sync models', err)
+    }
+  }
+  syncModels();
+  ```
+
+*An interesting alternative to clear tables a different way*
+1) db/index.ts run both of these functions at the same time 
+   note: the table order changed 
+   (we don't know why this works)
+
+  ```
+  const syncModels = async () => {
+    try {
+      await Ribbon.sync();
+      await User_Game.sync();
+      await Artwork.sync();
+      await Round.sync();
+      await Game.sync();
+      await User.sync();
+      console.log('All models synchronized successfully')
+    } catch (err) {
+      console.error('failed to sync models', err)
+    }
+  }
+  syncModels();
+
+  (async () => {
+    await sequelize.sync({force: true});
+      console.log('All models synchronized successfully.');
+  })(); 
+  ```
+
 **Deployment**
 
 AWS EC2
