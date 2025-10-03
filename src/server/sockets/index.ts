@@ -149,6 +149,11 @@ io.on('connection', async socket => {
 
   }) // end of start game
 
+  socket.on('curatorSelect', async ({title, image}) => {
+    await currentRound.update({ referenceName: title, referenceSrc: image })
+    // send players to the artist stage
+    io.to(currentGame.gameCode).emit('referenceSelected', { title, image })
+  })
 
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
@@ -173,7 +178,7 @@ io.on('connection', async socket => {
     // GAME CONTEXT
     // define the round's state (matches front end round context)
     let roundState = {
-      stage: 'waiting',
+      stage: 'reference',
       role: 'artist',
       code: currentGame.gameCode,
       curator: {
@@ -193,7 +198,6 @@ io.on('connection', async socket => {
 
     // reassign roundState values for the curator
     roundState.role = 'curator'
-    roundState.stage = 'reference'
 
     // curator emit - targets only curator socket
     // pass in roundState
