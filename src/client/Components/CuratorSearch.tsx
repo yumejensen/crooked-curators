@@ -1,18 +1,18 @@
 // Contains the Reference and ReferenceSearch components
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Divider, Flex, Button } from "../antdComponents";
 
 import ReferenceSearch from "./ReferenceSearch";
 import Reference from "./Reference";
-import { selectDomainDefinition } from "recharts/types/state/selectors/axisSelectors";
-import { describe } from "node:test";
+import { SocketContext } from "../context";
 import axios from "axios";
 
 const CuratorSearch = () => {
   const [selected, setSelected] = useState(0);
   const [results, setResults] = useState([]);
   const [confirmed, setConfirmed] = useState(false)
+  const { socket } = useContext(SocketContext)
 
   const nextResult = () => {
     setSelected(selected + 1);
@@ -36,15 +36,7 @@ const CuratorSearch = () => {
   };
 
   const selectReference = function (){
-    axios.post('/curator/select', {piece : results[selected]})
-      .then((res)=>{
-        console.log('reference posted!')
-        setConfirmed(true)
-      })
-      .catch((err)=>{
-        console.log(err)
-        console.log('failed to post ref selection')
-      })
+    socket.emit('curatorSelect', results[selected])
   }
   return (
     <Flex gap="middle" align="center" vertical>

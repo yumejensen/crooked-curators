@@ -151,6 +151,11 @@ io.on('connection', async socket => {
 
   }) // end of start game
 
+  socket.on('curatorSelect', async ({title, image}) => {
+    await currentRound.update({ referenceName: title, referenceSrc: image })
+    // send players to the artist stage
+    io.to(currentGame.gameCode).emit('referenceSelected', { title, image })
+  })
 
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
