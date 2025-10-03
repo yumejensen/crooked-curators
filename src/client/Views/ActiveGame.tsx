@@ -12,7 +12,7 @@ import Canvas from '../Components/Canvas';
 import Reference from '../Components/Reference';
 import ToJudging from '../Components/ToJudging';
 
-const ActiveGame: React.FC = () => {
+const ActiveGame: React.FC = ({ socket }) => {
 
   // --------------------[STATES]---------------------
 
@@ -52,7 +52,7 @@ const ActiveGame: React.FC = () => {
 
         <Col span={3}>
           <Card >
-            <ToJudging done={done} playerCount={playerCount} />
+            <ToJudging done={done} playerCount={playerCount} socket={socket} />
           </Card>
         </Col>
       </Row>
