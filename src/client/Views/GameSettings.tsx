@@ -8,8 +8,10 @@ import JoinedPlayers from "../Components/JoinedPlayers";
 
 const GameSettings = ({roomCode, players, socket}) => {
   const { game, setGame } = useGameContext()
+  
   const startGame = () => {
-    socket.emit('startGame')
+    // emit a nextStage event to server
+    socket.emit('nextStage')
   }
 
   return (

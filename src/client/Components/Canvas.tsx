@@ -13,11 +13,14 @@ import {
   Segmented
 } from '../antdComponents';
 
+import { useGameContext } from '../context';
+
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 
 // -------------------[COMPONENTS]------------------
 import CanvasTools from './CanvasTools';
 import SubmitArtwork from './SubmitArtwork';
+import GameCodeJoin from './GameCodeJoin';
 
 
 const boxStyle: React.CSSProperties = {
@@ -38,6 +41,8 @@ const canvasBoxStyle: React.CSSProperties = {
 const Canvas = (props) => {
 
   const { handleDone } = props
+
+  const { code } = useGameContext().game;
 
   // --------------------[STATES]---------------------
 
@@ -244,6 +249,16 @@ const Canvas = (props) => {
           // to get the image, a request must be made to the
           // link and accessed by link.body (or whatever variable name is)
           console.log(imageUrl);
+
+          axios.post('/artworks', {
+            gameCode: code,
+            imageUrl: imageUrl
+          }).then(() => {
+            console.log('Successfully posted artwork URL to server: CLIENT')
+
+          }).catch((err) => {
+            console.error('Failed to post artwork URL to server: CLIENT:', err);
+          })
 
       }).catch((err) => {
         console.error('Failed PUT request to s3 bucket: CLIENT:', err);
