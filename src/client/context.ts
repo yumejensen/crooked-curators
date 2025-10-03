@@ -63,3 +63,24 @@ export function useGameContext() {
   }
   return game
 }
+
+
+import { Socket } from "socket.io-client";
+
+// SOCKET CONTEXT HANDLING
+
+export interface SocketContextType {
+  socket: Socket | null;
+  setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+}
+
+export const SocketContext = createContext<SocketContextType | null>(null);
+
+export function useSocketContext() {
+  const socketContext = useContext(SocketContext);
+
+  if (socketContext === null) {
+    throw new Error('Socket is not defined. useSocketContext must be used within a SocketContext');
+  }
+  return socketContext;
+}

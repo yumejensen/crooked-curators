@@ -39,13 +39,14 @@ import {
   Player,
   GameContext,
   useGameContext,
+  SocketContext,
+
 } from './context';
 
 
 
 const App: React.FC = () => {
-  const socketRef = React.useRef<Socket | null>(null);
-  const socket = socketRef.current;
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const {
     token: { colorBgContainer, borderRadiusLG }
@@ -108,39 +109,25 @@ const App: React.FC = () => {
 
 
   useEffect(() => {
-    console.log('looky:', socketRef.current);
-    if (socketRef.current) {
-      return;
-    }
-
-    socketRef.current = io();
-
-
-    // ---------------------------------------------------------------debugging logs
-    /* we can see the socket but this is value by reference so we don't have access to the id yet but it might look like we do in the browser */
-    console.log('looky2:', socketRef.current);
-    /* notice this is undefined because the socket connection has not been established yet and we don't have access to the id until then */
-    console.log('looky3:', socketRef.current?.id);
-    console.log('hua: ', user.id);
-    // ---------------------------------------------------------------debugging logs
-
-
+    if(socket) return; // socket already exists
+    const newSocket = io(); // connect to the server that served the page
+    setSocket(newSocket);
+    
     // SOCKET FUNCTIONS
     const onConnect = async () => {
-      const socket = socketRef.current;
-      if (!socket.id) {
+      if (!newSocket.id) {
         console.error('Socket ID is not available');
         return;
       }
       /* below we know we have access to the id because we are inside the connect listener that tells us a connection has been established successfully */
-      console.log('socket', socket.id);
+      console.log('socket', newSocket.id);
       setIsConnected(true);
 
       try {
-        console.log('SOCKO', socket.id);
+        console.log('SOCKO', newSocket.id);
 
         /* now that we know the socket id we can update the user with it */
-        axios.put('/api/user/socketId', { socketId: socket.id });
+        axios.put('/api/user/socketId', { socketId: newSocket.id });
         setUserSocketId(socket.id);
 
         /* order is important. we need to fetch the user after attaching the socketId if we want access to the socketId on the user in the client (hint, hint) */
@@ -176,19 +163,18 @@ const App: React.FC = () => {
 
 
     // SOCKET LISTENERS
-    const socket = socketRef.current;
-    socket.on('connect', onConnect);
+    newSocket.on('connect', onConnect);
 
-    socket.on('sendRoomCode', getRoomCode);
-    socket.on('newRound', roundAdvance);
-    socket.on('switchView', switchView);
+    newSocket.on('sendRoomCode', getRoomCode);
+    newSocket.on('newRound', roundAdvance);
+    newSocket.on('switchView', switchView);
 
     // SOCKET OFF
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('sendRoomCode', getRoomCode);
-      socket.off('newRound', roundAdvance);
-      socket.off('switchView', switchView);
+      newSocket.off('connect', onConnect);
+      newSocket.off('sendRoomCode', getRoomCode);
+      newSocket.off('newRound', roundAdvance);
+      newSocket.off('switchView', switchView);
 
       setUserSocketId(null);
     };
@@ -199,6 +185,7 @@ const App: React.FC = () => {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <GameContext.Provider value={{ game, setGame }}>
+        <SocketContext.Provider value={ { socket, setSocket }}>
       <ConfigProvider
         theme={{
           token: {
@@ -267,6 +254,7 @@ const App: React.FC = () => {
           </Footer>
         </Layout>
       </ConfigProvider>{' '}
+      </SocketContext.Provider>
       </GameContext.Provider>
     </UserContext.Provider>
   );
