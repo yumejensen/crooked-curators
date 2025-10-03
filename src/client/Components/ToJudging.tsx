@@ -6,18 +6,24 @@ import { Col, Row, Button, Tooltip } from '../antdComponents';
 
 const ToJudging = (props) => {
 
-  const { done, playerCount, isCurator } = props;
+  const { done, playerCount, isCurator, socket } = props;
+
+  const nextStage = () => {
+    // emit a nextStage event to server
+    socket.emit('nextStage')
+  }
 
   // --------------------[RENDER]---------------------
 
   if(done === playerCount){
 
     return (
-      <Link to='/judging' >
-        <Button>
+      // <Link to='/judging' >
+        <Button onClick={nextStage}>
           Judging Time!
         </Button>
-      </Link>
+      // {/* </Link> */}
+
     );
 
   } else {

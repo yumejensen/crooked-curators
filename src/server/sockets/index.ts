@@ -129,10 +129,12 @@ io.on('connection', async socket => {
 
 
   // _______________________________________________________________________________
-  // STARTING A GAME
-  socket.on('startGame', async () => {
+  // STARTING A GAME + ADVANCING A STAGE
+  // note: can still keep startGame which has finding players logic + advanceRound
+  // nextStage can have just an invocation of advanceRound
+  socket.on('nextStage', async () => {
 
-    console.log('starting game...')
+    console.log('next stage event triggered!')
 
     // query user_games table, find users where gameid = current game id
     // sort by created at order
@@ -158,7 +160,7 @@ io.on('connection', async socket => {
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
   async function advanceRound(prevRound) {
-    console.log('advancing round')
+    console.log('advancing round!')
 
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
@@ -203,9 +205,6 @@ io.on('connection', async socket => {
     // pass in roundState
     io.to(curator.socketId).emit('newRound', roundState);
 
-    // SWITCH VIEW
-    // emit a changeView event to the whole room - front end has conditionals
-    io.to(currentGame.gameCode).emit('switchView')
 
   }
 
