@@ -35,7 +35,6 @@ io.engine.use(
 
 // _______________________________________________________________________________
 // GLOBAL VARIABLES
-
 // hold games and players (temporarily)
 const gamesPlayersMap = new Map();
 
@@ -45,6 +44,7 @@ let currentRound;
 let curator;
 let roundCount = 0
 let allPlayers = [];
+
 
 
 // _______________________________________________________________________________
@@ -90,9 +90,11 @@ io.on('connection', async socket => {
         where: { socketId: socket.id }
       })
         .then((user) => {
+
           // create an entry to the user_games table
           user.update({ username: joinAttempt.username })
             .then(() => {
+              // create an entry in user_games table
               User_Game.create({
                 user_id: user.id,
                 game_id: roomExists.id
@@ -121,7 +123,7 @@ io.on('connection', async socket => {
       // if the room does not exist in the db, don't join
       console.log('room does not exist in the db');
       // emit event back to user informing them the code doesn't work
-      // something like: socket.emit("badCode")
+        // something like: socket.emit("badCode")
     }
   }); // end of join game
 
@@ -133,17 +135,16 @@ io.on('connection', async socket => {
     console.log('starting game...')
 
     // query user_games table, find users where gameid = current game id
-    // from those users, pick who joined first 
+    // sort by created at order
     allPlayers = await User_Game.findAll({
       where: {
         game_id: currentGame.id
       },
-      //attributes: ['user_id', 'createdAt'],
       order: [['createdAt', 'ASC']]
     })
 
 
-    // create the first round
+    // advance the first round
     advanceRound(null);
 
   }) // end of start game
@@ -154,12 +155,12 @@ io.on('connection', async socket => {
   async function advanceRound(prevRound) {
     console.log('advancing round')
 
-    // select curator based on roundCount
+    // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
       where: { id: allPlayers[roundCount].user_id }
     })
 
-    // assign currentRound, then increment count
+    // assign currentRound, then add round to database
     currentRound = await Round.create({
       game_id: currentGame.id,
       curator_id: curator.id
@@ -168,8 +169,9 @@ io.on('connection', async socket => {
     // increment the round by 1
     roundCount++;
 
+
     // GAME CONTEXT
-    // define the round's state (matches frontend round context)
+    // define the round's state (matches front end round context)
     let roundState = {
       stage: 'waiting',
       role: 'artist',
@@ -186,21 +188,24 @@ io.on('connection', async socket => {
     }
 
     // player emit - targets game room except curator
+    // pass in roundState
     io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', roundState);
 
-    // update roundState values for curator
+    // reassign roundState values for the curator
     roundState.role = 'curator'
     roundState.stage = 'reference'
+
     // curator emit - targets only curator socket
+    // pass in roundState
     io.to(curator.socketId).emit('newRound', roundState);
 
     // SWITCH VIEW
-    // emit a changeView event to the whole room
+    // emit a changeView event to the whole room - front end has conditionals
     io.to(currentGame.gameCode).emit('switchView')
 
   }
 
-  
+
 
   
   // _______________________________________________________________________________
