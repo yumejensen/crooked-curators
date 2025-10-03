@@ -12,7 +12,12 @@ import Canvas from '../Components/Canvas';
 import Reference from '../Components/Reference';
 import ToJudging from '../Components/ToJudging';
 
-const ActiveGame: React.FC = ({ socket }) => {
+type ActiveGameProps = {
+  socket: any;
+  handleArtworks: () => void;
+};
+
+const ActiveGame: React.FC = ({ socket, handleArtworks }: ActiveGameProps) => {
 
   // --------------------[STATES]---------------------
 
@@ -52,7 +57,7 @@ const ActiveGame: React.FC = ({ socket }) => {
 
         <Col span={3}>
           <Card >
-            <ToJudging done={done} playerCount={playerCount} socket={socket} />
+            <ToJudging done={done} playerCount={playerCount} socket={socket} handleArtworks={handleArtworks}/>
           </Card>
         </Col>
       </Row>
