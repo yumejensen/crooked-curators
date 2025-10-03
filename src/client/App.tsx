@@ -171,9 +171,6 @@ const App: React.FC = () => {
       // change view to the new stage
       setView(roundInfo)
     }
-    
-
-
 
     // SOCKET LISTENERS
     const socket = socketRef.current;
@@ -192,7 +189,27 @@ const App: React.FC = () => {
     };
 
   }, []);
- 
+
+  // -------------------[ARTWORKS]--------------------
+
+  const [roundArtworks, setRoundArtworks] = useState([]);
+
+  const handleGetRoundArtworks = () => {
+
+    // send get request to /artworks to retrieve images with game code for querying
+    axios.get(`/artworks/${game.code}`)
+      .then(({ data }) => {
+
+        // update round artworks state to array of artwork objects
+        setRoundArtworks(data.artworks);
+
+      })
+      .catch((err) => {
+        console.error('Failed to GET artworks from round: CLIENT:', err);
+      });
+  };
+
+  // --------------------[RENDER]---------------------
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -232,28 +249,28 @@ const App: React.FC = () => {
               }}
             >
               <Routes>
-                <Route 
-                  path='/' 
+                <Route
+                  path='/'
                   element={
                     <Homepage socket={socket}/>
-                  } 
+                  }
                     />
                 <Route
                   path='/game-settings'
                   element={
                     <>
                     <SwitchView view={view} />
-                    <GameSettings 
-                      roomCode={roomCode} 
-                      players={players} 
+                    <GameSettings
+                      roomCode={roomCode}
+                      players={players}
                       socket={socket}
                       />
                     </>
                   }
                 />
                 <Route path='/profile' element={<Profile />} />
-                <Route path='/game' element={<ActiveGame socket={socket} />} />
-                <Route path='/judging' element={<RoundJudging />} />
+                <Route path='/game' element={<ActiveGame socket={socket} handleArtworks={handleGetRoundArtworks} />} />
+                <Route path='/judging' element={<RoundJudging artworks={roundArtworks} setArtworks={setRoundArtworks}/>} />
                 <Route path='/gallery' element={<Gallery />} />
                 <Route path='/curator' element={<CuratorSearch />} />
                 <Route path='*' element={<p>There is nothing here: 404!</p>} />
