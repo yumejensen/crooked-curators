@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Artwork as ArtworkTypes, Ribbon as RibbonTypes } from './types';
 
 // -------------------[COMPONENTS]------------------
-
 import Ribbon from './Ribbon';
 import Artwork from './Artwork';
 import Forgeries from './Forgeries';
@@ -38,6 +37,35 @@ const artworksStyle: React.CSSProperties = {
   height: '100%',
   borderRadius: 6,
 };
+
+const RIBBONS: RibbonTypes[] =[
+  {
+    id: 'BLUE',
+    title: 'Blue Ribbon',
+    points: 100,
+    //source: ribbonImages.blueRibbons[0]
+  },
+  {
+    id: 'WHITE',
+    title: 'White Ribbon',
+    points: 50,
+    //source: ribbonImages.whiteRibbons[0]
+  },
+  {
+    id: 'RED',
+    title: 'Red Ribbon',
+    points: 25,
+    //source: ribbonImages.redRibbons[0]
+  },
+]
+
+const STATUS = [
+  {
+    id: 'FORGERIES',
+    title: 'Forgeries',
+    points: 0
+  },
+]
 
 type RoundJudgingProps = {
   artworks: [];
@@ -82,7 +110,7 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
 
   useEffect(() => {
     getRibbons();
-  }, []);
+  }, [])
 
   // --------------------[RENDER]---------------------
 
