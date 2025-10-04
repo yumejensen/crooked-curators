@@ -228,29 +228,41 @@ Server
 **Sockets**
 On the backend the socket server is made by passing the express app into an http server. This server is exported into sockets/index.ts and io = new Server(server).
 
-Outer variables:
-  let currentGame;
+`Outer variables:`
+
+  *currentGame*
     - the game object (representing the current game) from the database
-  let currentRound;
+
+  *currentRound*
     - holds a round object that was just created from the db 
-  let curator;
+
+  *curator*
     - user object from the db for who is currently curator
-  let roundCount = 0
+
+  *roundCount = 0*
     - round is initialized at 0
-  let allPlayers = [];
+
+  *allPlayers = []*
     - array of objects from database from querying the user_rounds table
 
-Inside io.on('connection')
-  socket.on disconnect 
+`Inside io.on('connection')`
+
+  *socket.on disconnect* 
     - listens for socket disconnect
-  socket.on joinGame
+
+  *socket.on joinGame*
     - listens for when the user hits the join game button
-  socket.on nextStage
-    - listens for when the user triggers the next round in game
-  advanceRound function
-    - helper function passed into nextStage
-  socket.on curatorSelect
+
+  *socket.on curatorSelect*
     - listens for when curator makes an art reference selection
+    - updates the current round with the reference image game context 
+
+  *socket.on nextStage*
+    - listens for when the user triggers the next round in game
+    - contains the advanceRound helper function invocation
+
+  *advanceRound function*
+    - helper function passed into nextStage
 
 
 **Deployment**
