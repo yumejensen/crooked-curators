@@ -24,10 +24,6 @@ const Artwork = sequelize.define('artwork', {
     },
     allowNull: true
   },
-
-  // NOTE : association from User.hasMany(Artwork); and Artwork.belongsTo(Round);
-  // adds userId foreign key and roundId foreign key
-
   round_id: {
     type: DataTypes.INTEGER,
     references: {

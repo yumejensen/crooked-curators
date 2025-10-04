@@ -4,13 +4,25 @@ import { Link } from 'react-router-dom';
 
 import { Col, Row, Button, Tooltip } from '../antdComponents';
 
-const ToJudging = (props) => {
+type ToJudgingProps = {
+  done: number;
+  playerCount: number;
+  isCurator: boolean;
+  socket: any;
+  handleArtworks: () => void;
+}
 
-  const { done, playerCount, isCurator, socket } = props;
+const ToJudging = ({ done, playerCount, isCurator, socket, handleArtworks }: ToJudgingProps) => {
 
   const nextStage = () => {
     // emit a nextStage event to server
     socket.emit('nextStage')
+  }
+
+  // call both functions on click for judging time
+  const handleClick = () => {
+    nextStage();
+    handleArtworks();
   }
 
   // --------------------[RENDER]---------------------
@@ -19,7 +31,7 @@ const ToJudging = (props) => {
 
     return (
       // <Link to='/judging' >
-        <Button onClick={nextStage}>
+        <Button onClick={handleClick}>
           Judging Time!
         </Button>
       // {/* </Link> */}

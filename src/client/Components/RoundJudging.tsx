@@ -121,13 +121,16 @@ const FAKE_ARTWORKS: ArtworkTypes[] = [
   }
 ];
 
-const RoundJudging: React.FC = (props) => {
+type RoundJudgingProps = {
+  artworks: [];
+  setArtworks: () => void;
+};
+
+const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) => {
 
   // --------------------[STATES]---------------------
 
   const [ribbons, setRibbons] = useState([]);
-
-  const [roundArtworks, setRoundArtworks] = useState<ArtworkTypes[]>(FAKE_ARTWORKS);
 
   // -------------------[HANDLERS]--------------------
 
@@ -143,7 +146,7 @@ const RoundJudging: React.FC = (props) => {
     const artworkId = active.id as string;
     const newStatus = over.id as ArtworkTypes['status'];
 
-    setRoundArtworks(() => roundArtworks.map(artwork => artwork.id === artworkId ? {
+    setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? {
       ...artwork,
       status: newStatus,
     } : artwork))
