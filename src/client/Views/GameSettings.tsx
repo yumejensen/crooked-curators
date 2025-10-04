@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { useGameContext } from "../context";
 
 // UI
-import { Button, Typography } from '../antdComponents'
-const { Paragraph, Text } = Typography;
+import { Button, Typography, Flex, Card } from '../antdComponents'
+
 
 // COMPONENTS
 import JoinedPlayers from "../Components/JoinedPlayers";
@@ -20,13 +20,29 @@ const GameSettings = ({roomCode, players, socket}) => {
 
   return (
     <div>
-      <h2> ROOM CODE: </h2>
-      <Typography.Title level={2} copyable>{roomCode}</Typography.Title>
-      
+      <Flex align='center' justify='center'>
+        <Card 
+          type="inner" 
+          title="ROOM CODE"
+          style={{ width: 250, textAlign:'center' }}
+        >
+          <Typography.Title level={2} copyable>{roomCode}</Typography.Title>
+        </Card>
+      </Flex>
+
       <br></br>
       <JoinedPlayers players={players} />
       <br></br>
-      <Button onClick={startGame}>START GAME</Button>
+
+      <Flex align='right' justify='right'>
+        <Button 
+          type='primary'
+          size='large'
+          onClick={startGame}
+        >
+          START GAME
+        </Button>
+      </Flex>
     </div>
   );
 };
