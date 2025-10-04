@@ -18,13 +18,13 @@ const JoinedPlayers = ({players}) => {
 
   return (
     <div>
-      <h3>Joined players:</h3>
+      <h2>Joined players:</h2>
       <List>
         {
           players.map((player, index) => {
             return (
               <List.Item key={index}>
-                {player}
+                <h3>{player}</h3>
               </List.Item>
             )
           })
