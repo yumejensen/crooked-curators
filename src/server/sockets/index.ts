@@ -107,7 +107,7 @@ io.on('connection', async socket => {
 
       // add player to map - TEMP SOLUTION -----------------------------------
       const playersSocketIds = gamesPlayersMap.get(joinAttempt.roomCode) || [];
-      playersSocketIds.push(socket.id);
+      playersSocketIds.push(joinAttempt.username);
       gamesPlayersMap.set(joinAttempt.roomCode, playersSocketIds);
       //----------------------------------------------------------------------
 
