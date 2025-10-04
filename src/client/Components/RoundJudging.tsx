@@ -128,6 +128,8 @@ type RoundJudgingProps = {
 
 const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) => {
 
+  console.log(artworks);
+
   // --------------------[STATES]---------------------
 
   const [ribbons, setRibbons] = useState([]);
@@ -146,10 +148,7 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
     const artworkId = active.id as string;
     const newStatus = over.id as ArtworkTypes['status'];
 
-    setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? {
-      ...artwork,
-      status: newStatus,
-    } : artwork))
+    setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus} : artwork))
   }
 
   // --------------------[RENDER]---------------------
@@ -169,7 +168,7 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
               <Ribbon
                 key={ribbon.id}
                 ribbon={ribbon}
-                artworks={roundArtworks.filter(artwork => artwork.status === ribbon.id)} />
+                artworks={artworks.filter(artwork => artwork.status === ribbon.id)} />
             )
           })}
         </Flex>
@@ -184,7 +183,7 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
               <Forgeries
                 key={status.id}
                 status={status}
-                artworks={roundArtworks.filter(artwork => artwork.status === status.id)} />
+                artworks={artworks.filter(artwork => artwork.status === status.id)} />
             )
           })}
         </Flex>

@@ -30,11 +30,11 @@ const ToJudging = ({ done, playerCount, isCurator, socket, handleArtworks }: ToJ
   if(done === playerCount){
 
     return (
-      // <Link to='/judging' >
+      <Link to='/judging' >
         <Button onClick={handleClick}>
           Judging Time!
         </Button>
-      // {/* </Link> */}
+      </Link>
 
     );
 

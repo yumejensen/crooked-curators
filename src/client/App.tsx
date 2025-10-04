@@ -178,8 +178,10 @@ const App: React.FC = () => {
     axios.get(`/artworks/${game.code}`)
       .then(({ data }) => {
 
+        console.log(data);
+
         // update round artworks state to array of artwork objects
-        setRoundArtworks(data.artworks);
+        setRoundArtworks(data);
 
       })
       .catch((err) => {
