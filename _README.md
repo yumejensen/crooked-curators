@@ -199,6 +199,60 @@ Seed all seed files:
   })(); 
   ```
 
+**Backend Structure**
+
+Server 
+- Routes dir: handling requests
+  - artworks
+  - auth-redirect
+  - create-game
+  - curator
+  - name-randomizer
+  - s3-storage
+
+- Sockets dir: socket.io logic
+  - index.ts
+
+- app.ts
+  - express app, middleware, server listen
+
+- auth.ts
+  - Google Strategy for passport google oauth 20
+
+- randomUsernames.json
+  - silly random names 
+
+- s3.ts
+  - generate a temporary link to upload to S3 bucket
+
+**Sockets**
+On the backend the socket server is made by passing the express app into an http server. This server is exported into sockets/index.ts and io = new Server(server).
+
+Outer variables:
+  let currentGame;
+    - the game object (representing the current game) from the database
+  let currentRound;
+    - holds a round object that was just created from the db 
+  let curator;
+    - user object from the db for who is currently curator
+  let roundCount = 0
+    - round is initialized at 0
+  let allPlayers = [];
+    - array of objects from database from querying the user_rounds table
+
+Inside io.on('connection')
+  socket.on disconnect 
+    - listens for socket disconnect
+  socket.on joinGame
+    - listens for when the user hits the join game button
+  socket.on nextStage
+    - listens for when the user triggers the next round in game
+  advanceRound function
+    - helper function passed into nextStage
+  socket.on curatorSelect
+    - listens for when curator makes an art reference selection
+
+
 **Deployment**
 
 AWS EC2
