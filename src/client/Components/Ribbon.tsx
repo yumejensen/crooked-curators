@@ -47,6 +47,7 @@ export function Ribbon({ribbon, artworks}: RibbonProps) {
           <Col>
             <Row>
               <img src={ribbon.source} style={{ width: 100 }}/>
+              <h2>{ribbon.description}</h2>
             </Row>
             <Row>
               {artworks.map(artwork => {

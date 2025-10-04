@@ -34,7 +34,8 @@ import {
   curatorRouter,
   s3UrlRouter,
   gamesRouter,
-  artworkRouter
+  artworkRouter,
+  ribbonsRouter
 } from './routes';
 import { User } from './db/schemas/users';
 
@@ -66,7 +67,8 @@ app.use('/name-randomizer', nameRandomizerRouter);
 app.use('/curator', curatorRouter);
 app.use('/s3Url', s3UrlRouter);
 app.use('/games', gamesRouter);
-app.use('/artworks', artworkRouter)
+app.use('/artworks', artworkRouter);
+app.use('/ribbons', ribbonsRouter)
 
 // serve static files from client
 app.use(express.static(CLIENT));
