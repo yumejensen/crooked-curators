@@ -1,3 +1,4 @@
+// ribbon statuses
 type RibbonStatus = 'BLUE' | 'WHITE' | 'RED' | 'FORGERIES';
 
 // each individual artwork
@@ -10,7 +11,25 @@ export type Artwork = {
 // containers for artworks
 export type Ribbon = {
   id: RibbonStatus;
-  title: string;
+  color: string;
+  description: string;
   points: number;
   source?: string;
 };
+
+// for canvas props
+export type Canvas = {
+  handleDone: () => void
+}
+
+// for round judging props
+export type RoundJudging = {
+  artworks: [];
+  setArtworks: () => void;
+};
+
+// for lock in judging button props
+export type LockInJudging = {
+  artworks: [];
+  ribbons: [];
+}

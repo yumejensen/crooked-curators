@@ -18,10 +18,16 @@ import { useGameContext } from '../context';
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 
 // -------------------[COMPONENTS]------------------
+
 import CanvasTools from './CanvasTools';
 import SubmitArtwork from './SubmitArtwork';
 import GameCodeJoin from './GameCodeJoin';
 
+// ---------------------[TYPES]---------------------
+
+import { Canvas as CanvasPropTypes } from './types';
+
+// ---------------------[STYLE]---------------------
 
 const boxStyle: React.CSSProperties = {
   width: '100%',
@@ -38,9 +44,9 @@ const canvasBoxStyle: React.CSSProperties = {
   border: '3px solid #3B262C',
 };
 
-const Canvas = (props) => {
+// -------------------[COMPONENT]-------------------
 
-  const { handleDone } = props
+const Canvas = ({ handleDone }: CanvasPropTypes) => {
 
   const { code } = useGameContext().game;
 
@@ -49,68 +55,22 @@ const Canvas = (props) => {
   // reference to canvas container
   const containerRef = useRef(null);
 
-  // State to track current scale and dimensions
-  // const [stageSize, setStageSize] = useState({
-  //   width: sceneWidth,
-  //   height: sceneHeight,
-  //   scale: 1
-  // });
-
-  // lines
+  // lines of current canvas
   const [lines, setLines] = React.useState([]);
 
-  // tools
+  // tools for canvas and line color state
   const [tool, setTool] = React.useState('pen');
   const [lineColor, setLineColor] = React.useState("#000000");
 
-  // history
+  // history for undo/redo
   const [history, setHistory] = useState([])
 
   // export
   const stageRef = React.useRef(null);
 
-  const [image, setImage] = useState('');
-
   // -------------------[HANDLERS]--------------------
 
   const isDrawing = React.useRef(false);
-
-  // Define virtual size for our scene
-
-  // const sceneWidth = 900;
-  // const sceneHeight = 500;
-
-
-  // Function to handle resize
-
-  // const updateSize = () => {
-  //   if (!containerRef.current) return;
-
-  //   // Get container width
-  //   const containerWidth = containerRef.current.offsetWidth;
-
-  //   // Calculate scale
-  //   const scale = containerWidth / sceneWidth;
-
-  //   // Update state with new dimensions
-  //   setStageSize({
-  //     width: sceneWidth * scale,
-  //     height: sceneHeight * scale,
-  //     scale: scale
-  //   });
-  // };
-
-
-  // Update on mount and when window resizes
-
-  // useEffect(() => {
-  //   updateSize();
-  //   window.addEventListener('resize', updateSize);
-
-  //   return () => {
-  //     window.removeEventListener('resize', updateSize);
-  //   };
-  // }, []);
 
   // drawing
   const handleMouseDown = (e) => {
@@ -169,7 +129,7 @@ const Canvas = (props) => {
     }
   };
 
-  // export to pull image from canvas
+  // save image to user's profile [currently disabled]
   const handleSaveToProfile = () => {
 
     let imageUrl = '';
@@ -181,31 +141,25 @@ const Canvas = (props) => {
 
       imageUrl = res.data.split('?')[0];
 
-      console.log('Successful GET request to s3Url: CLIENT');
-
       // make PUT request to the s3 bucket with url from request
       axios.put(res.data, {
-          'Content-Type': "image/png",
-          body: uri
-        }).then(() => {
-
-          console.log('Successful PUT request to s3Url: CLIENT:');
-
-          // image Url needs to be saved to the artwork
-          // to get the image, a request must be made to the
-          // link and accessed by link.body (or whatever variable name is)
-          setImage(uri);
-          console.log(imageUrl);
-
-      }).catch((err) => {
-        console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+        'Content-Type': "image/png",
+        body: uri
       })
+        .then(() => {
+          console.log('Successful PUT request to s3Url: CLIENT');
+
+        })
+        .catch((err) => {
+          console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+        })
 
     }).catch((err) => {
       console.error('Failed GET request to s3Url: CLIENT:', err);
     })
   };
 
+  // save image from canvas locally
   const handleDownload = () => {
 
     const uri = stageRef.current.toDataURL('image/png');
@@ -222,6 +176,7 @@ const Canvas = (props) => {
     downloadURI(uri, 'artwork.png');
   };
 
+  // submits image for that round and adds to DB
   const handleSubmitImage = () => {
 
     // later sets to the link provided from the S3 request to have accessible in outer scope
@@ -235,38 +190,32 @@ const Canvas = (props) => {
 
       imageUrl = res.data.split('?')[0];
 
-      console.log('Successful GET request to s3Url: CLIENT');
-
       // make PUT request to the s3 bucket with url from request
       axios.put(res.data, {
-          'Content-Type': "image/png",
-          body: uri
-        }).then(() => {
-
+        'Content-Type': "image/png",
+        body: uri
+      })
+        .then(() => {
           console.log('Successful PUT request to s3Url: CLIENT:');
-
-          // image Url needs to be saved to the artwork
-          // to get the image, a request must be made to the
-          // link and accessed by link.body (or whatever variable name is)
-          console.log(imageUrl);
 
           axios.post('/artworks', {
             gameCode: code,
             imageUrl: imageUrl
-          }).then(() => {
-            console.log('Successfully posted artwork URL to server: CLIENT')
-
-          }).catch((err) => {
-            console.error('Failed to post artwork URL to server: CLIENT:', err);
           })
-
-      }).catch((err) => {
-        console.error('Failed PUT request to s3 bucket: CLIENT:', err);
-      })
-
-    }).catch((err) => {
-      console.error('Failed GET request to s3Url: CLIENT:', err);
+            .then(() => {
+              console.log('Successfully posted artwork URL to server: CLIENT')
+            })
+            .catch((err) => {
+              console.error('Failed to post artwork URL to server: CLIENT:', err);
+            })
+        })
+        .catch((err) => {
+          console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+        })
     })
+      .catch((err) => {
+        console.error('Failed GET request to s3Url: CLIENT:', err);
+      })
   }
 
   // --------------------[RENDER]---------------------
@@ -320,7 +269,7 @@ const Canvas = (props) => {
               </Layer>
             </Stage>
           </div>
-          <SubmitArtwork handleSubmitImage={handleSubmitImage} handleDone={handleDone}/>
+          <SubmitArtwork handleSubmitImage={handleSubmitImage} handleDone={handleDone} />
         </Flex>
       </Flex>
     </div>
