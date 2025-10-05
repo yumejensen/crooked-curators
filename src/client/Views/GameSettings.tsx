@@ -1,18 +1,18 @@
 // Game Settings Page that pops up after hitting 'Create Game'
 import React from "react";
 import { useState, useEffect } from "react";
-import { useGameContext } from "../context";
 
+// context
+import { useGameContext, useSocketContext } from "../context";
 // UI
 import { Button, Typography, Flex, Card } from '../antdComponents'
-
-
 // COMPONENTS
 import JoinedPlayers from "../Components/JoinedPlayers";
 
-const GameSettings = ({roomCode, players, socket}) => {
-  const { game, setGame } = useGameContext()
-  
+const GameSettings = ({roomCode, players}) => {
+  const { game, setGame } = useGameContext();
+  const { socket } = useSocketContext();
+
   const startGame = () => {
     // emit a nextStage event to server
     socket?.emit('nextStage')
@@ -39,6 +39,7 @@ const GameSettings = ({roomCode, players, socket}) => {
           type='primary'
           size='large'
           onClick={startGame}
+          disabled={!socket || !roomCode}
         >
           START GAME
         </Button>
