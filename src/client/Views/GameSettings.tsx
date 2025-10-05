@@ -15,7 +15,7 @@ const GameSettings = ({roomCode, players, socket}) => {
   
   const startGame = () => {
     // emit a nextStage event to server
-    socket.emit('nextStage')
+    socket?.emit('nextStage')
   }
 
   return (

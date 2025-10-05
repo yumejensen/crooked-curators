@@ -36,7 +36,7 @@ const CuratorSearch = () => {
   };
 
   const selectReference = function (){
-    socket.emit('curatorSelect', results[selected])
+    socket?.emit('curatorSelect', results[selected])
   }
   return (
     <Flex gap="middle" align="center" vertical>
