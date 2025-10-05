@@ -56,7 +56,6 @@ const App: React.FC = () => {
     loggedIn: false,
   });
 
-
   /* represent connected status with socketId on UI (note: this is reactive as opposed to socketRef. 
       no re-render will occur for anything related to socketRef - good for performance) */
   const [userSocketId, setUserSocketId] = useState<string | null>(null);
@@ -80,6 +79,10 @@ const App: React.FC = () => {
     curator: null,
     role: null,
     players: [],
+    reference: {
+      title: null,
+      src: null,
+    },
   });
 
   // socket connection state
@@ -114,9 +117,9 @@ const App: React.FC = () => {
     const newSocket = io(); // connect to the server that served the page
     setSocket(newSocket);
 
-     // --------FUNCTIONS FOR SOCKET LISTENERS ----------
+    // --------FUNCTIONS FOR SOCKET LISTENERS ----------
 
-     // ------- ON CONNECT --------
+    // ------- ON CONNECT --------
     const onConnect = async () => {
       if (!newSocket.id) {
         console.error("Socket ID is not available");
@@ -164,9 +167,14 @@ const App: React.FC = () => {
       setView(roundInfo);
     }
 
+    function referenceSelected(ref) {
+      game.reference = ref
+      setGame(game)
+    }
+
     // SOCKET LISTENERS
     newSocket.on("connect", onConnect);
-
+    newSocket.on("referenceSelected", referenceSelected);
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
 
@@ -185,19 +193,17 @@ const App: React.FC = () => {
   const [roundArtworks, setRoundArtworks] = useState([]);
 
   const handleGetRoundArtworks = () => {
-
     // send get request to /artworks to retrieve images with game code for querying
-    axios.get(`/artworks/${game.code}`)
+    axios
+      .get(`/artworks/${game.code}`)
       .then(({ data }) => {
-
         console.log(data);
 
         // update round artworks state to array of artwork objects
         setRoundArtworks(data);
-
       })
       .catch((err) => {
-        console.error('Failed to GET artworks from round: CLIENT:', err);
+        console.error("Failed to GET artworks from round: CLIENT:", err);
       });
   };
 
@@ -215,67 +221,89 @@ const App: React.FC = () => {
                 colorBgLayout: "#F0E7CA",
                 borderRadius: 2,
 
-            // Alias Token
-            colorBgContainer: '#ffffffff'
-          }
-        }}
-      >
-        <Layout>
-          <NavBar />
-          <div>{`User Context: ${user.username}, ${user.loggedIn} \n Game Context: ${Object.keys(game).map(key=> key + ':' + game[key])}`}</div>
-          <Content
-            style={{
-              padding: '0 48px',
-              color: '#3B262C'
+                // Alias Token
+                colorBgContainer: "#ffffffff",
+              },
             }}
           >
-            <Breadcrumb
-              style={{ margin: '16px 0' }}
-              items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
-            />
-            <div
-              style={{
-                background: colorBgContainer,
-                minHeight: 280,
-                padding: 24,
-                borderRadius: borderRadiusLG
-              }}
-            >
-              <Routes>
-                <Route
-                  path='/'
-                  element={
-                    <Homepage socket={socket}/>
-                  }
-                    />
-                <Route
-                  path='/game-settings'
-                  element={
-                    <>
-                    <SwitchView view={view} />
-                    <GameSettings
-                      roomCode={roomCode}
-                      players={players}
-                      socket={socket}
-                      />
-                    </>
-                  }
+            <Layout>
+              <NavBar />
+              <div>{`User Context: ${user.username}, ${
+                user.loggedIn
+              } \n Game Context: ${Object.keys(game).map(
+                (key) => key + ":" + game[key]
+              )}`}</div>
+              <Content
+                style={{
+                  padding: "0 48px",
+                  color: "#3B262C",
+                }}
+              >
+                <Breadcrumb
+                  style={{ margin: "16px 0" }}
+                  items={[
+                    { title: "Home" },
+                    { title: "List" },
+                    { title: "App" },
+                  ]}
                 />
-                <Route path='/profile' element={<Profile />} />
-                <Route path='/game' element={<ActiveGame socket={socket} handleArtworks={handleGetRoundArtworks}/>} />
-                <Route path='/judging' element={<RoundJudging artworks={roundArtworks} setArtworks={setRoundArtworks}/>} />
-                <Route path='/gallery' element={<Gallery />} />
-                <Route path='/curator' element={<CuratorSearch />} />
-                <Route path='*' element={<p>There is nothing here: 404!</p>} />
-              </Routes>
-            </div>
-          </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
-          </Footer>
-        </Layout>
-      </ConfigProvider>{' '}
-      </SocketContext.Provider>
+                <div
+                  style={{
+                    background: colorBgContainer,
+                    minHeight: 280,
+                    padding: 24,
+                    borderRadius: borderRadiusLG,
+                  }}
+                >
+                  <Routes>
+                    <Route path="/" element={<Homepage socket={socket} />} />
+                    <Route
+                      path="/game-settings"
+                      element={
+                        <>
+                          <SwitchView view={view} />
+                          <GameSettings
+                            roomCode={roomCode}
+                            players={players}
+                            socket={socket}
+                          />
+                        </>
+                      }
+                    />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route
+                      path="/game"
+                      element={
+                        <ActiveGame
+                          socket={socket}
+                          handleArtworks={handleGetRoundArtworks}
+                        />
+                      }
+                    />
+                    <Route
+                      path="/judging"
+                      element={
+                        <RoundJudging
+                          artworks={roundArtworks}
+                          setArtworks={setRoundArtworks}
+                        />
+                      }
+                    />
+                    <Route path="/gallery" element={<Gallery />} />
+                    <Route path="/curator" element={<CuratorSearch />} />
+                    <Route
+                      path="*"
+                      element={<p>There is nothing here: 404!</p>}
+                    />
+                  </Routes>
+                </div>
+              </Content>
+              <Footer style={{ textAlign: "center" }}>
+                Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
+              </Footer>
+            </Layout>
+          </ConfigProvider>{" "}
+        </SocketContext.Provider>
       </GameContext.Provider>
     </UserContext.Provider>
   );

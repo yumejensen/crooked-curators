@@ -4,6 +4,7 @@ import { Button, Flex } from '../antdComponents';
 
 import axios from 'axios'
 
+import { useSocketContext, useUserContext } from '../context';
 
 const buttonStyle: React.CSSProperties = {
   width: '100%',
@@ -12,15 +13,19 @@ const buttonStyle: React.CSSProperties = {
 
 const CreateGameButton = ({username}) => {
 
+  const { socket } = useSocketContext();
+  const { setUser } = useUserContext();
+
   // send a request to /create-game
   // makes a room code and adds it to the db
   const handleCreateGame = () => {
     axios.post('/games/create')
     .then(({data}) => {
-      console.log(data)
+      console.log('create game info from client', data)
       // emit a join game from here
       // join with the roomCode that was just created
-      //socket?.emit('joinGame', {username: username, roomCode: data.gameCode})
+      socket?.emit('joinGame', {username: username, roomCode: data.gameCode})
+      setUser({ username: username, loggedIn: true });
     })
     .catch((err) => {
       // can add client message for user (little popup)
@@ -31,13 +36,13 @@ const CreateGameButton = ({username}) => {
 
   return (
     <Flex style={buttonStyle} justify="center" align="center">
-        {/* <Link to='/game-settings' > */}
+        <Link to='/game-settings' >
 
           <Button onClick={handleCreateGame} >
             Create Game
           </Button>
 
-        {/* </Link> */}
+        </Link>
     </Flex>
   )
 }

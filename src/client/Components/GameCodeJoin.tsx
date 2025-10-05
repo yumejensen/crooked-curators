@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom';
 import { Button, Input, Space, Typography } from "../antdComponents";
 import { FaArrowCircleRight } from "react-icons/fa";
 
-import { useUserContext } from '../context';
+import { useUserContext, useSocketContext } from '../context';
 
-const GameCodeJoin = ({username, socket}) => {
-  // user context
+const GameCodeJoin = ({username}) => {
+  // user context and socket context
   const { setUser } = useUserContext();
+  const { socket } = useSocketContext();
+  
   // state for input field
   const [roomCode, setRoomCode] = useState('');
 
