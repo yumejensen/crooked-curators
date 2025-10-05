@@ -2,27 +2,30 @@
 
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-
-import { Artwork as ArtworkTypes, Ribbon as RibbonTypes } from './types';
-
-// -------------------[COMPONENTS]------------------
-import Ribbon from './Ribbon';
-import Artwork from './Artwork';
-import Forgeries from './Forgeries';
+import axios from 'axios';
 
 import {
   Divider,
   Col,
   Row,
   Flex,
-  FlexProps,
-  Segmented,
   Button,
-  Tooltip
 } from '../antdComponents';
 
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import axios from 'axios';
+
+// -------------------[COMPONENTS]------------------
+
+import Ribbon from './Ribbon';
+import Forgeries from './Forgeries';
+import LockInJudging from './LockInJudging';
+
+// ---------------------[TYPES]---------------------
+
+import { Artwork as ArtworkTypes, Ribbon as RibbonTypes } from './types';
+import { RoundJudging as RoundJudgingProps } from './types';
+
+// ---------------------[STYLE]---------------------
 
 const ribbonsStyle: React.CSSProperties = {
   width: '100%',
@@ -31,12 +34,7 @@ const ribbonsStyle: React.CSSProperties = {
   borderRadius: 6,
 };
 
-const artworksStyle: React.CSSProperties = {
-  width: '100%',
-  //height: 550,
-  height: '100%',
-  borderRadius: 6,
-};
+// --------------------[STATUS]---------------------
 
 const STATUS = [
   {
@@ -47,14 +45,9 @@ const STATUS = [
   },
 ]
 
-type RoundJudgingProps = {
-  artworks: [];
-  setArtworks: () => void;
-};
+// -------------------[COMPONENT]-------------------
 
 const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) => {
-
-  console.log(artworks);
 
   // --------------------[STATES]---------------------
 
@@ -62,16 +55,19 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
 
   // -------------------[HANDLERS]--------------------
 
-  // tracking dragging
+  // handles changing artwork's status upon dropping it in a container
   const handleDragEnd = (e: DragEndEvent) => {
 
     const { active, over } = e;
 
     if (!over) return;
 
+    // grabs artwork's id for reference to change
     const artworkId = active.id as string;
+    // grabs the STATUS/RIBBON color for dropped column
     const newStatus = over.id as ArtworkTypes['status'];
 
+    // ignore error, this works
     setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork))
   }
 
@@ -86,22 +82,14 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
       })
   }
 
+  // -------------------[LIFECYCLE]-------------------
+
+  // pulling ribbons upon render
   useEffect(() => {
+
+    // needs to be added to the socket so the same ribbons are visible for everyone in the game
     getRibbons();
   }, [])
-
-  const handleLockIn = () => {
-
-    // check to make sure that the amount of artworks in each column is exactly one
-    const toUpdate = artworks.map((artwork) => {
-      return artwork.status === 'BLUE' || artwork.status === 'WHITE' || artwork.status === 'RED';
-    })
-
-    console.log(toUpdate);
-
-    // make request to update each of the artworks' entries in the DB to have the ribbon it won
-
-  }
 
   // --------------------[RENDER]---------------------
 
@@ -109,9 +97,10 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
     <>
       <Flex gap="middle" align="center" vertical>
         <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
-          <Button>Lock In Ribbons</Button>
+          <LockInJudging artworks={artworks} ribbons={ribbons} />
         </Flex>
       </Flex>
+      <br />
       <DndContext onDragEnd={handleDragEnd}>
         <Flex gap="middle" align="center" vertical>
           <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
