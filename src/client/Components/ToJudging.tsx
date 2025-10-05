@@ -14,14 +14,14 @@ type ToJudgingProps = {
 
 const ToJudging = ({ done, playerCount, isCurator, socket, handleArtworks }: ToJudgingProps) => {
 
-  const nextStage = () => {
-    // emit a nextStage event to server
-    socket.emit('nextStage')
-  }
+  // const nextStage = () => {
+  //   // emit a nextStage event to server
+  //   socket.emit('nextStage')
+  // }
 
   // call both functions on click for judging time
   const handleClick = () => {
-    nextStage();
+    // nextStage();
     handleArtworks();
   }
 

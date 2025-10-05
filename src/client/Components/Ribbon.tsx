@@ -34,7 +34,7 @@ export function Ribbon({ribbon, artworks}: RibbonProps) {
   // -------------------[HANDLERS]--------------------
 
   const { setNodeRef } =useDroppable({
-    id: ribbon.id
+    id: ribbon.color
   })
 
   // --------------------[RENDER]---------------------

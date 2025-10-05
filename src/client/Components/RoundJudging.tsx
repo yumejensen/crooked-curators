@@ -38,30 +38,10 @@ const artworksStyle: React.CSSProperties = {
   borderRadius: 6,
 };
 
-const RIBBONS: RibbonTypes[] =[
-  {
-    id: 'BLUE',
-    title: 'Blue Ribbon',
-    points: 100,
-    //source: ribbonImages.blueRibbons[0]
-  },
-  {
-    id: 'WHITE',
-    title: 'White Ribbon',
-    points: 50,
-    //source: ribbonImages.whiteRibbons[0]
-  },
-  {
-    id: 'RED',
-    title: 'Red Ribbon',
-    points: 25,
-    //source: ribbonImages.redRibbons[0]
-  },
-]
-
 const STATUS = [
   {
     id: 'FORGERIES',
+    color: 'FORGERIES',
     title: 'Forgeries',
     points: 0
   },
@@ -82,8 +62,6 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
 
   // -------------------[HANDLERS]--------------------
 
-  // fetching the round's artwork
-
   // tracking dragging
   const handleDragEnd = (e: DragEndEvent) => {
 
@@ -94,13 +72,13 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
     const artworkId = active.id as string;
     const newStatus = over.id as ArtworkTypes['status'];
 
-    setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus} : artwork))
+    setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork))
   }
 
   // getting ribbons for the round
   const getRibbons = () => {
     axios.get('/ribbons')
-      .then(({data}) => {
+      .then(({ data }) => {
         setRibbons(data);
       })
       .catch((err) => {
@@ -112,44 +90,57 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
     getRibbons();
   }, [])
 
+  const handleLockIn = () => {
+
+    // check to make sure that the amount of artworks in each column is exactly one
+    const toUpdate = artworks.map((artwork) => {
+      return artwork.status === 'BLUE' || artwork.status === 'WHITE' || artwork.status === 'RED';
+    })
+
+    console.log(toUpdate);
+
+    // make request to update each of the artworks' entries in the DB to have the ribbon it won
+
+  }
+
   // --------------------[RENDER]---------------------
 
   return (
     <>
-    <Flex gap="middle" align="center" vertical>
-      <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
-
-      </Flex>
-    </Flex>
-    <DndContext onDragEnd={handleDragEnd}>
       <Flex gap="middle" align="center" vertical>
         <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
-          {ribbons.map((ribbon) => {
-            return (
-              <Ribbon
-                key={ribbon.id}
-                ribbon={ribbon}
-                artworks={artworks.filter(artwork => artwork.status === ribbon.id)} />
-            )
-          })}
+          <Button>Lock In Ribbons</Button>
         </Flex>
       </Flex>
-      <Divider variant="dotted" style={{ borderColor: '#3B262C' }}>
-        Forgeries
-      </Divider>
-      <Flex gap="middle" align="center" vertical>
-        <Flex wrap style={ribbonsStyle} justify='space-evenly' align='center'>
-          {STATUS.map((status) => {
-            return (
-              <Forgeries
-                key={status.id}
-                status={status}
-                artworks={artworks.filter(artwork => artwork.status === status.id)} />
-            )
-          })}
+      <DndContext onDragEnd={handleDragEnd}>
+        <Flex gap="middle" align="center" vertical>
+          <Flex style={ribbonsStyle} justify='space-evenly' align='center'>
+            {ribbons.map((ribbon) => {
+              return (
+                <Ribbon
+                  key={ribbon.color}
+                  ribbon={ribbon}
+                  artworks={artworks.filter(artwork => artwork.status === ribbon.color)} />
+              )
+            })}
+          </Flex>
         </Flex>
-      </Flex>
-    </DndContext>
+        <Divider variant="dotted" style={{ borderColor: '#3B262C' }}>
+          Forgeries
+        </Divider>
+        <Flex gap="middle" align="center" vertical>
+          <Flex wrap style={ribbonsStyle} justify='space-evenly' align='center'>
+            {STATUS.map((status) => {
+              return (
+                <Forgeries
+                  key={status.id}
+                  status={status}
+                  artworks={artworks.filter(artwork => artwork.status === status.color)} />
+              )
+            })}
+          </Flex>
+        </Flex>
+      </DndContext>
     </>
   )
 }
