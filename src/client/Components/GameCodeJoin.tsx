@@ -5,10 +5,11 @@ import { Link } from 'react-router-dom';
 import { Button, Input, Space, Typography } from "../antdComponents";
 import { FaArrowCircleRight } from "react-icons/fa";
 
-
-import axios from 'axios'
+import { useUserContext } from '../context';
 
 const GameCodeJoin = ({username, socket}) => {
+  // user context
+  const { setUser } = useUserContext();
   // state for input field
   const [roomCode, setRoomCode] = useState('');
 
@@ -18,7 +19,10 @@ const GameCodeJoin = ({username, socket}) => {
   }
 
   const joinGame = () => {
-    socket.emit('joinGame', {username: username, roomCode: roomCode})
+    // emit a join game event to server
+    socket?.emit('joinGame', {username: username, roomCode: roomCode})
+    // update the user context with the chosen username
+    setUser({ username: username, loggedIn: true });
   }
 
   return (
@@ -29,7 +33,10 @@ const GameCodeJoin = ({username, socket}) => {
         <Input placeholder="Game Code" onChange={handleInput} />
 
         <Link to='/game-settings' >
-          <Button onClick={joinGame}>
+          <Button 
+            onClick={joinGame}
+            disabled={!socket || !roomCode}
+          >
             <FaArrowCircleRight />
           </Button>
         </Link>

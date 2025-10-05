@@ -46,7 +46,6 @@ let roundCount = 0
 let allPlayers = [];
 
 
-
 // _______________________________________________________________________________
 io.on('connection', async socket => {
 
@@ -112,7 +111,7 @@ io.on('connection', async socket => {
       //----------------------------------------------------------------------
 
       // to the specific room, emit the room code - make it visible for everyone
-      io.to(joinAttempt.roomCode).emit('sendRoomCode', {
+      io.to(joinAttempt.roomCode).emit('sendRoomDetails', {
         roomCode: joinAttempt.roomCode,
         game: roomExists,
         type: 'join',
@@ -128,55 +127,27 @@ io.on('connection', async socket => {
   }); // end of join game
 
 
-  // _______________________________________________________________________________
-  // STARTING A GAME + ADVANCING A STAGE
-  // note: can still keep startGame which has finding players logic + advanceRound
-  // nextStage can have just an invocation of advanceRound
-  socket.on('nextStage', async () => {
-
-    console.log('next stage event triggered!')
-
-    // query user_games table, find users where gameid = current game id
-    // sort by created at order
-    allPlayers = await User_Game.findAll({
-      where: {
-        game_id: currentGame.id
-      },
-      order: [['createdAt', 'ASC']]
-    })
-
-
-    // advance the first round
-    advanceRound(null);
-
-  }) // end of start game
-
-  socket.on('curatorSelect', async ({title, image}) => {
-    await currentRound.update({ referenceName: title, referenceSrc: image })
-    // send players to the artist stage
-    io.to(currentGame.gameCode).emit('referenceSelected', { title, image })
-  })
-
+  
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
   async function advanceRound(prevRound) {
     console.log('advancing round!')
-
+    
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
       where: { id: allPlayers[roundCount].user_id }
     })
-
+    
     // assign currentRound, then add round to database
     currentRound = await Round.create({
       game_id: currentGame.id,
       curator_id: curator.id
     })
-
+    
     // increment the round by 1
     roundCount++;
-
-
+    
+    
     // GAME CONTEXT
     // define the round's state (matches front end round context)
     let roundState = {
@@ -193,59 +164,56 @@ io.on('connection', async socket => {
         return { username: player.username, finished: false }
       })
     }
-
+    
     // player emit - targets game room except curator
     // pass in roundState
     io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', roundState);
-
+    
     // reassign roundState values for the curator
     roundState.role = 'curator'
-
+    
     // curator emit - targets only curator socket
     // pass in roundState
     io.to(curator.socketId).emit('newRound', roundState);
-
-
-  }
-
-
-
+    
+  } // end of advance round func
+  
   
   // _______________________________________________________________________________
+  // STARTING A GAME + ADVANCING A STAGE
+  // note: can still keep startGame which has finding players logic + advanceRound
+  // nextStage can have just an invocation of advanceRound
+  socket.on('nextStage', async () => {
+    
+    console.log('next stage event triggered!')
+    
+    // query user_games table, find users where gameid = current game id
+    // sort by created at order
+    allPlayers = await User_Game.findAll({
+      where: {
+        game_id: currentGame.id
+      },
+      order: [['createdAt', 'ASC']]
+    })
+    
+    
+    // advance the first round
+    advanceRound(null);
+    
+  }) // end of start game
+  
+
+  // _______________________________________________________________________________
+  // CURATOR SELECTION
+  socket.on('curatorSelect', async ({title, image}) => {
+    await currentRound.update({ referenceName: title, referenceSrc: image })
+    // send players to the artist stage
+    io.to(currentGame.gameCode).emit('referenceSelected', { title, image })
+  })
 
 
 }); // end of connection
 
-
-
-
-
-
-// CREATING A ROOM
-// socket.on("createGame", async (gameInfo) => {
-//   // socket session id variable
-//   // const sessionId = socket.request.session.id
-
-//   // make a gameId (use first 5 of socket id)
-//   const gameCode = socket.id.substring(0, 5);
-
-//   // add the room to the database
-//   await Game.create({ gameCode: gameCode });
-//   const currentGame = await Game.findOne({ where: { gameCode: gameCode}})
-
-//   // add game to map
-//   gamesPlayersMap.set(gameCode, [])
-
-//   // create and join the room
-//   await socket.join(gameCode);
-
-//   // log a message for who created what room
-//   console.log(`${gameInfo.username} created room ${gameCode}`);
-
-//   // emit the room code to that specific room
-//   io.to(gameCode).emit("sendRoomCode", {roomCode: gameCode, game: currentGame, type: 'create'});
-
-// });
 
 
 

@@ -56,17 +56,7 @@ const App: React.FC = () => {
     loggedIn: false,
   });
 
-  function updateUser() {
-    fetchUser()
-      .then(({ data }) => {
-        if (data) {
-          setUser({ username: data.username, loggedIn: true });
-        }
-      })
-      .catch((err) => {
-        setUser({ username: null, loggedIn: false });
-      });
-  }
+
   /* represent connected status with socketId on UI (note: this is reactive as opposed to socketRef. 
       no re-render will occur for anything related to socketRef - good for performance) */
   const [userSocketId, setUserSocketId] = useState<string | null>(null);
@@ -105,18 +95,35 @@ const App: React.FC = () => {
   // view state - tied to game context
   const [view, setView] = useState({});
 
+  // update user function to update context - not being used atm
+  function updateUser() {
+    fetchUser()
+      .then(({ data }) => {
+        if (data) {
+          setUser({ username: data.username, loggedIn: true });
+        }
+      })
+      .catch((err) => {
+        setUser({ username: null, loggedIn: false });
+      });
+  }
+
+  // --------------------[SOCKET LISTENERS]---------------------
   useEffect(() => {
     if (socket) return; // socket already exists
     const newSocket = io(); // connect to the server that served the page
     setSocket(newSocket);
 
-    // SOCKET FUNCTIONS
+     // --------FUNCTIONS FOR SOCKET LISTENERS ----------
+
+     // ------- ON CONNECT --------
     const onConnect = async () => {
       if (!newSocket.id) {
         console.error("Socket ID is not available");
         return;
       }
-      /* below we know we have access to the id because we are inside the connect listener that tells us a connection has been established successfully */
+      /* below we know we have access to the id because we are inside the 
+      connect listener that tells us a connection has been established successfully */
       console.log("socket", newSocket.id);
       setIsConnected(true);
 
@@ -125,18 +132,23 @@ const App: React.FC = () => {
 
         /* now that we know the socket id we can update the user with it */
         axios.put("/api/user/socketId", { socketId: newSocket.id });
-        setUserSocketId(socket.id);
+        setUserSocketId(newSocket.id);
 
-        /* order is important. we need to fetch the user after attaching the socketId if we want access to the socketId on the user in the client (hint, hint) */
+        /* order is important. we need to fetch the user after attaching
+        the socketId if we want access to the socketId on the user in the client (hint, hint) */
         const { data } = await fetchUser();
+        // update the user context to align with db
         setUser({ username: data.username, loggedIn: true });
+
+        // error handling
       } catch (err) {
         console.error("Error initializing socket:", err);
         setUser({ username: null, loggedIn: false });
       }
     };
 
-    function getRoomCode(roomCodeObj) {
+    // ------- ON CONNECT --------
+    function getRoomDetails(roomCodeObj) {
       console.log("game info from server", roomCodeObj);
       // update the room code
       setRoomCode(roomCodeObj.roomCode);
@@ -155,13 +167,13 @@ const App: React.FC = () => {
     // SOCKET LISTENERS
     newSocket.on("connect", onConnect);
 
-    newSocket.on("sendRoomCode", getRoomCode);
+    newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
 
     // SOCKET OFF
     return () => {
       newSocket.off("connect", onConnect);
-      newSocket.off("sendRoomCode", getRoomCode);
+      newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
 
       setUserSocketId(null);
