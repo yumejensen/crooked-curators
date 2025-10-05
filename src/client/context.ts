@@ -40,12 +40,17 @@ export interface Player {
   username: string;
   finished: boolean;
 }
+export interface Reference {
+  title: string;
+  src: string;
+}
 export interface Game {
   stage: string;
   code: string;
   role: string;
   curator: Player | null;
   players: Player[];
+  reference: Reference | { title: null; src: null;}
 }
 
 export interface GameContextType {
