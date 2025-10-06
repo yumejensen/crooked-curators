@@ -122,32 +122,51 @@ io.on('connection', async socket => {
       // if the room does not exist in the db, don't join
       console.log('room does not exist in the db');
       // emit event back to user informing them the code doesn't work
-        // something like: socket.emit("badCode")
+      // something like: socket.emit("badCode")
     }
   }); // end of join game
 
+  socket.on('startGame', async () => {
+    // query user_games table, find users where gameid = current game id
+    // sort by created at order
+    allPlayers = await User_Game.findAll({
+      where: {
+        game_id: currentGame.id
+      },
+      order: [['createdAt', 'ASC']]
+    })
 
-  
+    advanceRound(null)
+  })
+
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
   async function advanceRound(prevRound) {
     console.log('advancing round!')
-    
+
+    //TODO- move this somewhere else?
+    if (prevRound === null) {
+      roundCount = 0
+    } else {
+      roundCount++
+    }
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
       where: { id: allPlayers[roundCount].user_id }
     })
-    
+
     // assign currentRound, then add round to database
     currentRound = await Round.create({
       game_id: currentGame.id,
       curator_id: curator.id
     })
-    
+
     // increment the round by 1
-    roundCount++;
-    
-    
+
+
+
+    console.log('current game;', currentGame)
+
     // GAME CONTEXT
     // define the round's state (matches front end round context)
     let roundState = {
@@ -164,48 +183,50 @@ io.on('connection', async socket => {
         return { username: player.username, finished: false }
       })
     }
-    
+
     // player emit - targets game room except curator
     // pass in roundState
     io.to(currentGame.gameCode).except(curator.socketId).emit('newRound', roundState);
-    
+
     // reassign roundState values for the curator
     roundState.role = 'curator'
-    
+
     // curator emit - targets only curator socket
     // pass in roundState
     io.to(curator.socketId).emit('newRound', roundState);
-    
+
   } // end of advance round func
-  
-  
+
+
   // _______________________________________________________________________________
   // STARTING A GAME + ADVANCING A STAGE
   // note: can still keep startGame which has finding players logic + advanceRound
   // nextStage can have just an invocation of advanceRound
   socket.on('nextStage', async () => {
-    
     console.log('next stage event triggered!')
-    
-    // query user_games table, find users where gameid = current game id
-    // sort by created at order
-    allPlayers = await User_Game.findAll({
-      where: {
-        game_id: currentGame.id
-      },
-      order: [['createdAt', 'ASC']]
-    })
-    
-    
+
+    /* 
+    check stage of current round (get round from db)
+      if reference, set to painting
+      if painting, set to judging
+      if judging, create new round (with advanceRound)
+      POTENTIAL ISSUES;
+        multiple emits occur, causing stages to advance before user input
+          fix: only one client can emit the event, button disabled after one click
+    */
+
+
+
+
     // advance the first round
-    advanceRound(null);
-    
-  }) // end of start game
-  
+
+
+  })
+
 
   // _______________________________________________________________________________
   // CURATOR SELECTION
-  socket.on('curatorSelect', async ({title, image}) => {
+  socket.on('curatorSelect', async ({ title, image }) => {
     await currentRound.update({ referenceName: title, referenceSrc: image })
     // send players to the artist stage
     console.log('ref updated ', title)
