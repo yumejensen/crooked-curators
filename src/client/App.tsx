@@ -172,17 +172,24 @@ const App: React.FC = () => {
       setGame((oldGame)=>({...oldGame, reference: ref}))
     }
 
+    function stageAdvance(stage) {
+      // set game stage to whatever is sent from server
+      setGame((oldGame) => ({...oldGame, stage: stage}))
+    }
+
     // SOCKET LISTENERS
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
+    newSocket.on("stageAdvance", stageAdvance);
 
     // SOCKET OFF
     return () => {
       newSocket.off("connect", onConnect);
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
+      newSocket.off("stageAdvance", stageAdvance);
 
       setUserSocketId(null);
     };

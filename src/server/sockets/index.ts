@@ -118,7 +118,7 @@ io.on('connection', async socket => {
         type: 'join',
         players: playersSocketIds
       });
-
+      
     } else {
       // if the room does not exist in the db, don't join
       console.log('room does not exist in the db');
@@ -126,7 +126,9 @@ io.on('connection', async socket => {
       // something like: socket.emit("badCode")
     }
   }); // end of join game
-
+  
+  // _______________________________________________________________________________
+  // STARTING A GAME 
   socket.on('startGame', async () => {
     // query user_games table, find users where gameid = current game id
     // sort by created at order
@@ -137,6 +139,7 @@ io.on('connection', async socket => {
       order: [['createdAt', 'ASC']]
     })
 
+    // calls advance round with prev round of null
     advanceRound(null)
   })
 
@@ -194,9 +197,9 @@ io.on('connection', async socket => {
 
 
   // _______________________________________________________________________________
-  // STARTING A GAME + ADVANCING A STAGE
-  // note: can still keep startGame which has finding players logic + advanceRound
-  // nextStage can have just an invocation of advanceRound
+  // ADVANCING A STAGE
+  // nextStage updates the stage on the game context
+
   async function advanceStage(stage) {
     console.log('next stage event triggered!')
     /* 
@@ -211,10 +214,19 @@ io.on('connection', async socket => {
         multiple emits occur, causing stages to advance before user input
           fix: only one client can emit the event, button disabled after one click
     */
-
-
-
   }
+
+  // _______________________________________________________________________________
+  // TO JUDGING
+  // emitted from client when judge hits 'To Judging!' button
+  socket.on('toJudging', () => {
+    // call advanceStage stage function 
+    // update stage of the room from painting -> judging
+    io.to(currentGame.gameCode).emit('stageAdvance', 'judging')
+  })
+
+  // _______________________________________________________________________________
+  // TO GALLERY
 
 
   // _______________________________________________________________________________
@@ -223,8 +235,10 @@ io.on('connection', async socket => {
     await currentRound.update({ referenceName: title, referenceSrc: image })
     // send players to the artist stage
     console.log('ref updated ', title)
-    io.to(currentGame.gameCode).emit('referenceSelected', { title: title, src: image })
+    io.to(currentGame.gameCode).emit('referenceSelected', { title: title, src: image });
 
+    // update stage of the room from reference to painting
+    io.to(currentGame.gameCode).emit('stageAdvance', 'painting')
   })
 
 
