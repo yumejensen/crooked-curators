@@ -44,7 +44,7 @@ let currentRound;
 let curator;
 let roundCount = 0
 let allPlayers = [];
-
+let stage = 'lobby'
 
 // _______________________________________________________________________________
 io.on('connection', async socket => {
@@ -111,6 +111,7 @@ io.on('connection', async socket => {
       //----------------------------------------------------------------------
 
       // to the specific room, emit the room code - make it visible for everyone
+      //TODO - update context with code, players array
       io.to(joinAttempt.roomCode).emit('sendRoomDetails', {
         roomCode: joinAttempt.roomCode,
         game: roomExists,
@@ -161,12 +162,6 @@ io.on('connection', async socket => {
       curator_id: curator.id
     })
 
-    // increment the round by 1
-
-
-
-    console.log('current game;', currentGame)
-
     // GAME CONTEXT
     // define the round's state (matches front end round context)
     let roundState = {
@@ -202,14 +197,16 @@ io.on('connection', async socket => {
   // STARTING A GAME + ADVANCING A STAGE
   // note: can still keep startGame which has finding players logic + advanceRound
   // nextStage can have just an invocation of advanceRound
-  socket.on('nextStage', async () => {
+  async function advanceStage(stage) {
     console.log('next stage event triggered!')
-
     /* 
     check stage of current round (get round from db)
       if reference, set to painting
       if painting, set to judging
+        - determine ribbons
       if judging, create new round (with advanceRound)
+        - determine winners
+        - 
       POTENTIAL ISSUES;
         multiple emits occur, causing stages to advance before user input
           fix: only one client can emit the event, button disabled after one click
@@ -217,11 +214,7 @@ io.on('connection', async socket => {
 
 
 
-
-    // advance the first round
-
-
-  })
+  }
 
 
   // _______________________________________________________________________________
@@ -231,6 +224,7 @@ io.on('connection', async socket => {
     // send players to the artist stage
     console.log('ref updated ', title)
     io.to(currentGame.gameCode).emit('referenceSelected', { title: title, src: image })
+
   })
 
 

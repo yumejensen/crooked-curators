@@ -1,8 +1,10 @@
-import React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { Col, Row, Button, Tooltip } from '../antdComponents';
+import { Col, Row, Button, Tooltip } from "../antdComponents";
+
+import { useSocketContext } from "../context";
 
 type ToJudgingProps = {
   done: number;
@@ -10,42 +12,32 @@ type ToJudgingProps = {
   isCurator: boolean;
   socket: any;
   handleArtworks: () => void;
-}
+};
 
-const ToJudging = ({ done, playerCount, isCurator, socket, handleArtworks }: ToJudgingProps) => {
+const ToJudging = ({ done, playerCount, isCurator, handleArtworks }: ToJudgingProps) => {
+  
+  const { socket } = useSocketContext();
 
-  // const nextStage = () => {
-  //   // emit a nextStage event to server
-  //   socket.emit('nextStage')
-  // }
-
-  // call both functions on click for judging time
   const handleClick = () => {
-    // nextStage();
     handleArtworks();
-  }
+    socket.emit("toJudging");
+  };
 
   // --------------------[RENDER]---------------------
 
-  if(done === playerCount){
-
+  if (done === playerCount) {
     return (
-      <Link to='/judging' >
-        <Button onClick={handleClick}>
-          Judging Time!
-        </Button>
-      </Link>
-
-    );
-
+      <Button onClick={handleClick}>
+        Judging Time!
+      </Button>
+      );
   } else {
     return (
       <Button disabled>
         {done} / {playerCount}
       </Button>
-    )
+    );
   }
-
-}
+};
 
 export default ToJudging;
