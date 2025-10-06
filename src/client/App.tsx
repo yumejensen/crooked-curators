@@ -172,17 +172,30 @@ const App: React.FC = () => {
       setGame((oldGame)=>({...oldGame, reference: ref}))
     }
 
+    function stageAdvance(stage) {
+      // set game stage to whatever is sent from server
+      setGame((oldGame) => {
+        // send updated game info to setView
+        setView({...oldGame, stage: stage})
+        // update game context
+        return {...oldGame, stage: stage}
+      })
+      
+    }
+
     // SOCKET LISTENERS
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
+    newSocket.on("stageAdvance", stageAdvance);
 
     // SOCKET OFF
     return () => {
       newSocket.off("connect", onConnect);
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
+      newSocket.off("stageAdvance", stageAdvance);
 
       setUserSocketId(null);
     };
@@ -274,10 +287,13 @@ const App: React.FC = () => {
                     <Route
                       path="/game"
                       element={
+                        <>
+                        <SwitchView view={view} />
                         <ActiveGame
                           socket={socket}
                           handleArtworks={handleGetRoundArtworks}
                         />
+                        </>
                       }
                     />
                     <Route
@@ -290,7 +306,15 @@ const App: React.FC = () => {
                       }
                     />
                     <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/curator" element={<CuratorSearch />} />
+                    <Route 
+                      path="/curator"
+                      element={
+                        <>
+                        <SwitchView view={view} />
+                        <CuratorSearch />
+                        </>
+                      } 
+                    />
                     <Route
                       path="*"
                       element={<p>There is nothing here: 404!</p>}
