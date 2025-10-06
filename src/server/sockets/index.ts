@@ -165,7 +165,7 @@ io.on('connection', async socket => {
 
 
 
-
+    console.log('current game;', currentGame)
 
     // GAME CONTEXT
     // define the round's state (matches front end round context)

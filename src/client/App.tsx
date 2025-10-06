@@ -168,8 +168,8 @@ const App: React.FC = () => {
     }
 
     function referenceSelected(ref) {
-      game.reference = ref
-      setGame(game)
+
+      setGame((oldGame)=>({...oldGame, reference: ref}))
     }
 
     // SOCKET LISTENERS
