@@ -5,8 +5,8 @@ import { useGameContext } from './context';
 
 const SwitchView: React.FC = ({ view }) => {
 
-  // const { role, stage } = useGameContext().game;
-  const { role, stage } = view
+  const { role, stage } = useGameContext().game;
+  //const { role, stage } = view
   
   // new logic - based on game context 
   if (stage === 'reference' && role === 'curator'){
@@ -15,6 +15,10 @@ const SwitchView: React.FC = ({ view }) => {
 
   if (stage === 'reference' && role === 'artist'){
     return <Navigate to={'/game'} />
+  }
+
+  if (stage === 'judging'){
+    return <Navigate to={'/judging'} /> 
   }
 
 };

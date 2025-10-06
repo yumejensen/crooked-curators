@@ -174,7 +174,13 @@ const App: React.FC = () => {
 
     function stageAdvance(stage) {
       // set game stage to whatever is sent from server
-      setGame((oldGame) => ({...oldGame, stage: stage}))
+      setGame((oldGame) => {
+        // send updated game info to setView
+        setView({...oldGame, stage: stage})
+        // update game context
+        return {...oldGame, stage: stage}
+      })
+      
     }
 
     // SOCKET LISTENERS
@@ -281,10 +287,13 @@ const App: React.FC = () => {
                     <Route
                       path="/game"
                       element={
+                        <>
+                        <SwitchView view={view} />
                         <ActiveGame
                           socket={socket}
                           handleArtworks={handleGetRoundArtworks}
                         />
+                        </>
                       }
                     />
                     <Route
@@ -297,7 +306,15 @@ const App: React.FC = () => {
                       }
                     />
                     <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/curator" element={<CuratorSearch />} />
+                    <Route 
+                      path="/curator"
+                      element={
+                        <>
+                        <SwitchView view={view} />
+                        <CuratorSearch />
+                        </>
+                      } 
+                    />
                     <Route
                       path="*"
                       element={<p>There is nothing here: 404!</p>}
