@@ -13,26 +13,26 @@ const items = [
     key: "Profile",
     label: (<Link to='/profile'>Profile</Link>)
   },
-  {
-    key: "GameSettings",
-    label: (<Link to='/game-settings'>Game Settings</Link>)
-  },
-  {
-    key: "CuratorSearch",
-    label: (<Link to='/curator'>Curator</Link>)
-  },
-  {
-    key: "ActiveGame",
-    label: (<Link to='/game'>Game</Link>)
-  },
-    {
-    key: "RoundJudging",
-    label: (<Link to='/judging'>Judging</Link>)
-  },
-  {
-    key: "Gallery",
-    label: (<Link to='/gallery'>Gallery</Link>)
-  },
+  // {
+  //   key: "GameSettings",
+  //   label: (<Link to='/game-settings'>Game Settings</Link>)
+  // },
+  // {
+  //   key: "CuratorSearch",
+  //   label: (<Link to='/curator'>Curator</Link>)
+  // },
+  // {
+  //   key: "ActiveGame",
+  //   label: (<Link to='/game'>Game</Link>)
+  // },
+  //   {
+  //   key: "RoundJudging",
+  //   label: (<Link to='/judging'>Judging</Link>)
+  // },
+  // {
+  //   key: "Gallery",
+  //   label: (<Link to='/gallery'>Gallery</Link>)
+  // },
   {
     key: "Sign-In",
     label: (<SignInButton />)
