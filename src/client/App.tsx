@@ -241,25 +241,25 @@ const App: React.FC = () => {
           >
             <Layout>
               <NavBar />
-              <div>{`User Context: ${user.username}, ${
+              {/* <div>{`User Context: ${user.username}, ${
                 user.loggedIn
               } \n Game Context: ${Object.keys(game).map(
                 (key) => key + ":" + game[key]
-              )}`}</div>
+              )}`}</div> */}
               <Content
                 style={{
                   padding: "0 48px",
                   color: "#3B262C",
                 }}
               >
-                <Breadcrumb
+                {/* <Breadcrumb
                   style={{ margin: "16px 0" }}
                   items={[
                     { title: "Home" },
                     { title: "List" },
                     { title: "App" },
                   ]}
-                />
+                /> */}
                 <div
                   style={{
                     background: colorBgContainer,
@@ -301,6 +301,7 @@ const App: React.FC = () => {
                       element={
                         <RoundJudging
                           artworks={roundArtworks}
+                          handleArtworks={handleGetRoundArtworks}
                           setArtworks={setRoundArtworks}
                         />
                       }
