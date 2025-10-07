@@ -26,6 +26,7 @@ export type Canvas = {
 export type RoundJudging = {
   artworks: [];
   setArtworks: () => void;
+  handleArtworks: () => void;
 };
 
 // for lock in judging button props

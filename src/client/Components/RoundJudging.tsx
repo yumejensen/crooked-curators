@@ -47,7 +47,7 @@ const STATUS = [
 
 // -------------------[COMPONENT]-------------------
 
-const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) => {
+const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: RoundJudgingProps) => {
 
   // --------------------[STATES]---------------------
 
@@ -86,7 +86,7 @@ const RoundJudging: React.FC = ({ artworks, setArtworks }: RoundJudgingProps) =>
 
   // pulling ribbons upon render
   useEffect(() => {
-
+    handleArtworks();
     // needs to be added to the socket so the same ribbons are visible for everyone in the game
     getRibbons();
   }, [])
