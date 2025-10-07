@@ -37,7 +37,6 @@ const ActiveGame: React.FC = ({ socket, handleArtworks }: ActiveGameProps) => {
       <Row gutter={2}>
         <Col span={3}>
           <Card>
-            Card content
           </Card>
         </Col>
         <Col span={18}>
