@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
+
 import {
   Button,
   ReloadOutlined,
@@ -16,11 +17,16 @@ import {
   Space
 } from '../antdComponents';
 
+// import the user context
+import { useUserContext } from "../context";
+
 import { FaArrowCircleRight } from 'react-icons/fa';
 
 import AvatarPicker from '../Components/AvatarPicker';
 import CreateGameButton from '../Components/CreateGameButton';
 import GameCodeJoin from '../Components/GameCodeJoin';
+import SignInToPlay from '../Components/SignInToPlay';
+import HomePageCreateJoin from '../Components/HomepageCreateJoin';
 
 // styling
 
@@ -39,10 +45,10 @@ const randomizerStyle: React.CSSProperties = {
 };
 
 const joinCreateStyle: React.CSSProperties = {
-  width: '100%',
+  width: "100%",
   height: 350,
   borderRadius: 6,
-  border: '3px solid #3B262C'
+  border: "3px solid #3B262C",
 };
 
 const buttonStyle: React.CSSProperties = {
@@ -58,7 +64,10 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
 
   // --------------------[STATES]---------------------
 
-  const [randomName, setRandomName] = useState('')
+  const [randomName, setRandomName] = useState('');
+
+  // logged in context from the user
+  const { loggedIn } = useUserContext().user;
 
   // --------------------[HANDLERS]--------------------
 
@@ -106,6 +115,8 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
             </Flex>
           </Row>
           <Row>
+            {/* <SignInToPlay loggedIn={loggedIn} /> */}
+
             <Flex style={joinCreateStyle} justify='center' align='center'>
               <Col>
                 <Row>
@@ -113,10 +124,14 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
                 </Row>
                 <p />
                 <Row>
-                  <GameCodeJoin username={randomName} socket={socket}/>
+                  <GameCodeJoin username={randomName} />
                 </Row>
               </Col>
             </Flex>
+
+            {/* <HomePageCreateJoin username={randomName} /> */}
+
+
           </Row>
         </Col>
       </Flex>
