@@ -25,8 +25,9 @@ import { FaArrowCircleRight } from 'react-icons/fa';
 import AvatarPicker from '../Components/AvatarPicker';
 import CreateGameButton from '../Components/CreateGameButton';
 import GameCodeJoin from '../Components/GameCodeJoin';
-import SignInToPlay from '../Components/SignInToPlay';
-import HomePageCreateJoin from '../Components/HomepageCreateJoin';
+import HomepageSignInToPlay from '../Components/HomepageSignInToPlay';
+import HomepageCreateJoin from '../Components/HomepageCreateJoin';
+import HomepageName from '../Components/HomepageName';
 
 // styling
 
@@ -37,19 +38,19 @@ const largeStyle: React.CSSProperties = {
   //   border: '3px solid #3B262C',
 };
 
-const randomizerStyle: React.CSSProperties = {
-  width: '100%',
-  height: 75,
-  borderRadius: 6
-  //   border: '3px solid #3B262C',
-};
+// const randomizerStyle: React.CSSProperties = {
+//   width: '100%',
+//   height: 75,
+//   borderRadius: 6
+//   //   border: '3px solid #3B262C',
+// };
 
-const joinCreateStyle: React.CSSProperties = {
-  width: "100%",
-  height: 350,
-  borderRadius: 6,
-  border: "3px solid #3B262C",
-};
+// const joinCreateStyle: React.CSSProperties = {
+//   width: "100%",
+//   height: 350,
+//   borderRadius: 6,
+//   border: "3px solid #3B262C",
+// };
 
 const buttonStyle: React.CSSProperties = {
   width: '100%',
@@ -63,13 +64,14 @@ type HomePageProps = {
 const Homepage: React.FC = ({socket}:HomePageProps) => {
 
   // --------------------[STATES]---------------------
-
+  
   const [randomName, setRandomName] = useState('');
 
   // logged in context from the user
   const { loggedIn } = useUserContext().user;
 
   // --------------------[HANDLERS]--------------------
+
 
   const handleRandomizeName = () => {
     axios.get('/name-randomizer').then(res => {
@@ -91,7 +93,14 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
             <h1>Welcome to Crooked Curators!</h1>
           </Row>
           <Row gutter={15}>
-            <Flex style={randomizerStyle} justify='center' align='center'>
+
+            <HomepageName 
+              username={randomName}
+              handleRandomizeName={handleRandomizeName}
+              loggedIn={loggedIn}
+            />
+
+            {/* <Flex style={randomizerStyle} justify='center' align='center'>
               <Col>
                 <Card
                   style={{ width: 250, height: 50, textAlign: 'center' }}
@@ -112,25 +121,25 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
                   <ReloadOutlined />
                 </Button>
               </Col>
-            </Flex>
+            </Flex> */}
           </Row>
           <Row>
-            {/* <SignInToPlay loggedIn={loggedIn} /> */}
 
-            <Flex style={joinCreateStyle} justify='center' align='center'>
+            {/* <Flex style={joinCreateStyle} justify='center' align='center'>
               <Col>
-                <Row>
-                  <CreateGameButton username={randomName} />
-                </Row>
-                <p />
-                <Row>
-                  <GameCodeJoin username={randomName} />
-                </Row>
+              <Row>
+              <CreateGameButton username={randomName} />
+              </Row>
+              <p />
+              <Row>
+              <GameCodeJoin username={randomName} />
+              </Row>
               </Col>
-            </Flex>
+              </Flex> */}
 
-            {/* <HomePageCreateJoin username={randomName} /> */}
+            <HomepageCreateJoin username={randomName} loggedIn={loggedIn}/>
 
+            <HomepageSignInToPlay loggedIn={loggedIn} />
 
           </Row>
         </Col>
