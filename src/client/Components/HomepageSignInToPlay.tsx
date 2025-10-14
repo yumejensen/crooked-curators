@@ -3,6 +3,8 @@
 import React from "react";
 import { useState} from "react";
 
+import { useUserContext } from "../context";
+
 import { Card, Flex, Col, Row, Button } from '../antdComponents'
 
 import SignInButton2 from "./SignInButton2";
@@ -17,9 +19,13 @@ const buttonStyle: React.CSSProperties = {
   height: 50
 }
 
-const HomepageSignInToPlay = ({loggedIn}) => {
+const HomepageSignInToPlay = () => {
 
-  if (loggedIn){
+  // user context
+  const { loggedIn, username } = useUserContext().user
+
+  // if loggedIn bool is true and the username is NOT undefined don't render
+  if (loggedIn && username !== undefined){
     return null;
   }
 

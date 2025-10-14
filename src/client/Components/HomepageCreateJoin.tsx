@@ -1,5 +1,5 @@
 import React from "react";
-import { useSocketContext } from "../context";
+import { useSocketContext, useUserContext } from "../context";
 
 // ANTD
 import { Flex, Row, Col } from "../antdComponents";
@@ -15,9 +15,13 @@ const joinCreateStyle: React.CSSProperties = {
   border: "3px solid #3B262C",
 };
 
-const HomepageCreateJoin = ({username, loggedIn}) => {
+const HomepageCreateJoin = ({randomName}) => {
 
-  if (!loggedIn){
+  // user context
+  const { loggedIn, username } = useUserContext().user
+
+  // if the loggedIn bool is false or the username is undefined don't render
+  if (!loggedIn || username === undefined){
     return null;
   }
 
@@ -25,11 +29,11 @@ const HomepageCreateJoin = ({username, loggedIn}) => {
     <Flex style={joinCreateStyle} justify="center" align="center">
       <Col>
         <Row>
-          <CreateGameButton username={username} />
+          <CreateGameButton username={randomName} />
         </Row>
         <p />
         <Row>
-          <GameCodeJoin username={username} />
+          <GameCodeJoin username={randomName} />
         </Row>
       </Col>
     </Flex>

@@ -1,7 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+
+import { useUserContext } from '../context';
+
 import { Card, Flex, Col, Button, ReloadOutlined } from '../antdComponents';
+
 
 const randomizerStyle: React.CSSProperties = {
   width: '100%',
@@ -9,9 +13,13 @@ const randomizerStyle: React.CSSProperties = {
   borderRadius: 6
 };
 
-const HomepageName = ({username, handleRandomizeName, loggedIn}) => {
+const HomepageName = ({ randomName, handleRandomizeName }) => {
 
-  if (!loggedIn){
+  // user context
+  const { loggedIn, username } = useUserContext().user
+
+  // if the loggedIn bool is false or the username is undefined don't render
+  if (!loggedIn || username === undefined){
     return null;
   }
 
@@ -28,7 +36,7 @@ const HomepageName = ({username, handleRandomizeName, loggedIn}) => {
               marginTop: "1px",
             }}
           >
-            {username}
+            {randomName}
           </h2>
         </Card>
       </Col>

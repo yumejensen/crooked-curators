@@ -51,8 +51,6 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
   
   const [randomName, setRandomName] = useState('');
 
-  // logged in context from the user
-  const { loggedIn } = useUserContext().user;
 
   // --------------------[HANDLERS]--------------------
 
@@ -78,14 +76,13 @@ const Homepage: React.FC = ({socket}:HomePageProps) => {
           </Row>
           <Row gutter={15}>
             <HomepageName 
-              username={randomName}
+              randomName={randomName}
               handleRandomizeName={handleRandomizeName}
-              loggedIn={loggedIn}
             />
           </Row>
           <Row>
-            <HomepageCreateJoin username={randomName} loggedIn={loggedIn}/>
-            <HomepageSignInToPlay loggedIn={loggedIn} />
+            <HomepageCreateJoin randomName={randomName} />
+            <HomepageSignInToPlay />
           </Row>
         </Col>
       </Flex>
