@@ -15,8 +15,11 @@ const joinCreateStyle: React.CSSProperties = {
   border: "3px solid #3B262C",
 };
 
-const HomePageCreateJoin = ({username}) => {
+const HomepageCreateJoin = ({username, loggedIn}) => {
 
+  if (!loggedIn){
+    return null;
+  }
 
   return (
     <Flex style={joinCreateStyle} justify="center" align="center">
@@ -33,4 +36,4 @@ const HomePageCreateJoin = ({username}) => {
   );
 };
 
-export default HomePageCreateJoin;
+export default HomepageCreateJoin;
