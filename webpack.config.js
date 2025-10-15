@@ -14,7 +14,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
-    new BundleAnalyzerPlugin()
+    // new BundleAnalyzerPlugin()
   ],
   resolve: {
     extensions: [".js", ".jsx", ".tsx", ".ts"],
