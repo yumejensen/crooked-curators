@@ -2,8 +2,7 @@ import * as React from "react";
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router";
 import App from './App'
-import AppCopy from "./AppCopy";
-import ActiveGame from './Views/ActiveGame';
+import './CSS/style.css'
 
 import {
   ConfigProvider,
