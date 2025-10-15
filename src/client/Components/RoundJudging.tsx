@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import { useGameContext } from '../context';
 import axios from 'axios';
 
 import {
@@ -51,7 +52,8 @@ const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: Round
 
   // --------------------[STATES]---------------------
 
-  const [ribbons, setRibbons] = useState([]);
+  // const [ribbons, setRibbons] = useState([]);
+  const { ribbons } = useGameContext().game
 
   // -------------------[HANDLERS]--------------------
 
@@ -71,16 +73,17 @@ const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: Round
     setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork))
   }
 
-  // getting ribbons for the round
-  const getRibbons = () => {
-    axios.get('/ribbons')
-      .then(({ data }) => {
-        setRibbons(data);
-      })
-      .catch((err) => {
-        console.error('Failed to GET ribbons: CLIENT:', err);
-      })
-  }
+  // // getting ribbons for the round
+  // const getRibbons = () => {
+  //   axios.get('/ribbons')
+  //     .then(({ data }) => {
+  //       setRibbons(data);
+  //       console.log('RIBBON DATA', data)
+  //     })
+  //     .catch((err) => {
+  //       console.error('Failed to GET ribbons: CLIENT:', err);
+  //     })
+  // }
 
   // -------------------[LIFECYCLE]-------------------
 
@@ -88,7 +91,7 @@ const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: Round
   useEffect(() => {
     handleArtworks();
     // needs to be added to the socket so the same ribbons are visible for everyone in the game
-    getRibbons();
+    // getRibbons();
   }, [])
 
   // --------------------[RENDER]---------------------

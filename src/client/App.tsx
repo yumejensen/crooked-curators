@@ -172,6 +172,13 @@ const App: React.FC = () => {
       setGame((oldGame) => ({ ...oldGame, reference: ref }))
     }
 
+    function ribbonsSelected() {
+      // update game context with ribbons
+
+
+      //setGame((oldGame) => ({...oldGame, ribbons: ribbons}))
+    }
+
     function stageAdvance(stage) {
       // set game stage to whatever is sent from server
       setGame((oldGame) => {
@@ -220,6 +227,21 @@ const App: React.FC = () => {
       });
   };
 
+  // -------------------[RIBBONS]--------------------
+
+  // getting ribbons for the round
+  const getRibbons = () => {
+    axios.get('/ribbons')
+      .then(({ data }) => {
+        setGame((oldGame) => ({...oldGame, ribbons: data}))
+      })
+      .catch((err) => {
+        console.error('Failed to GET ribbons: CLIENT:', err);
+      })
+  }
+
+
+
   // --------------------[RENDER]---------------------
 
   return (
@@ -244,7 +266,7 @@ const App: React.FC = () => {
                 style={{
                   background: colorBgContainer,
                   minHeight: 280,
-                  minWidth: 1200,
+                  minWidth: 1100,
                   padding: 24,
                   borderRadius: 20,
                 }}

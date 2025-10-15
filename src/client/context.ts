@@ -44,10 +44,15 @@ export interface Reference {
   title: string;
   src: string;
 }
+export interface Ribbon {
+
+}
+
 export interface Game {
   stage: string;
   code: string;
   role: string;
+  ribbons: Ribbon[];
   curator: Player | null;
   players: Player[];
   reference: Reference | { title: null; src: null;}
@@ -71,6 +76,7 @@ export function useGameContext() {
 
 
 import { Socket } from "socket.io-client";
+import { ArrayDataType } from 'sequelize';
 
 // SOCKET CONTEXT HANDLING
 
