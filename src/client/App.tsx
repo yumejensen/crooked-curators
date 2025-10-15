@@ -78,6 +78,7 @@ const App: React.FC = () => {
     stage: "lobby",
     curator: null,
     role: null,
+    ribbons: [],
     players: [],
     reference: {
       title: null,
@@ -173,10 +174,9 @@ const App: React.FC = () => {
     }
 
     function ribbonsSelected() {
-      // update game context with ribbons
+      // call the function
+      getRibbons()
 
-
-      //setGame((oldGame) => ({...oldGame, ribbons: ribbons}))
     }
 
     function stageAdvance(stage) {
@@ -196,6 +196,7 @@ const App: React.FC = () => {
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
     newSocket.on("stageAdvance", stageAdvance);
+    newSocket.on("ribbonsSelected", ribbonsSelected);
 
     // SOCKET OFF
     return () => {
@@ -203,6 +204,7 @@ const App: React.FC = () => {
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
+      newSocket.off("ribbonsSelected", ribbonsSelected);
 
       setUserSocketId(null);
     };
@@ -233,7 +235,9 @@ const App: React.FC = () => {
   const getRibbons = () => {
     axios.get('/ribbons')
       .then(({ data }) => {
+        // update the ribbons on the game state
         setGame((oldGame) => ({...oldGame, ribbons: data}))
+        console.log('game context', game.ribbons, 'data', data)
       })
       .catch((err) => {
         console.error('Failed to GET ribbons: CLIENT:', err);

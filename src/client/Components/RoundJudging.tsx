@@ -53,7 +53,8 @@ const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: Round
   // --------------------[STATES]---------------------
 
   // const [ribbons, setRibbons] = useState([]);
-  const { ribbons } = useGameContext().game
+  const { ribbons } = useGameContext().game;
+  console.log('ribbons context', ribbons);
 
   // -------------------[HANDLERS]--------------------
 

@@ -1,6 +1,8 @@
 import { createContext, useContext } from 'react';
 import axios from 'axios';
 
+import { Ribbon as RibbonType } from './Components/types';
+
 // USER CONTEXT HANDLING
 
 export interface User {
@@ -44,15 +46,12 @@ export interface Reference {
   title: string;
   src: string;
 }
-export interface Ribbon {
-
-}
 
 export interface Game {
   stage: string;
   code: string;
   role: string;
-  ribbons: Ribbon[];
+  ribbons: RibbonType[];
   curator: Player | null;
   players: Player[];
   reference: Reference | { title: null; src: null;}
