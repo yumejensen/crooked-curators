@@ -239,18 +239,12 @@ const App: React.FC = () => {
                 color: "#3B262C",
               }}
             >
-              {/* <Breadcrumb
-                  style={{ margin: "16px 0" }}
-                  items={[
-                    { title: "Home" },
-                    { title: "List" },
-                    { title: "App" },
-                  ]}
-                /> */}
+              <br />
               <div
                 style={{
                   background: colorBgContainer,
                   minHeight: 280,
+                  minWidth: 1200,
                   padding: 24,
                   borderRadius: 20,
                 }}

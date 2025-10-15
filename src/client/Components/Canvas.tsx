@@ -30,9 +30,9 @@ import { Canvas as CanvasPropTypes } from './types';
 // ---------------------[STYLE]---------------------
 
 const boxStyle: React.CSSProperties = {
-  width: '100%',
+  width: 900,
   //height: 550,
-  height: '100%',
+  height: 500,
   borderRadius: 6,
 };
 
@@ -40,8 +40,8 @@ const canvasBoxStyle: React.CSSProperties = {
   width: '100%',
   //height: 550,
   height: '100%',
-  borderRadius: 6,
-  border: '3px solid #3B262C',
+  // borderRadius: 6,
+  // border: '3px solid #3B262C',
 };
 
 // -------------------[COMPONENT]-------------------
