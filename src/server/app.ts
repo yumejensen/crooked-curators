@@ -20,7 +20,7 @@ const db = require('./db/index');
 
 // --------------ENV------------------
 
-const { SESSION_SECRET } = process.env;
+const { SESSION_SECRET, DEBUG_MODE } = process.env;
 
 // ------INIT GOOGLE STRATEGY--------
 // require auth to initialize google strategy
@@ -54,9 +54,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// path to files
-const CLIENT = path.resolve(__dirname, '../client');
+// path to static files
+// make different client paths depending on DEBUG_MODE true or false
+const CLIENT = DEBUG_MODE ? path.resolve(__dirname, '../../dist/client') : path.resolve(__dirname, '../client');
 const HTML = path.resolve(CLIENT, './index.html');
+
 
 // parsing
 app.use(bodyParser.json());
