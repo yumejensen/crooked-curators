@@ -55,8 +55,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // path to files
-const CLIENT = path.resolve(__dirname, '../../dist');
-const HTML = path.resolve(__dirname, '../../dist/index.html');
+const CLIENT = path.resolve(__dirname, '../client');
+const HTML = path.resolve(CLIENT, './index.html');
 
 // parsing
 app.use(bodyParser.json());
