@@ -172,12 +172,6 @@ const App: React.FC = () => {
       setGame((oldGame) => ({ ...oldGame, reference: ref }))
     }
 
-    // function ribbonsSelected() {
-    //   // call the function
-    //   getRibbons()
-    // }
-    // MIGHT DELETE THIS PART ^^^
-
     function stageAdvance(stage) {
       // set game stage to whatever is sent from server
       setGame((oldGame) => {
@@ -195,8 +189,6 @@ const App: React.FC = () => {
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
     newSocket.on("stageAdvance", stageAdvance);
-    // newSocket.on("ribbonsSelected", ribbonsSelected);
-    // MIGHT DELETE THIS PART ^^^
 
     // SOCKET OFF
     return () => {
@@ -204,8 +196,6 @@ const App: React.FC = () => {
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
-      // newSocket.off("ribbonsSelected", ribbonsSelected);
-      // MIGHT DELETE THIS PART ^^^
 
       setUserSocketId(null);
     };
@@ -229,23 +219,6 @@ const App: React.FC = () => {
         console.error("Failed to GET artworks from round: CLIENT:", err);
       });
   };
-
-  // -------------------[RIBBONS]--------------------
-
-  // getting ribbons for the round
-  // const getRibbons = () => {
-  //   axios.get('/ribbons')
-  //     .then(({ data }) => {
-  //       // update the ribbons on the game state
-  //       setGame((oldGame) => ({...oldGame, ribbons: data}))
-  //       console.log('game context', game.ribbons, 'data', data)
-  //     })
-  //     .catch((err) => {
-  //       console.error('Failed to GET ribbons: CLIENT:', err);
-  //     })
-  // }
-  // MOVING THIS ELSEWHERE
-
 
 
   // --------------------[RENDER]---------------------

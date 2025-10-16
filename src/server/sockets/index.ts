@@ -242,9 +242,6 @@ io.on('connection', async socket => {
     // update stage of the room from painting -> judging
     io.to(currentGame.gameCode).emit('stageAdvance', 'judging')
 
-    // call to update the ribbons
-    // io.to(currentGame.gameCode).emit('ribbonsSelected')
-    // MIGHT DELETE THIS PART ^^^
   })
 
   // _______________________________________________________________________________
