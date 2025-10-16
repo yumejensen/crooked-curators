@@ -6,9 +6,11 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist/server",
+    "resolveJsonModule": true
   },
   "lib": ["es2015"],
   "strict": true,
-  "allowImportingTsExtensions": true,
+  // "allowImportingTsExtensions": true,
+  "exclude": ["dist", "node_modules"],
   "include": ["src/server/**/*"]
 }

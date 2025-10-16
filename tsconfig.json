@@ -9,7 +9,7 @@
     "moduleDetection": "force",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "dist/client",
     "lib": ["es2022", "dom", "dom.iterable"],
     //"strict": true,
   },
