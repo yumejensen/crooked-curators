@@ -165,21 +165,22 @@ io.on('connection', async socket => {
       curator_id: curator.id
     })
 
+    // variable to hold array of 3 ribbons
+    let ribbonsForRound;
+
     // select 3 ribbons for the round
-    const getRibbons = () => {
-        axios.get('/ribbons')
-          .then(async({ data }) => {
-            // return the array
-            console.log('ribbons for the round', data)
-            await data
+    const getRibbons = async () => {
+        await axios.get(`${BASE_URL}/ribbons`)
+          .then(({ data }) => {
+            // assign the returned array of ribbons to ribbonsForRound
+            ribbonsForRound = data;
           })
           .catch((err) => {
-            console.error('Failed to GET ribbons: CLIENT:', err);
+            console.error('Failed to GET ribbons: SERVER:', err);
           })
         }
+      await getRibbons();
     
-    const ribbonsForRound = getRibbons();
-    console.log('ribbonsForRound', ribbonsForRound);
     
     // GAME CONTEXT
     // define the round's state (matches front end round context)

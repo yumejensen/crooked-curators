@@ -50,12 +50,10 @@ const STATUS = [
 
 const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: RoundJudgingProps) => {
 
-  // --------------------[STATES]---------------------
+  // -------------------[CONTEXT]---------------------
 
-  // const [ribbons, setRibbons] = useState([]);
   const { ribbons } = useGameContext().game;
-  console.log('ribbons context', ribbons);
-
+ 
   // -------------------[HANDLERS]--------------------
 
   // handles changing artwork's status upon dropping it in a container
@@ -74,25 +72,11 @@ const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: Round
     setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork))
   }
 
-  // // getting ribbons for the round
-  // const getRibbons = () => {
-  //   axios.get('/ribbons')
-  //     .then(({ data }) => {
-  //       setRibbons(data);
-  //       console.log('RIBBON DATA', data)
-  //     })
-  //     .catch((err) => {
-  //       console.error('Failed to GET ribbons: CLIENT:', err);
-  //     })
-  // }
-
   // -------------------[LIFECYCLE]-------------------
 
   // pulling ribbons upon render
   useEffect(() => {
     handleArtworks();
-    // needs to be added to the socket so the same ribbons are visible for everyone in the game
-    // getRibbons();
   }, [])
 
   // --------------------[RENDER]---------------------
