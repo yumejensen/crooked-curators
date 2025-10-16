@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize')
+import { DataTypes } from "sequelize";
 
 // when making db locally, name it "crooked_curators"
 
@@ -20,4 +21,62 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   })
 
-export default sequelize;
+  export default sequelize;
+
+
+
+// -------INITIALIZE MODELS----------
+
+// require all sequelize models
+
+import { User_Game } from './schemas/users-games';
+import { Artwork } from './schemas/artworks';
+import { Ribbon } from './schemas/ribbons'
+import { User } from './schemas/users';
+import { Round } from './schemas/rounds'
+import { Game } from './schemas/games';
+
+// establish relationships
+
+// NOTE: user_games table seems to work fine w/o these relationships
+// User.belongsToMany(Game, { through: User_Game });
+// Game.belongsToMany(User, { through: User_Game });
+
+// User.hasMany(User_Game);
+// User_Game.belongsTo(User);
+
+// Game.hasMany(User_Game);
+// User_Game.belongsTo(Game);
+
+// User.hasMany(Artwork);
+// Artwork.belongsTo(Round);
+
+
+// synchronize models individually
+
+const syncModels = async () => {
+  try {
+    await User.sync();
+    await Game.sync();
+    await User_Game.sync();
+    await Round.sync();
+    await Ribbon.sync();
+    await Artwork.sync();
+
+      console.log('All models synchronized successfully')
+  } catch (err) {
+    console.error('failed to sync models', err)
+  }
+}
+
+syncModels();
+
+
+// synchronize all models at once - drop tables/ add new fields
+
+// (async () => {
+//   await sequelize.sync({force: true});
+//     console.log('All models synchronized successfully.');
+// })();
+
+

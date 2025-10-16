@@ -1,51 +1,37 @@
 import React from 'react'
+import { Link, useMatch, useResolvedPath } from 'react-router-dom';
+import { SignInButton } from './SignInButton';
 
-import { Layout, Menu } from 'antd'
-const { Header } = Layout
+import { NavBar as NavBarTypes } from './types';
 
-// declare navbar items
-const items = [
-    {
-        key: "Homepage",
-        label: "Home"
-    },
-    {
-        key: "Profile",
-        label: "Profile"
-    },
-    {
-        key: "GameSettings",
-        label: "Game Settings"
-    },
-    {
-        key: "ActiveGame",
-        label: "Game"
-    },
-    {
-        key: "Sign-In",
-        label: (<a href='/auth/google/'>Sign-In</a>)
-    },
-    {
-        key: "Sign-Out",
-        label: "Sign-Out"
-    }
-];
-
-const NavBar: React.FC = (props) => {
+const NavBar: React.FC = (props: NavBarTypes) => {
 
   return (
-    <Header style={{ display: 'flex', alignItems: 'center' }}>
-      <div className="demo-logo" />
-      <Menu
-        onClick={props.onClick}
-        theme="dark"
-        mode="horizontal"
-        defaultSelectedKeys={['2']}
-        items={items}
-        style={{ flex: 1, minWidth: 0 }}
-      />
-    </Header>
+    <nav className="new-nav">
+      {/* <a href='/' className='site-title' style={{...aStyle, ...titleStyle}} >Crooked Curators</a> */}
+      <Link to='/' className='site-title'>
+        Crooked Curators
+      </Link>
+      <ul>
+        <CustomLink to='/profile'>Profile</CustomLink>
+        <SignInButton />
+      </ul>
+    </nav>
   );
 };
+
+const CustomLink = ({ to, children, ...props}) => {
+
+  const resolvedPath = useResolvedPath(to);
+  const isActive = useMatch({ path: resolvedPath.pathname, end: true });
+
+  return (
+    <li className={isActive ? 'active' : ''}>
+      <Link to={to} {...props}>
+        {children}
+      </Link>
+    </li>
+  )
+}
 
 export default NavBar;

@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require("path");
 
 module.exports = {
@@ -13,14 +14,17 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
+    // new BundleAnalyzerPlugin()
   ],
   resolve: {
-    modules: [__dirname, "src", "node_modules"],
-    extensions: ["*", ".js", ".jsx", ".tsx", ".ts"],
+    extensions: [".js", ".jsx", ".tsx", ".ts"],
   },
   module: {
     rules: [
-      { test: /\.([cm]?ts|tsx)$/, loader: "ts-loader" },
+      { test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        loader: "ts-loader" 
+      },
       {
         test: /\.(js|jsx|tsx|ts)$/,
         exclude: /node_modules/,
@@ -37,18 +41,8 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
-        use: [
-          "style-loader", 
-          {
-            loader: "css-loader",
-            options: {
-              modules: {
-                namedExport: false,
-              }
-            }
-          }
-        ]
+        use: ["style-loader", "css-loader"],
+        exclude: /node_modules/
       },
       {
         test: /\.(png|svg|jpg|gif)$/,

@@ -7,7 +7,7 @@ const authRouter = Router();
 authRouter.get('/',
   passport.authenticate('google', { scope: ['email', 'profile'] }),
   (req, res)=>{
-    console.log('user attempting login', req.body.user);
+    // console.log('user attempting login', req.body.user);
   });
 
 authRouter.get('/callback',
@@ -17,6 +17,21 @@ authRouter.get('/callback',
   (req, res) => {
     res.redirect('/');
   });
+
+authRouter.get('/logout', (req, res, next) =>{
+  req.logout(function(err){
+    if(err){
+      return next(err)
+    }
+    res.redirect('/')
+  })
+}
+)
+
+// use this to make user context on frontend as well
+authRouter.get('/user', (req, res)=>{
+  res.send(req.user)
+})
 
 
 export { authRouter };

@@ -1,95 +1,321 @@
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState, useEffect } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import axios from "axios";
+import { Socket, io } from "socket.io-client";
+import { RawPurePanel } from "antd/es/popover/PurePanel";
+
+import {
+  Breadcrumb,
+  Layout,
+  theme,
+  Content,
+  Footer,
+  ConfigProvider,
+} from "./antdComponents";
+
 
 // -------------------[COMPONENTS]------------------
-import NavBar from './Components/NavBar';
+import NavBar from "./Components/NavBar";
+import SwitchView from "./SwitchView";
 
-import Homepage from './Views/Homepage';
-import Profile from './Views/Profile';
-import GameSettings from './Views/GameSettings';
-import ActiveGame from './Views/ActiveGame';
+import Homepage from "./Views/Homepage";
+import Profile from "./Views/Profile";
+import GameSettings from "./Views/GameSettings";
+import ActiveGame from "./Views/ActiveGame";
+import RoundJudging from "./Components/RoundJudging";
+import Gallery from "./Components/Gallery";
+import CuratorSearch from "./Components/CuratorSearch";
 
-const { Header, Content, Footer } = Layout;
-
-// const items = Array.from({ length: 15 }).map((_, index) => ({
-//   key: index + 1,
-//   label: `nav ${index + 1}`,
-// }));
-
-
-const Views: React.FC = (props) => {
-
-  // --------------------[STATES]---------------------
-  const { view } = props;
-
-  // ---------------[VIEW CONDITIONALS]---------------
-  if(view === "Homepage"){
-    return (<Homepage />)
-
-  } else if(view === "Profile"){
-    return (<Profile />)
-
-  } else if(view === "GameSettings"){
-    return (<GameSettings />)
-
-  } else if(view === "ActiveGame"){
-    return (<ActiveGame />)
-
-  }
-}
+// Context imports
+import {
+  User,
+  UserContext,
+  useUserContext,
+  fetchUser,
+  Game,
+  Player,
+  GameContext,
+  useGameContext,
+  SocketContext,
+} from "./context";
 
 const App: React.FC = () => {
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
 
   // --------------------[STATES]---------------------
-  const [view, setView] = useState('Homepage')
 
-  // -------------------[COMPONENTS]------------------
+  const [user, setUser] = useState<User>({
+    username: null,
+    loggedIn: false,
+  });
 
+  /* represent connected status with socketId on UI (note: this is reactive as opposed to socketRef. 
+      no re-render will occur for anything related to socketRef - good for performance) */
+  const [userSocketId, setUserSocketId] = useState<string | null>(null);
+  /*
+   * anyone who opens app upon login:
+   * 1. create socket
+   * 2. update user with socket id (add to state)
+   * 3. fetch user
+   *
+   * if creating game
+   * 4. create game - http
+   * 5. join game
+   *
+   * if joining game
+   * 4. join game
+   */
 
+  const [game, setGame] = useState<Game>({
+    code: "",
+    stage: "lobby",
+    curator: null,
+    role: null,
+    players: [],
+    reference: {
+      title: null,
+      src: null,
+    },
+  });
 
-  // --------------------[HELPERS]--------------------
+  // socket connection state
+  const [isConnected, setIsConnected] = useState(socket?.connected || false);
+  // game code state
+  const [roomCode, setRoomCode] = useState("");
+  // players state
+  const [players, setPlayers] = useState([]);
 
-  const handleClick = (e) => {
-    const { key } = e;
+  // start game state
+  const [startGame, setStartGame] = useState(false);
 
-    // set view state to the tab clicked in navbar
-    setView(key);
+  // view state - tied to game context
+  const [view, setView] = useState({});
+
+  // update user function to update context - not being used atm
+  function updateUser() {
+    fetchUser()
+      .then(({ data }) => {
+        if (data) {
+          setUser({ username: data.username, loggedIn: true });
+        }
+      })
+      .catch((err) => {
+        setUser({ username: null, loggedIn: false });
+      });
   }
 
+  // --------------------[SOCKET LISTENERS]---------------------
+  useEffect(() => {
+    if (socket) return; // socket already exists
+    const newSocket = io(); // connect to the server that served the page
+    setSocket(newSocket);
+
+    // --------FUNCTIONS FOR SOCKET LISTENERS ----------
+
+    // ------- ON CONNECT --------
+    const onConnect = async () => {
+      if (!newSocket.id) {
+        console.error("Socket ID is not available");
+        return;
+      }
+      /* below we know we have access to the id because we are inside the 
+      connect listener that tells us a connection has been established successfully */
+      console.log("socket", newSocket.id);
+      setIsConnected(true);
+
+      try {
+        console.log("SOCKO", newSocket.id);
+
+        /* now that we know the socket id we can update the user with it */
+        axios.put("/api/user/socketId", { socketId: newSocket.id });
+        setUserSocketId(newSocket.id);
+
+        /* order is important. we need to fetch the user after attaching
+        the socketId if we want access to the socketId on the user in the client (hint, hint) */
+        const { data } = await fetchUser();
+        // update the user context to align with db
+        setUser({ username: data.username, loggedIn: true });
+
+        // error handling
+      } catch (err) {
+        console.error("Error initializing socket:", err);
+        setUser({ username: null, loggedIn: false });
+      }
+    };
+
+    // ------- ON CONNECT --------
+    function getRoomDetails(roomCodeObj) {
+      console.log("game info from server", roomCodeObj);
+      // update the room code
+      setRoomCode(roomCodeObj.roomCode);
+      // update players array
+      setPlayers(roomCodeObj.players);
+    }
+
+    function roundAdvance(roundInfo) {
+      console.log("round advancing");
+      // update the game context
+      setGame(roundInfo);
+      // change view to the new stage
+      setView(roundInfo);
+    }
+
+    function referenceSelected(ref) {
+
+      setGame((oldGame) => ({ ...oldGame, reference: ref }))
+    }
+
+    function stageAdvance(stage) {
+      // set game stage to whatever is sent from server
+      setGame((oldGame) => {
+        // send updated game info to setView
+        setView({ ...oldGame, stage: stage })
+        // update game context
+        return { ...oldGame, stage: stage }
+      })
+
+    }
+
+    // SOCKET LISTENERS
+    newSocket.on("connect", onConnect);
+    newSocket.on("referenceSelected", referenceSelected);
+    newSocket.on("sendRoomDetails", getRoomDetails);
+    newSocket.on("newRound", roundAdvance);
+    newSocket.on("stageAdvance", stageAdvance);
+
+    // SOCKET OFF
+    return () => {
+      newSocket.off("connect", onConnect);
+      newSocket.off("sendRoomDetails", getRoomDetails);
+      newSocket.off("newRound", roundAdvance);
+      newSocket.off("stageAdvance", stageAdvance);
+
+      setUserSocketId(null);
+    };
+  }, []);
+
+  // -------------------[ARTWORKS]--------------------
+
+  const [roundArtworks, setRoundArtworks] = useState([]);
+
+  const handleGetRoundArtworks = () => {
+    // send get request to /artworks to retrieve images with game code for querying
+    axios
+      .get(`/artworks/${game.code}`)
+      .then(({ data }) => {
+        console.log(data);
+
+        // update round artworks state to array of artwork objects
+        setRoundArtworks(data);
+      })
+      .catch((err) => {
+        console.error("Failed to GET artworks from round: CLIENT:", err);
+      });
+  };
+
+  // --------------------[RENDER]---------------------
+
   return (
-    <Layout>
-      <NavBar onClick={handleClick}/>
-      <Content style={{ padding: '0 48px' }}>
-        <Breadcrumb
-          style={{ margin: '16px 0' }}
-          items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
-        />
-        <div
-          style={{
-            background: colorBgContainer,
-            minHeight: 280,
-            padding: 24,
-            borderRadius: borderRadiusLG,
-          }}
-        >
-          Content
+    <UserContext.Provider value={{ user, setUser }}>
+      <GameContext.Provider value={{ game, setGame }}>
+        <SocketContext.Provider value={{ socket, setSocket }}>
 
-          <Views view={view} />
-
-        </div>
-
-
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
-      </Footer>
-    </Layout>
+          <Layout>
+            <NavBar />
+            <div>{`User Context: ${user.username}, ${user.loggedIn
+              } \n Game Context: ${Object.keys(game).map(
+                (key) => key + ":" + game[key]
+              )}`}</div>
+            <Content
+              style={{
+                padding: "0 15%",
+                color: "#3B262C",
+              }}
+            >
+              {/* <Breadcrumb
+                  style={{ margin: "16px 0" }}
+                  items={[
+                    { title: "Home" },
+                    { title: "List" },
+                    { title: "App" },
+                  ]}
+                /> */}
+              <div
+                style={{
+                  background: colorBgContainer,
+                  minHeight: 280,
+                  padding: 24,
+                  borderRadius: 20,
+                }}
+              >
+                <Routes>
+                  <Route path="/" element={<Homepage socket={socket} />} />
+                  <Route
+                    path="/game-settings"
+                    element={
+                      <>
+                        <SwitchView view={view} />
+                        <GameSettings
+                          roomCode={roomCode}
+                          players={players}
+                          socket={socket}
+                        />
+                      </>
+                    }
+                  />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route
+                    path="/game"
+                    element={
+                      <>
+                        <SwitchView view={view} />
+                        <ActiveGame
+                          socket={socket}
+                          handleArtworks={handleGetRoundArtworks}
+                        />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/judging"
+                    element={
+                      <RoundJudging
+                        artworks={roundArtworks}
+                        handleArtworks={handleGetRoundArtworks}
+                        setArtworks={setRoundArtworks}
+                      />
+                    }
+                  />
+                  <Route path="/gallery" element={<Gallery />} />
+                  <Route
+                    path="/curator"
+                    element={
+                      <>
+                        <SwitchView view={view} />
+                        <CuratorSearch />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={<p>There is nothing here: 404!</p>}
+                  />
+                </Routes>
+              </div>
+            </Content>
+            <Footer style={{ textAlign: "center" }}>
+              Crooked Curators ©{new Date().getFullYear()} Created by 4LOOP
+            </Footer>
+          </Layout>
+        </SocketContext.Provider>
+      </GameContext.Provider>
+    </UserContext.Provider>
   );
 };
 
