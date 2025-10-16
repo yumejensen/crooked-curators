@@ -15,7 +15,6 @@ import {
   ConfigProvider,
 } from "./antdComponents";
 
-import "./CSS/style.module.css";
 
 // -------------------[COMPONENTS]------------------
 import NavBar from "./Components/NavBar";

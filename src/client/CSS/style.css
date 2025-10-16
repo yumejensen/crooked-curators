@@ -11,11 +11,52 @@
     --darkbrown: #3B262C;
 }
 
+*{
+  box-sizing: border-box;
+}
+
 body {
     background-color: var(--lightmauve);
     margin: 0px
 }
 
+.new-nav {
+  background-color: #3B262C;
+  color: var(--lightmauve);
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 0rem 1rem;
+}
+
+.site-title {
+  font-size: 1.25rem;
+}
+
+.new-nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.new-nav a {
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: .25rem
+}
+
+.new-nav li.active {
+  background-color: var(--maroon);
+}
+
+.new-nav li:hover {
+  background-color: var(--mauve);
+}
 
 .site-layout-content {
   min-height: 280px;
