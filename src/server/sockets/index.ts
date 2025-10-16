@@ -165,11 +165,28 @@ io.on('connection', async socket => {
       curator_id: curator.id
     })
 
+    // select 3 ribbons for the round
+    const getRibbons = () => {
+        axios.get('/ribbons')
+          .then(async({ data }) => {
+            // return the array
+            console.log('ribbons for the round', data)
+            await data
+          })
+          .catch((err) => {
+            console.error('Failed to GET ribbons: CLIENT:', err);
+          })
+        }
+    
+    const ribbonsForRound = getRibbons();
+    console.log('ribbonsForRound', ribbonsForRound);
+    
     // GAME CONTEXT
     // define the round's state (matches front end round context)
     let roundState = {
       stage: 'reference',
       role: 'artist',
+      ribbons: ribbonsForRound,
       code: currentGame.gameCode,
       curator: {
         username: curator.username,
@@ -223,8 +240,10 @@ io.on('connection', async socket => {
     // call advanceStage stage function 
     // update stage of the room from painting -> judging
     io.to(currentGame.gameCode).emit('stageAdvance', 'judging')
+
     // call to update the ribbons
-    io.to(currentGame.gameCode).emit('ribbonsSelected')
+    // io.to(currentGame.gameCode).emit('ribbonsSelected')
+    // MIGHT DELETE THIS PART ^^^
   })
 
   // _______________________________________________________________________________
