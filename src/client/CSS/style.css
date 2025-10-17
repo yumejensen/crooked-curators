@@ -7,8 +7,11 @@
     --yellow: #EDDB98;
     --mauve: #9E6072;
     --lightmauve: #e0b5c2;
+    --grey: #c4b1b7ff;
     --maroon: #800933;
+    --maroonbg: #611530ff;
     --darkbrown: #3B262C;
+    --darkerbrown: #220413;
 }
 
 *{
@@ -16,17 +19,17 @@
 }
 
 body {
-    background-color: var(--lightmauve);
+    background-color: var(--maroonbg);
     margin: 0px
 }
 
 .new-nav {
-  background-color: #3B262C;
-  color: var(--lightmauve);
+  background-color: var(--darkerbrown);
+  color: var(--yellow);
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  padding: 0rem 1rem;
+  padding: 0.75rem 1rem;
 }
 
 .site-title {
@@ -55,8 +58,10 @@ body {
 }
 
 .new-nav li:hover {
-  background-color: var(--mauve);
+  transition: 0.25s ease;
+  background: var(--mauve);
 }
+
 
 .site-layout-content {
   min-height: 280px;
