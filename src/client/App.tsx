@@ -134,7 +134,7 @@ const App: React.FC = () => {
         console.log("SOCKO", newSocket.id);
 
         /* now that we know the socket id we can update the user with it */
-        axios.put("/api/user/socketId", { socketId: newSocket.id });
+        axios.patch("/api/user/socketId", { socketId: newSocket.id });
         setUserSocketId(newSocket.id);
 
         /* order is important. we need to fetch the user after attaching
@@ -281,11 +281,14 @@ const App: React.FC = () => {
                   <Route
                     path="/judging"
                     element={
-                      <RoundJudging
-                        artworks={roundArtworks}
-                        handleArtworks={handleGetRoundArtworks}
-                        setArtworks={setRoundArtworks}
-                      />
+                      <>
+                        <SwitchView view={view} />
+                        <RoundJudging
+                          artworks={roundArtworks}
+                          handleArtworks={handleGetRoundArtworks}
+                          setArtworks={setRoundArtworks}
+                        />
+                      </>
                     }
                   />
                   <Route path="/gallery" element={<Gallery />} />
