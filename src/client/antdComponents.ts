@@ -33,6 +33,7 @@ import ConfigProvider from 'antd/es/config-provider';
 import Button from "antd/es/button";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
 import { Space } from 'antd/es/index';
+import Timeline from 'antd/es/index';
 
 // Reference
 
@@ -62,5 +63,5 @@ export {
     ConfigProvider, Button, ReloadOutlined, Space,
     GetProps, Image, Input, Search,
     Card, Splitter, Typography, Collapse,
-    Carousel, Tooltip,
+    Carousel, Tooltip, Timeline
 }
