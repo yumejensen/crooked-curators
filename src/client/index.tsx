@@ -16,12 +16,12 @@ app.render(
       theme={{
         token: {
           // Seed Token
-          colorPrimary: "#058f6fff", // --cyan
-          colorBgLayout: "#611530ff", // --maroonbg
+          colorPrimary: "var(--cyan)", // --cyan
+          colorBgLayout: "var(--maroonbg)", // --maroonbg
           borderRadius: 2,
 
           // Alias Token
-          colorBgContainer: "#F0E7CA", // --cream
+          colorBgContainer: "var(--grey)", // --cream
         },
       }}
     >
