@@ -77,6 +77,7 @@ const App: React.FC = () => {
     stage: "lobby",
     curator: null,
     role: null,
+    ribbons: [],
     players: [],
     reference: {
       title: null,
@@ -219,6 +220,7 @@ const App: React.FC = () => {
       });
   };
 
+
   // --------------------[RENDER]---------------------
 
   return (
@@ -238,18 +240,12 @@ const App: React.FC = () => {
                 color: "#3B262C",
               }}
             >
-              {/* <Breadcrumb
-                  style={{ margin: "16px 0" }}
-                  items={[
-                    { title: "Home" },
-                    { title: "List" },
-                    { title: "App" },
-                  ]}
-                /> */}
+              <br />
               <div
                 style={{
                   background: colorBgContainer,
                   minHeight: 280,
+                  minWidth: 1100,
                   padding: 24,
                   borderRadius: 20,
                 }}

@@ -2,19 +2,25 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require("path");
 
+const USE_ANALYZER = false;
+const analyzerPlugin = USE_ANALYZER ? [new BundleAnalyzerPlugin()] : [];
+
 module.exports = {
   entry: "./src/client/index.tsx",
   mode: "development",
   watch: true,
   output: {
     filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist/client"),
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.html",
-    }),
-    // new BundleAnalyzerPlugin()
+    new HtmlWebpackPlugin(
+      {
+      template: "./src/client/index.html",
+      filename: "index.html",
+     }
+    ),
+    ...analyzerPlugin,
   ],
   resolve: {
     extensions: [".js", ".jsx", ".tsx", ".ts"],
@@ -23,7 +29,7 @@ module.exports = {
     rules: [
       { test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        loader: "ts-loader" 
+        loader: "ts-loader"
       },
       {
         test: /\.(js|jsx|tsx|ts)$/,
