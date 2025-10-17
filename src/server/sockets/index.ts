@@ -157,6 +157,8 @@ io.on('connection', async socket => {
     curator = await User.findOne({
       where: { id: allPlayers[roundCount].user_id }
     })
+    
+    console.log('allPlayers array:', allPlayers);
 
     // assign currentRound, then add round to database
     currentRound = await Round.create({
@@ -241,6 +243,13 @@ io.on('connection', async socket => {
     // update stage of the room from painting -> judging
     io.to(currentGame.gameCode).emit('stageAdvance', 'judging')
 
+  })
+
+  // _______________________________________________________________________________
+  // ADVANCING A ROUND
+
+  socket.on('newRound', () => {
+    advanceRound(roundCount)
   })
 
   // _______________________________________________________________________________
