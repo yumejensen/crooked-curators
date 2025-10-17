@@ -37,6 +37,12 @@ io.engine.use(
 // hold games and players (temporarily)
 const gamesPlayersMap = new Map();
 
+// type GameVariables = {
+//   currentGame: any;
+//   gameCode: string;
+//   currentRound: any;
+// }
+
 // hold the current game information
 let currentGame;
 let currentRound;
@@ -144,14 +150,18 @@ io.on('connection', async socket => {
 
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
-  async function advanceRound(prevRound) {
+  async function advanceRound(prevRound: number | null) {
     console.log('advancing round!')
+    console.log('allPlayers length', allPlayers.length, 'prevRound', prevRound, 'roundCount', roundCount)
 
     //TODO- move this somewhere else?
     if (prevRound === null) {
       roundCount = 0
-    } else {
-      roundCount++
+    } else if (prevRound < allPlayers.length - 1) {
+      roundCount += 1
+    } else if (prevRound === allPlayers.length - 1){
+      io.to(currentGame.gameCode).emit('stageAdvance', 'gallery')
+      return
     }
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
@@ -249,7 +259,9 @@ io.on('connection', async socket => {
   // ADVANCING A ROUND
 
   socket.on('newRound', () => {
-    advanceRound(roundCount)
+
+    advanceRound(roundCount);
+    
   })
 
   // _______________________________________________________________________________

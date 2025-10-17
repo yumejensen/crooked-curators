@@ -251,7 +251,7 @@ const App: React.FC = () => {
                 }}
               >
                 <Routes>
-                  <Route path="/" element={<Homepage socket={socket} />} />
+                  <Route path="/" element={<Homepage />} />
                   <Route
                     path="/game-settings"
                     element={
@@ -260,7 +260,6 @@ const App: React.FC = () => {
                         <GameSettings
                           roomCode={roomCode}
                           players={players}
-                          socket={socket}
                         />
                       </>
                     }
@@ -272,7 +271,6 @@ const App: React.FC = () => {
                       <>
                         <SwitchView view={view} />
                         <ActiveGame
-                          socket={socket}
                           handleArtworks={handleGetRoundArtworks}
                         />
                       </>
@@ -291,7 +289,14 @@ const App: React.FC = () => {
                       </>
                     }
                   />
-                  <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/gallery"
+                    element={
+                      <>
+                        <SwitchView view={view} />
+                        <Gallery />
+                      </>
+                    } 
+                  />
                   <Route
                     path="/curator"
                     element={
