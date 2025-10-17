@@ -237,10 +237,10 @@ const App: React.FC = () => {
             <Content
               style={{
                 padding: "0 15%",
-                color: "#3B262C",
+                color: "#3B262C", // --darkbrown
+                marginTop: "4%",
               }}
             >
-              <br />
               <div
                 style={{
                   background: colorBgContainer,
