@@ -154,15 +154,19 @@ io.on('connection', async socket => {
     console.log('advancing round!')
     console.log('allPlayers length', allPlayers.length, 'prevRound', prevRound, 'roundCount', roundCount)
 
-    //TODO- move this somewhere else?
+    // ROUND COUNT LOGIC
     if (prevRound === null) {
+      // if prevRound is null, it's the first round
       roundCount = 0
     } else if (prevRound < allPlayers.length - 1) {
+      // if prevRound is less than the amount of players(-1), progress
       roundCount += 1
     } else if (prevRound === allPlayers.length - 1){
+      // if the prevRound is the amount of players (-1), end of the game go to gallery
       io.to(currentGame.gameCode).emit('stageAdvance', 'gallery')
       return
     }
+    
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
       where: { id: allPlayers[roundCount].user_id }
