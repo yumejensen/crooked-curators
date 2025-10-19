@@ -193,6 +193,7 @@ const App: React.FC = () => {
     // SOCKET OFF
     return () => {
       newSocket.off("connect", onConnect);
+      newSocket.off("referenceSelected", referenceSelected);
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
