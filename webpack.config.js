@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const path = require("path");
 
 const USE_ANALYZER = false;
@@ -10,16 +11,20 @@ module.exports = {
   mode: "development",
   watch: true,
   output: {
-    filename: "bundle.js",
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist/client"),
   },
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+      maxSize: 20000
+    },
+  },
   plugins: [
-    new HtmlWebpackPlugin(
-      {
+    new HtmlWebpackPlugin({
       template: "./src/client/index.html",
       filename: "index.html",
-     }
-    ),
+    }),
     ...analyzerPlugin,
   ],
   resolve: {
@@ -27,33 +32,28 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
-        loader: "ts-loader"
-      },
+      { test: /\.(ts|tsx)$/, exclude: /node_modules/, loader: "ts-loader" },
       {
         test: /\.(js|jsx|tsx|ts)$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: [
-                ["@babel/preset-typescript"],
-              ],
+              presets: [["@babel/preset-typescript"]],
             },
           },
-        ]
+        ],
       },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
         exclude: /node_modules/,
-        use: ["file-loader"]
+        use: ["file-loader"],
       },
     ],
   },
