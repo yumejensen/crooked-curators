@@ -42,7 +42,8 @@ artworkRouter.post('/', ({ body, user }: any, res) => {
             updatedAt: new Date(),
             artworkSrc: imageUrl,
             round_id: round[0].dataValues.id,
-            artist_id: user.id
+            artist_id: user.id,
+            game_id: game.id
           })
 
         })
@@ -56,9 +57,9 @@ artworkRouter.post('/', ({ body, user }: any, res) => {
 })
 
 // retrieve artwork from database
-artworkRouter.get('/:gameCode', ({ params, user }, res) => {
+artworkRouter.get('/judging/:gameCode', ({ params, user }, res) => {
 
-  // get user and game code from request
+  // get user and game code from request params
   const { gameCode } = params;
 
   // search db for game by code
@@ -67,7 +68,7 @@ artworkRouter.get('/:gameCode', ({ params, user }, res) => {
       gameCode: gameCode
     }
   })
-    .then((game) => {
+    .then((game: any) => {
 
       // grab game id and query for round with that id, filtering for most recent
       const { id } = game;
@@ -79,7 +80,7 @@ artworkRouter.get('/:gameCode', ({ params, user }, res) => {
         limit: 1,
         order: [['createdAt', 'DESC']]
       })
-        .then((round) => {
+        .then((round: any) => {
 
           // get all artworks from that round via round id
           Artwork.findAll({
@@ -88,12 +89,12 @@ artworkRouter.get('/:gameCode', ({ params, user }, res) => {
             },
             attributes: ['id', ['artworkSrc', 'source']]
           })
-            .then(async (artworks) => {
+            .then(async (artworks: any) => {
 
               // map over artworks to add status of "FORGERIES" to each
               // make a request while having access to s3 link and await response, reassigning source to body: URI
 
-              const allArtworks = await artworks.map(async ({ dataValues }) => {
+              const allArtworks = await artworks.map(async ({ dataValues }: any) => {
 
                 dataValues.status = 'FORGERIES';
 
@@ -101,9 +102,9 @@ artworkRouter.get('/:gameCode', ({ params, user }, res) => {
                 const source = dataValues.source;
 
                 await axios.get(source)
-                .then(({ data }) => {
-                  dataValues.source = data.body;
-                })
+                  .then(({ data }) => {
+                    dataValues.source = data.body;
+                  })
 
                 return dataValues;
               });
@@ -114,16 +115,69 @@ artworkRouter.get('/:gameCode', ({ params, user }, res) => {
                 .catch((err) => console.error('Failed to PROMISE ALL artwork requests: SERVER:', err))
             })
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           console.error('Failed to find Round via Game ID: SERVER:', err);
         });
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       console.error('Failed to find Game via Game Code: SERVER:', err);
     })
 })
 
 // updates artwork with ribbon awarded
-artworkRouter.patch('/addRibbons', () => {
+artworkRouter.patch('/addRibbons', (req, res) => {
 
+})
+
+// gets all artworks with a ribbon for the ending game gallery
+// currently will just pull ALL artworks from the game
+artworkRouter.get('/gallery/:gameCode', ({ params }, res) => {
+
+  // get game code from request params
+  const { gameCode } = params;
+
+  // find game by game code
+  Game.findOne({
+    where: {
+      gameCode: gameCode
+    }
+  })
+    .then((game: any) => {
+
+      // grab game id and query for artworks with that id
+      const { id } = game;
+
+      // search artworks with matching round ids & ribbon !== null
+      Artwork.findAll({
+        where: {
+          game_id: id
+        }
+      })
+        .then(async (artworks: any) => {
+
+          // map over all artworks to make requests to get image URIs
+          const allArtworks = await artworks.map(async ({ dataValues }: any) => {
+
+            // make get request to each artwork's source s3 urls
+            const source = dataValues.source;
+
+            await axios.get(source)
+              .then(({ data }) => {
+                dataValues.source = data.body;
+              })
+
+            return dataValues;
+          });
+
+          // promise all artworks to complete requests
+          Promise.all(allArtworks)
+            // send array of artwork uri's back
+            .then((artworks) => res.json(artworks))
+            .catch((err: Error) => console.error('Failed to PROMISE ALL artwork requests: SERVER:', err))
+
+        })
+    })
+    .catch((err: Error) => {
+      console.error('Failed to find Game via Game Code: SERVER:', err);
+    })
 })
