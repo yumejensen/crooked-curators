@@ -8,10 +8,10 @@ import axios from 'axios';
 export const artworkRouter = Router();
 
 // post artworks to database by s3 get url
-artworkRouter.post('/', (req: any, res) => {
+artworkRouter.post('/', ({ body, user }: any, res) => {
 
   // destructure body from request
-  const { body, user } = req;
+  // const { body, user } = req;
 
   // destructure game code and image url from body
   const { gameCode, imageUrl } = body;
@@ -22,7 +22,7 @@ artworkRouter.post('/', (req: any, res) => {
       gameCode: gameCode
     }
   })
-    .then((game) => {
+    .then((game: any) => {
 
       const { id } = game;
 
@@ -34,7 +34,7 @@ artworkRouter.post('/', (req: any, res) => {
         limit: 1,
         order: [['createdAt', 'DESC']]
       })
-        .then((round) => {
+        .then((round: any) => {
 
           // with most recent round id, add to artworks with round id, user id, and artwork url
           Artwork.create({
@@ -46,11 +46,11 @@ artworkRouter.post('/', (req: any, res) => {
           })
 
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error('Failed to find Rounds with Game ID: SERVER:', err);
         });
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error('Failed to find Game with Game Code, adding Artwork: SERVER:', err);
     });
 })
@@ -121,4 +121,9 @@ artworkRouter.get('/:gameCode', ({ params, user }, res) => {
     .catch((err) => {
       console.error('Failed to find Game via Game Code: SERVER:', err);
     })
+})
+
+// updates artwork with ribbon awarded
+artworkRouter.patch('/addRibbons', () => {
+
 })
