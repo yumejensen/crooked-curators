@@ -209,7 +209,7 @@ const App: React.FC = () => {
   const handleGetRoundArtworks = () => {
     // send get request to /artworks to retrieve images with game code for querying
     axios
-      .get(`/artworks/${game.code}`)
+      .get(`/artworks/judging/${game.code}`)
       .then(({ data }) => {
         console.log(data);
 
