@@ -134,7 +134,7 @@ const App: React.FC = () => {
         console.log("SOCKO", newSocket.id);
 
         /* now that we know the socket id we can update the user with it */
-        axios.put("/api/user/socketId", { socketId: newSocket.id });
+        axios.patch("/api/user/socketId", { socketId: newSocket.id });
         setUserSocketId(newSocket.id);
 
         /* order is important. we need to fetch the user after attaching
@@ -193,6 +193,7 @@ const App: React.FC = () => {
     // SOCKET OFF
     return () => {
       newSocket.off("connect", onConnect);
+      newSocket.off("referenceSelected", referenceSelected);
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
@@ -251,7 +252,7 @@ const App: React.FC = () => {
                 }}
               >
                 <Routes>
-                  <Route path="/" element={<Homepage socket={socket} />} />
+                  <Route path="/" element={<Homepage />} />
                   <Route
                     path="/game-settings"
                     element={
@@ -260,7 +261,6 @@ const App: React.FC = () => {
                         <GameSettings
                           roomCode={roomCode}
                           players={players}
-                          socket={socket}
                         />
                       </>
                     }
@@ -272,7 +272,6 @@ const App: React.FC = () => {
                       <>
                         <SwitchView view={view} />
                         <ActiveGame
-                          socket={socket}
                           handleArtworks={handleGetRoundArtworks}
                         />
                       </>
@@ -281,14 +280,24 @@ const App: React.FC = () => {
                   <Route
                     path="/judging"
                     element={
-                      <RoundJudging
-                        artworks={roundArtworks}
-                        handleArtworks={handleGetRoundArtworks}
-                        setArtworks={setRoundArtworks}
-                      />
+                      <>
+                        <SwitchView view={view} />
+                        <RoundJudging
+                          artworks={roundArtworks}
+                          handleArtworks={handleGetRoundArtworks}
+                          setArtworks={setRoundArtworks}
+                        />
+                      </>
                     }
                   />
-                  <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/gallery"
+                    element={
+                      <>
+                        <SwitchView view={view} />
+                        <Gallery />
+                      </>
+                    } 
+                  />
                   <Route
                     path="/curator"
                     element={

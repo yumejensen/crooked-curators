@@ -37,6 +37,12 @@ io.engine.use(
 // hold games and players (temporarily)
 const gamesPlayersMap = new Map();
 
+// type GameVariables = {
+//   currentGame: any;
+//   gameCode: string;
+//   currentRound: any;
+// }
+
 // hold the current game information
 let currentGame;
 let currentRound;
@@ -144,19 +150,29 @@ io.on('connection', async socket => {
 
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
-  async function advanceRound(prevRound) {
+  async function advanceRound(prevRound: number | null) {
     console.log('advancing round!')
+    console.log('allPlayers length', allPlayers.length, 'prevRound', prevRound, 'roundCount', roundCount)
 
-    //TODO- move this somewhere else?
+    // ROUND COUNT LOGIC
     if (prevRound === null) {
+      // if prevRound is null, it's the first round
       roundCount = 0
-    } else {
-      roundCount++
+    } else if (prevRound < allPlayers.length - 1) {
+      // if prevRound is less than the amount of players(-1), progress
+      roundCount += 1
+    } else if (prevRound === allPlayers.length - 1){
+      // if the prevRound is the amount of players (-1), end of the game go to gallery
+      io.to(currentGame.gameCode).emit('stageAdvance', 'gallery')
+      return
     }
+    
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
       where: { id: allPlayers[roundCount].user_id }
     })
+    
+    console.log('allPlayers array:', allPlayers);
 
     // assign currentRound, then add round to database
     currentRound = await Round.create({
@@ -244,7 +260,24 @@ io.on('connection', async socket => {
   })
 
   // _______________________________________________________________________________
-  // TO GALLERY
+  // TO LOBBY
+  // emitted from client when someone hits the 'Play Again?' button in the gallery
+  socket.on('toLobby', () => {
+    console.log('returning to lobby!')
+    // call advanceStage stage function 
+    // update stage of the room from gallery -> lobby
+    io.to(currentGame.gameCode).emit('stageAdvance', 'lobby')
+  })
+
+  // _______________________________________________________________________________
+  // ADVANCING A ROUND
+  // hit after judge makes ribbon selections
+
+  socket.on('newRound', () => {
+
+    advanceRound(roundCount);
+    
+  })
 
 
   // _______________________________________________________________________________
