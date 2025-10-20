@@ -260,16 +260,24 @@ io.on('connection', async socket => {
   })
 
   // _______________________________________________________________________________
+  // TO LOBBY
+  // emitted from client when someone hits the 'Play Again?' button in the gallery
+  socket.on('toLobby', () => {
+    console.log('returning to lobby!')
+    // call advanceStage stage function 
+    // update stage of the room from gallery -> lobby
+    io.to(currentGame.gameCode).emit('stageAdvance', 'lobby')
+  })
+
+  // _______________________________________________________________________________
   // ADVANCING A ROUND
+  // hit after judge makes ribbon selections
 
   socket.on('newRound', () => {
 
     advanceRound(roundCount);
     
   })
-
-  // _______________________________________________________________________________
-  // TO GALLERY
 
 
   // _______________________________________________________________________________

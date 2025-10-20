@@ -25,6 +25,10 @@ const SwitchView: React.FC = ({ view }) => {
     return <Navigate to={'/gallery'} />
   }
 
+  if (stage === 'lobby'){
+    return <Navigate to={'/game-settings'} />
+  }
+
 };
 
 export default SwitchView;
