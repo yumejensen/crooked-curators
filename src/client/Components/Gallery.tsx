@@ -11,6 +11,8 @@ import {
 
 import Artwork from "./Artwork";
 
+import { useSocketContext } from '../context';
+
 import { Artwork as ArtworkTypes } from './types';
 
 // flex styling
@@ -83,9 +85,16 @@ const Gallery: React.FC = ({artwork, size}: ArtworkCardProps) => {
 
   const [galleryArtworks, setGalleryArtworks] = useState(FAKE_ARTWORKS)
 
+  const { socket } = useSocketContext();
+
   const onChange = (currentSlide: number) => {
     // console.log(currentSlide);
   };
+
+  const toLobby = () => {
+    // restarting the game brings everyone to the lobby again
+    socket?.emit('toLobby');
+  }
 
   return (
     <>
@@ -113,7 +122,7 @@ const Gallery: React.FC = ({artwork, size}: ArtworkCardProps) => {
           </Col>
           <Col>
               <h2>Play Again?</h2>
-              <button>Start</button>
+              <button onClick={toLobby}>Start</button>
           </Col>
         </Flex>
       </Flex>
