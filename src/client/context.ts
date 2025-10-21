@@ -8,8 +8,6 @@ import { Ribbon as RibbonType } from './Components/types';
 export interface User {
   username: string;
   loggedIn: boolean;
-  // setUser: (user) => void; // I don't really know what void does here, we ball though
-  // ^^ void means nothing is returned
 }
 
 export interface UserContextType {
@@ -75,7 +73,6 @@ export function useGameContext() {
 
 
 import { Socket } from "socket.io-client";
-import { ArrayDataType } from 'sequelize';
 
 // SOCKET CONTEXT HANDLING
 

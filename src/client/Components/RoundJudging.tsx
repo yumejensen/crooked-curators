@@ -1,16 +1,11 @@
 // At the end of a round, all artworks are displayed here for judging
 
 import React, { useEffect } from 'react';
-import { useState } from 'react';
 import { useGameContext } from '../context';
-import axios from 'axios';
 
 import {
   Divider,
-  Col,
-  Row,
   Flex,
-  Button,
 } from '../antdComponents';
 
 import { DndContext, DragEndEvent } from '@dnd-kit/core';

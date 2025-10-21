@@ -4,7 +4,7 @@ import React from 'react';
 import { useState } from 'react';
 
 import {
-  Card, Col, Row, Flex, FlexProps, Splitter, Typography, Collapse
+  Card, Col, Row, Flex
 } from '../antdComponents';
 
 // COMPONENTS
