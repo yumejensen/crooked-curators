@@ -64,9 +64,9 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
       if(artwork.status === 'BLUE'){
         blueRibbonArts++;
       } else if(artwork.status === 'WHITE'){
-        redRibbonArts++;
+        whiteRibbonArts++;
       } else if(artwork.status === 'RED'){
-        whiteRibbonArts;
+        redRibbonArts++;
       }
     });
 
