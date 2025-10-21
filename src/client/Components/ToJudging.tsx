@@ -1,8 +1,6 @@
 import React from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
 
-import { Col, Row, Button, Tooltip } from "../antdComponents";
+import { Button } from "../antdComponents";
 
 import { useSocketContext } from "../context";
 

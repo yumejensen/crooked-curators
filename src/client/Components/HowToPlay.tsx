@@ -1,7 +1,6 @@
 // component with instructions on how to play
 
 import React from "react";
-import { useState } from 'react';
 
 import {
   Flex,
