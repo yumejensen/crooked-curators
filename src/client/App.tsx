@@ -4,15 +4,12 @@ import { Route, Routes, Navigate } from "react-router-dom";
 
 import axios from "axios";
 import { Socket, io } from "socket.io-client";
-import { RawPurePanel } from "antd/es/popover/PurePanel";
 
 import {
-  Breadcrumb,
   Layout,
   theme,
   Content,
   Footer,
-  ConfigProvider,
 } from "./antdComponents";
 
 
@@ -92,24 +89,22 @@ const App: React.FC = () => {
   // players state
   const [players, setPlayers] = useState([]);
 
-  // start game state
-  const [startGame, setStartGame] = useState(false);
 
   // view state - tied to game context
   const [view, setView] = useState({});
 
   // update user function to update context - not being used atm
-  function updateUser() {
-    fetchUser()
-      .then(({ data }) => {
-        if (data) {
-          setUser({ username: data.username, loggedIn: true });
-        }
-      })
-      .catch((err) => {
-        setUser({ username: null, loggedIn: false });
-      });
-  }
+  // function updateUser() {
+  //   fetchUser()
+  //     .then(({ data }) => {
+  //       if (data) {
+  //         setUser({ username: data.username, loggedIn: true });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       setUser({ username: null, loggedIn: false });
+  //     });
+  // }
 
   // --------------------[SOCKET LISTENERS]---------------------
   useEffect(() => {

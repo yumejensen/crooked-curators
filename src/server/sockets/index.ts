@@ -295,14 +295,3 @@ io.on('connection', async socket => {
 
 }); // end of connection
 
-
-
-
-// NOT WORKING - attempted to use reload to maintain session connection
-// socket.request.session.reload((err) => {
-//   if (err) {
-//     return socket.disconnect();
-//   }
-//   socket.request.session.count++;
-//   socket.request.session.save();
-// });

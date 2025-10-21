@@ -6,23 +6,11 @@ import axios from 'axios';
 
 
 import {
-  Button,
-  ReloadOutlined,
   Flex,
-  FlexProps,
   Row,
   Col,
-  Card,
-  Input,
-  Space
 } from '../antdComponents';
 
-// import the user context
-import { useUserContext } from "../context";
-
-import { FaArrowCircleRight } from 'react-icons/fa';
-
-import AvatarPicker from '../Components/AvatarPicker';
 import HomepageSignInToPlay from '../Components/HomepageSignInToPlay';
 import HomepageCreateJoin from '../Components/HomepageCreateJoin';
 import HomepageName from '../Components/HomepageName';
@@ -42,10 +30,6 @@ const titleStyle: React.CSSProperties = {
   borderRadius: 6
 };
 
-const buttonStyle: React.CSSProperties = {
-  width: '100%',
-  height: 50
-};
 
 
 const Homepage: React.FC = () => {
