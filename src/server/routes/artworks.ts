@@ -155,12 +155,12 @@ artworkRouter.get('/gallery/:gameCode', ({ params }, res) => {
       })
         .then(async (artworks: any) => {
 
+
           // map over all artworks to make requests to get image URIs
           const allArtworks = await artworks.map(async ({ dataValues }: any) => {
 
             // make get request to each artwork's source s3 urls
-            const source = dataValues.source;
-
+            const source = dataValues.artworkSrc;
             await axios.get(source)
               .then(({ data }) => {
                 dataValues.source = data.body;
