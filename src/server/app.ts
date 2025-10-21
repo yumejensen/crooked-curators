@@ -113,7 +113,10 @@ app.get('/{*any}', (req, res) => {
 
 // ---------SERVER LISTEN-------------
 
-server.listen(() => {
+// port and listening
+const port = 3000;
+
+server.listen(port, () => {
   return console.log(`Express is listening at ${BASE_URL}`);
 });
 
