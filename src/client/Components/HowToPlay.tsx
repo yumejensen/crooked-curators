@@ -30,7 +30,7 @@ const HowToPlay = () => {
         <Flex style={boxStyle} justify='space-evenly' align='center'>
           <Col>
             <Row>
-              <h1>The Premise</h1>
+              <h2>The Premise</h2>
             </Row>
             <Row>
               <p>
@@ -38,7 +38,7 @@ const HowToPlay = () => {
               </p>
             </Row>
             <Row>
-              <h1>How to Play</h1>
+              <h2>How to Play</h2>
             </Row>
             <Row>
               <Timeline items={
