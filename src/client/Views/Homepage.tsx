@@ -3,7 +3,8 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
-
+import crookedCuratorsTitle from '../../assets/images/Crooked_Curators_Title.png';
+import monaLoser from '../../assets/images/Mona_Loser_Frame.png'
 
 import {
   Flex,
@@ -59,8 +60,28 @@ const Homepage: React.FC = () => {
       <Flex style={largeStyle} justify="center" align='flex-start'>
         <Col>
           <Row>
-            <Flex style={titleStyle} justify="center" align='flex-center'>
-              <h1>Welcome to Crooked Curators!</h1>
+            <Flex style={titleStyle} justify="center" align='flex-center' vertical>
+              <img
+                src={crookedCuratorsTitle}
+                alt="Crooked Curators"
+                width={320}
+                style={{
+                  display:"block",
+                  marginLeft:"auto",
+                  marginRight:"auto",
+                  marginBottom: 10
+                }} 
+              />
+              <img
+                src={monaLoser}
+                alt="Mona Loser"
+                width={300}
+                style={{
+                  display:"block",
+                  marginLeft:"auto",
+                  marginRight:"auto"
+                }}
+              />
             </Flex>
           </Row>
           <Row gutter={15}>
@@ -68,8 +89,7 @@ const Homepage: React.FC = () => {
               randomName={randomName}
               handleRandomizeName={handleRandomizeName}
             />
-          </Row>
-          <Row>
+    
             <HomepageCreateJoin randomName={randomName} />
             <HomepageSignInToPlay />
           </Row>
