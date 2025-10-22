@@ -14,6 +14,11 @@ app.render(
   <BrowserRouter>
     <ConfigProvider
       theme={{
+        components:{
+          Carousel:{
+            arrowSize: 64
+          }
+        },
         token: {
           // Seed Token
           colorPrimary: "#058f6fff",
