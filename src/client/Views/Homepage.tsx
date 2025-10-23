@@ -48,9 +48,10 @@ const Homepage: React.FC = () => {
 
   return (
     
-      <Flex style={largeStyle} justify="center" align="flex-start">
-        <Row gutter={[16, 16]}>
+      <Flex justify="space-evenly" align="center">
+        <Row gutter={[16, 16]} justify="space-evenly">
           <Col >
+          <Flex align="center" vertical>
             <img
               src={crookedCuratorsTitle}
               alt="Crooked Curators"
@@ -60,6 +61,7 @@ const Homepage: React.FC = () => {
               }}
             />
             <img src={monaLoser} alt="Mona Loser" width={300} />
+          </Flex>
           </Col>
 
           <Col >
@@ -74,8 +76,11 @@ const Homepage: React.FC = () => {
 
         </Row>
 
-        <Row>
-          <HowToPlay />
+        <Row  >
+         <Flex vertical>
+            <HowToPlay />
+
+         </Flex>
         </Row>
 
       </Flex>
