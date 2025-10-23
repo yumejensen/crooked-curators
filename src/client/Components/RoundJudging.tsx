@@ -47,12 +47,13 @@ const RoundJudging: React.FC = () => {
 
   // -------------------[CONTEXT]---------------------
 
-  const { ribbons, playerArtworks } = useGameContext().game;
+  const { ribbons, playerArtworks, curator } = useGameContext().game;
   const { setGame } = useGameContext();
   const { socket } = useSocketContext();
  
   
   // -------------------[HANDLERS]--------------------
+
 
   // handles changing artwork's status upon dropping it in a container
   const handleDragEnd = (e: DragEndEvent) => {
@@ -73,16 +74,21 @@ const RoundJudging: React.FC = () => {
       return playerArtworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork)
     }
     
+    const mapArtString = mapArtworks.toString() // this is prob useless lol
+
     // update the game context with artwork status everytime there's a drop
     setGame((oldGame) => {
+      // emit to socket every time there's a drag 
+      
+      // update the game context
       return {...oldGame, playerArtworks: mapArtworks()}
     });
     
+    socket?.emit('dragArtwork', mapArtworks(), curator);
 
-    const dragArtwork = () => {
-      socket?.emit('dragArtwork');
-    }
+    console.log('player artworks array from round judge:', playerArtworks);
   }
+
 
  
   // --------------------[RENDER]---------------------
@@ -103,7 +109,8 @@ const RoundJudging: React.FC = () => {
                 <Ribbon
                   key={ribbon.color}
                   ribbon={ribbon}
-                  artworks={playerArtworks.filter(artwork => artwork.status === ribbon.color)} />
+                  artworks={playerArtworks.filter(artwork => artwork.status === ribbon.color)} 
+                />
               )
             })}
           </Flex>

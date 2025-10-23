@@ -116,7 +116,7 @@ io.on('connection', async socket => {
       //----------------------------------------------------------------------
 
       // to the specific room, emit the room code - make it visible for everyone
-      //TODO - update context with code, players array
+      
       io.to(joinAttempt.roomCode).emit('sendRoomDetails', {
         roomCode: joinAttempt.roomCode,
         game: roomExists,
@@ -172,7 +172,6 @@ io.on('connection', async socket => {
       where: { id: allPlayers[roundCount].user_id }
     })
     
-    console.log('allPlayers array:', allPlayers);
 
     // assign currentRound, then add round to database
     currentRound = await Round.create({
@@ -256,16 +255,16 @@ io.on('connection', async socket => {
   socket.on('toJudging', async () => {
     // add the artworks to the context 
     const handleGetRoundArtworks = async () => {
-    // send get request to /artworks to retrieve images with game code for querying
-    await axios.get(`${BASE_URL}/artworks/judging/${currentGame.gameCode}`)
-      .then(({ data }) => {
-        // update round artworks state to array of artwork objects
-        // setRoundArtworks(data);
-        io.to(currentGame.gameCode).emit('artworkContext', {playerArtworks: data})
-      })
-      .catch((err) => {
-        console.error("Failed to GET artworks from round: SOCKET", err);
-      });
+      // send get request to /artworks to retrieve images with game code for querying
+      await axios.get(`${BASE_URL}/artworks/judging/${currentGame.gameCode}`)
+        .then(({ data }) => {
+          // update round artworks state to array of artwork objects
+          // setRoundArtworks(data);
+          io.to(currentGame.gameCode).emit('artworkContext', {playerArtworks: data})
+        })
+        .catch((err) => {
+          console.error("Failed to GET artworks from round: SOCKET", err);
+        });
     };
     await handleGetRoundArtworks();
 
@@ -310,8 +309,11 @@ io.on('connection', async socket => {
 
   // _______________________________________________________________________________
   // ARTWORK DRAG - ROUND JUDGING
-  socket.on('dragArtwork', () => {
-    console.log('artwork drag event, server!')
+  socket.on('dragArtwork', (playerArtworks, curator) => {
+
+    // emit to everyone except the curator the drag event
+    io.to(currentGame.gameCode).except(curator.socketId).emit('artworkContext', {playerArtworks})
+    
   })
 
 

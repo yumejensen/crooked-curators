@@ -171,8 +171,10 @@ const App: React.FC = () => {
 
     }
 
-    function dragArtwork() {
-      console.log('dragArtwork event, client!')
+    function dragArtwork(mapArtString) {
+      // invoke map artworks
+      const mapArtworks = new Function("return" + mapArtString)();
+      console.log('drag artwork event!')
     }
 
     // SOCKET ON
