@@ -8,15 +8,13 @@ type ToJudgingProps = {
   done: number;
   playerCount: number;
   // isCurator: boolean; // not being used atm
-  handleArtworks: () => void;
 };
 
-const ToJudging = ({ done, playerCount, handleArtworks }: ToJudgingProps) => {
+const ToJudging = ({ done, playerCount }: ToJudgingProps) => {
   
   const { socket } = useSocketContext();
 
   const handleClick = () => {
-    handleArtworks();
     socket?.emit("toJudging");
   };
 

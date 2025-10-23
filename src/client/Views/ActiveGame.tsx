@@ -16,7 +16,7 @@ type ActiveGameProps = {
   handleArtworks: () => void;
 };
 
-const ActiveGame: React.FC = ({ handleArtworks }: ActiveGameProps) => {
+const ActiveGame: React.FC = () => {
 
   // --------------------[STATES]---------------------
 
@@ -58,7 +58,6 @@ const ActiveGame: React.FC = ({ handleArtworks }: ActiveGameProps) => {
             <ToJudging
               done={done}
               playerCount={playerCount}
-              handleArtworks={handleArtworks}
               /* isCurator prop is not being used atm */
             />
           </Card>
