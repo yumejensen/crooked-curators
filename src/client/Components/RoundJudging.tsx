@@ -1,7 +1,7 @@
 // At the end of a round, all artworks are displayed here for judging
 
 import React, { useEffect } from 'react';
-import { useGameContext } from '../context';
+import { useGameContext, useSocketContext } from '../context';
 
 import {
   Divider,
@@ -43,12 +43,15 @@ const STATUS = [
 
 // -------------------[COMPONENT]-------------------
 
-const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: RoundJudgingProps) => {
+const RoundJudging: React.FC = ( {artworks, setArtworks} : RoundJudgingProps ) => {
 
   // -------------------[CONTEXT]---------------------
 
-  const { ribbons } = useGameContext().game;
+  const { ribbons, playerArtworks } = useGameContext().game;
+  const { setGame } = useGameContext();
+  const { socket } = useSocketContext();
  
+  
   // -------------------[HANDLERS]--------------------
 
   // handles changing artwork's status upon dropping it in a container
@@ -64,16 +67,25 @@ const RoundJudging: React.FC = ({ artworks, setArtworks, handleArtworks }: Round
     const newStatus = over.id as ArtworkTypes['status'];
 
     // ignore error, this works
-    setArtworks(() => artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork))
+    const mapArtworks = () => {
+      // update the status of the artwork for drag
+      return artworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork)
+    }
+    
+    const dragArtwork = () => {
+      socket?.emit('dragArtwork');
+    }
+    
+    // update the artwork state in App.tsx
+    setArtworks(mapArtworks(), dragArtwork());
+
+    // update the game context with artwork status
+    setGame((oldGame) => {
+      return {...oldGame, playerArtworks: artworks}
+    });
   }
 
-  // -------------------[LIFECYCLE]-------------------
-
-  // pulling ribbons upon render
-  useEffect(() => {
-    handleArtworks();
-  }, [])
-
+ 
   // --------------------[RENDER]---------------------
 
   return (
