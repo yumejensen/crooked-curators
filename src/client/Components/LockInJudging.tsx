@@ -14,7 +14,7 @@ import { LockInJudging as LockInJudgingProps } from './types';
 
 // -------------------[COMPONENT]-------------------
 
-const LockInJudging = ({ artworks }: LockInJudgingProps) => {
+const LockInJudging = () => {
 
   // --------------[STATES + CONTEXT]---------------------
 
@@ -22,7 +22,7 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
 
   const { socket } = useSocketContext();
 
-  const { ribbons } = useGameContext().game;
+  const { ribbons, playerArtworks } = useGameContext().game;
 
   // -------------------[HANDLERS]--------------------
 
@@ -32,7 +32,7 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
     // make request to update each of the artworks' entries in the DB to have the ribbon referenced by ribbon_id
     axios.patch('/artworks/ribbons', {
       // include artwork id and ribbon id
-      artworks: artworks,
+      artworks: playerArtworks,
       ribbons: ribbons
     })
     .then(() => {
@@ -54,7 +54,7 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
   useEffect(() => {
 
     // check to make sure that the amount of artworks in each column is exactly one
-    const toUpdate = artworks.map((artwork) => {
+    const toUpdate = playerArtworks.map((artwork) => {
       return artwork.status === 'BLUE' || artwork.status === 'WHITE' || artwork.status === 'RED';
     })
 
