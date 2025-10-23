@@ -7,6 +7,7 @@ import {
   Carousel,
   Col,
   Flex,
+  Button
 } from "../antdComponents";
 
 import Artwork from "./Artwork";
@@ -121,8 +122,7 @@ const Gallery: React.FC = ({artwork, size}: ArtworkCardProps) => {
           <Col>
             <h2>Ribbon Winners:</h2>
             List Ribbon Winners
-          </Col>
-          <Col>
+      
             <Carousel
               arrows
               infinite={true}
@@ -137,10 +137,19 @@ const Gallery: React.FC = ({artwork, size}: ArtworkCardProps) => {
                 })
               }
             </Carousel>
-          </Col>
-          <Col>
-              <h2>Play Again?</h2>
-              <button onClick={toLobby}>Start</button>
+       
+              <Button
+                onClick={toLobby}
+                variant="solid"
+                color="primary"
+                style={{
+                  width: 200,
+                  height: 50,
+                  borderRadius: 8
+                }}
+              >
+                Play Again
+              </Button>
           </Col>
         </Flex>
       </Flex>
