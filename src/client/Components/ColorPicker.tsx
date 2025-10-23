@@ -33,7 +33,7 @@ const mainColors = [
 const CanvasColorPicker: React.FC = ({ changeColor }) => {
   const { token } = theme.useToken();
   const presets = genPresets({ primary: generate(token.colorPrimary)});
-  console.log(presets)
+  // console.log(presets)
   return (
     <ColorPicker 
       presets={mainColors} 
