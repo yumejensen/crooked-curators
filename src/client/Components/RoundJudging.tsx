@@ -19,7 +19,6 @@ import LockInJudging from './LockInJudging';
 // ---------------------[TYPES]---------------------
 
 import { Artwork as ArtworkTypes, Ribbon as RibbonTypes } from './types';
-import { RoundJudging as RoundJudgingProps } from './types';
 
 // ---------------------[STYLE]---------------------
 
@@ -47,8 +46,7 @@ const RoundJudging: React.FC = () => {
 
   // -------------------[CONTEXT]---------------------
 
-  const { ribbons, playerArtworks, curator } = useGameContext().game;
-  const { setGame } = useGameContext();
+  const { ribbons, playerArtworks } = useGameContext().game;
   const { socket } = useSocketContext();
  
   
@@ -73,20 +71,11 @@ const RoundJudging: React.FC = () => {
       // update the status of the artwork for drag
       return playerArtworks.map(artwork => artwork.id === artworkId ? { ...artwork, status: newStatus } : artwork)
     }
-    
-    const mapArtString = mapArtworks.toString() // this is prob useless lol
 
-    // update the game context with artwork status everytime there's a drop
-    setGame((oldGame) => {
-      // emit to socket every time there's a drag 
-      
-      // update the game context
-      return {...oldGame, playerArtworks: mapArtworks()}
-    });
-    
-    socket?.emit('dragArtwork', mapArtworks(), curator);
+    // dragArtwork sends the artworks with updated status 
+    // the socket emits back 'artworkContext' which updates for everyone in the room
+    socket?.emit('dragArtwork', mapArtworks());
 
-    console.log('player artworks array from round judge:', playerArtworks);
   }
 
 

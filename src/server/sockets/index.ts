@@ -309,10 +309,10 @@ io.on('connection', async socket => {
 
   // _______________________________________________________________________________
   // ARTWORK DRAG - ROUND JUDGING
-  socket.on('dragArtwork', (playerArtworks, curator) => {
+  socket.on('dragArtwork', (playerArtworks) => {
 
-    // emit to everyone except the curator the drag event
-    io.to(currentGame.gameCode).except(curator.socketId).emit('artworkContext', {playerArtworks})
+    // emit the new artwork context to eveyone in the room
+    io.to(currentGame.gameCode).emit('artworkContext', {playerArtworks})
     
   })
 

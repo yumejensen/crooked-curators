@@ -2,8 +2,6 @@
 
 import React, { useEffect } from 'react';
 
-import { useGameContext } from '../context';
-
 import { useDroppable } from '@dnd-kit/core';
 
 import Artwork from './Artwork';
@@ -32,18 +30,6 @@ type RibbonProps = {
 
 export function Ribbon({ribbon, artworks}: RibbonProps) {
 
-  const { playerArtworks } = useGameContext().game;
-
-  
-  const updateArtworks = () => {
-    artworks = playerArtworks.filter(artwork => artwork.status === ribbon.color)
-  }
-  
-  
-  useEffect(() => {
-    updateArtworks();
-    console.log('artwork update from Ribbon', artworks)
-  }, [playerArtworks])
 
   // -------------------[HANDLERS]--------------------
 

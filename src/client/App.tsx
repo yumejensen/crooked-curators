@@ -171,12 +171,6 @@ const App: React.FC = () => {
 
     }
 
-    function dragArtwork(mapArtString) {
-      // invoke map artworks
-      const mapArtworks = new Function("return" + mapArtString)();
-      console.log('drag artwork event!')
-    }
-
     // SOCKET ON
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
@@ -184,7 +178,6 @@ const App: React.FC = () => {
     newSocket.on("newRound", roundAdvance);
     newSocket.on("stageAdvance", stageAdvance);
     newSocket.on("artworkContext", artworkContext);
-    newSocket.on("dragArtwork", dragArtwork);
 
     // SOCKET OFF
     return () => {
@@ -194,8 +187,6 @@ const App: React.FC = () => {
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
       newSocket.on("artworkContext", artworkContext);
-      newSocket.on("dragArtwork", dragArtwork);
-
 
       setUserSocketId(null);
     };
