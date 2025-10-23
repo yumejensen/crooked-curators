@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 import axios from 'axios';
 
 import { Ribbon as RibbonType } from './Components/types';
+import { Artwork as ArtworkType } from './Components/types';
 
 // USER CONTEXT HANDLING
 
@@ -53,6 +54,7 @@ export interface Game {
   curator: Player | null;
   players: Player[];
   reference: Reference | { title: null; src: null;}
+  playerArtworks: ArtworkType[];
 }
 
 export interface GameContextType {

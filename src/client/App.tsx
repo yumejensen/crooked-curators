@@ -80,6 +80,7 @@ const App: React.FC = () => {
       title: null,
       src: null,
     },
+    playerArtworks: []
   });
 
   // socket connection state
@@ -178,12 +179,26 @@ const App: React.FC = () => {
 
     }
 
+    function artworkContext({playerArtworks}) {
+      // add the round artworks to the game context
+      setGame((oldGame) => ({...oldGame, playerArtworks: playerArtworks}))
+
+      // update the roundArtworks state
+      setRoundArtworks(playerArtworks)
+    }
+
+    function dragArtwork() {
+      console.log('dragArtwork event, client!')
+    }
+
     // SOCKET LISTENERS
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
     newSocket.on("stageAdvance", stageAdvance);
+    newSocket.on("artworkContext", artworkContext);
+    newSocket.on("dragArtwork", dragArtwork);
 
     // SOCKET OFF
     return () => {
@@ -192,6 +207,9 @@ const App: React.FC = () => {
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
+      newSocket.on("artworkContext", artworkContext);
+      newSocket.on("dragArtwork", dragArtwork);
+
 
       setUserSocketId(null);
     };
@@ -200,21 +218,6 @@ const App: React.FC = () => {
   // -------------------[ARTWORKS]--------------------
 
   const [roundArtworks, setRoundArtworks] = useState([]);
-
-  const handleGetRoundArtworks = () => {
-    // send get request to /artworks to retrieve images with game code for querying
-    axios
-      .get(`/artworks/judging/${game.code}`)
-      .then(({ data }) => {
-        console.log(data);
-
-        // update round artworks state to array of artwork objects
-        setRoundArtworks(data);
-      })
-      .catch((err) => {
-        console.error("Failed to GET artworks from round: CLIENT:", err);
-      });
-  };
 
 
   // --------------------[RENDER]---------------------
@@ -267,7 +270,6 @@ const App: React.FC = () => {
                       <>
                         <SwitchView view={view} />
                         <ActiveGame
-                          handleArtworks={handleGetRoundArtworks}
                         />
                       </>
                     }
@@ -279,7 +281,6 @@ const App: React.FC = () => {
                         <SwitchView view={view} />
                         <RoundJudging
                           artworks={roundArtworks}
-                          handleArtworks={handleGetRoundArtworks}
                           setArtworks={setRoundArtworks}
                         />
                       </>
