@@ -94,19 +94,6 @@ const App: React.FC = () => {
   // view state - tied to game context
   const [view, setView] = useState({});
 
-  // update user function to update context - not being used atm
-  // function updateUser() {
-  //   fetchUser()
-  //     .then(({ data }) => {
-  //       if (data) {
-  //         setUser({ username: data.username, loggedIn: true });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       setUser({ username: null, loggedIn: false });
-  //     });
-  // }
-
   // --------------------[SOCKET LISTENERS]---------------------
   useEffect(() => {
     if (socket) return; // socket already exists
@@ -115,7 +102,6 @@ const App: React.FC = () => {
 
     // --------FUNCTIONS FOR SOCKET LISTENERS ----------
 
-    // ------- ON CONNECT --------
     const onConnect = async () => {
       if (!newSocket.id) {
         console.error("Socket ID is not available");
@@ -146,7 +132,7 @@ const App: React.FC = () => {
       }
     };
 
-    // ------- ON CONNECT --------
+    
     function getRoomDetails(roomCodeObj) {
       console.log("game info from server", roomCodeObj);
       // update the room code
@@ -183,15 +169,13 @@ const App: React.FC = () => {
       // add the round artworks to the game context
       setGame((oldGame) => ({...oldGame, playerArtworks: playerArtworks}))
 
-      // update the roundArtworks state
-      setRoundArtworks(playerArtworks)
     }
 
     function dragArtwork() {
       console.log('dragArtwork event, client!')
     }
 
-    // SOCKET LISTENERS
+    // SOCKET ON
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
     newSocket.on("sendRoomDetails", getRoomDetails);
@@ -214,10 +198,6 @@ const App: React.FC = () => {
       setUserSocketId(null);
     };
   }, []);
-
-  // -------------------[ARTWORKS]--------------------
-
-  const [roundArtworks, setRoundArtworks] = useState([]);
 
 
   // --------------------[RENDER]---------------------
@@ -279,10 +259,7 @@ const App: React.FC = () => {
                     element={
                       <>
                         <SwitchView view={view} />
-                        <RoundJudging
-                          artworks={roundArtworks}
-                          setArtworks={setRoundArtworks}
-                        />
+                        <RoundJudging />
                       </>
                     }
                   />
