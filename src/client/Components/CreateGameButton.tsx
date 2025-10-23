@@ -39,11 +39,11 @@ const CreateGameButton = ({username}) => {
     <Flex style={buttonStyle} justify="center" align="center">
         <Link to='/game-settings' >
 
-          <Button onClick={handleCreateGame}
-            type="primary"
+          <Button
+            onClick={handleCreateGame}
             variant="solid"
-            color="primary"
             style={{
+              backgroundColor:"#1ed0a6ff",
               width: 200,
               height: 50,
               borderRadius: 8
