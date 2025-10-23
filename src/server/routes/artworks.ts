@@ -181,3 +181,59 @@ artworkRouter.get('/gallery/:gameCode', ({ params }, res) => {
       console.error('Failed to find Game via Game Code: SERVER:', err);
     })
 })
+
+artworkRouter.patch('/ribbons', ({ body }, res) => {
+
+  // pull artworks and ribbons from the body of the req
+  const { artworks, ribbons } = body;
+
+  // console.log(ribbons);
+
+  const blueRibbon = ribbons.filter((ribbon: any) => ribbon.color === 'BLUE')[0];
+  const whiteRibbon = ribbons.filter((ribbon: any) => ribbon.color === 'WHITE')[0];
+  const redRibbon = ribbons.filter((ribbon: any) => ribbon.color === 'RED')[0];
+
+  // get matching artwork and ribbon
+  const artworksRibbons = artworks.reduce((acc: any, artwork: any) => {
+
+    // object to return to the array
+    const obj = {
+      artworkId: 0,
+      ribbonId: 0
+    };
+
+    if(artwork.status === 'BLUE'){
+      obj['artworkId'] = artwork.id;
+      obj['ribbonId'] = blueRibbon.id;
+    } else if(artwork.status === 'WHITE'){
+      obj['artworkId'] = artwork.id;
+      obj['ribbonId'] = whiteRibbon.id;
+    } else if(artwork.status === 'RED'){
+      obj['artworkId'] = artwork.id;
+      obj['ribbonId'] = redRibbon.id;
+    }
+
+    acc.push(obj);
+
+    return acc;
+  }, [])
+
+  console.log(artworksRibbons);
+
+  // update db with artwork and ribbon
+  artworksRibbons.forEach((artworkRibbon: any) => {
+    Artwork.update({
+      ribbon_id: artworkRibbon.ribbonId
+    }, {
+      where: {
+        id: artworkRibbon.artworkId
+      }
+    })
+      .then(() => {
+        console.log('Successful PATCH for Artwork with Ribbon awarded.')
+      })
+      .catch((err: Error) => {
+        console.error('Failed to PATCH Artwork with Ribbon awarded: SERVER:', err);
+      })
+  })
+})
