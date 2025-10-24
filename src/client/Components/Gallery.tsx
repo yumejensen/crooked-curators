@@ -9,7 +9,8 @@ import {
   Row,
   Flex,
   Button,
-  Card
+  Image,
+  Card,
 } from "../antdComponents";
 
 const { Meta } = Card;
@@ -72,7 +73,7 @@ const Gallery: React.FC = ({ artwork, size }: ArtworkCardProps) => {
       <Flex gap="middle" align="center" vertical>
         <Flex style={galleryStyle} justify='space-evenly' align='center'>
           <Col>
-            <Row>
+            <Row justify="space-evenly" gutter={16}>
               <Col>
                 <h2>Ribbon Winners:</h2>
                 <Players />
@@ -108,21 +109,16 @@ const Gallery: React.FC = ({ artwork, size }: ArtworkCardProps) => {
                 </Button>
               </Col>
             </Row>
-            <Row>
+            <br />
+            <Row justify="space-evenly">
               {
                 galleryArtworks.map((artwork) => {
                   return (
-                    <Card
-                      style={{ width: 240 }}
-                      cover={
-                        <img
-                          draggable={false}
-                          src={artwork.source}
-                        />
-                      }
+                    <Image
+                      width={250}
+                      src={artwork.source}
                     >
-                      {/* <Meta title="Europe Street beat" description="www.instagram.com" /> */}
-                    </Card>
+                    </Image>
                   );
                 })
               }
