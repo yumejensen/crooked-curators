@@ -8,7 +8,6 @@ import { Game } from '../db/schemas/games';
 import { User } from '../db/schemas/users';
 import { User_Game } from '../db/schemas/users-games';
 import { Round } from '../db/schemas/rounds';
-import { parse } from 'path';
 
 // session secret for express session
 const { SESSION_SECRET, BASE_URL } = process.env;
