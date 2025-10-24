@@ -135,7 +135,7 @@ io.on('connection', async socket => {
   // _______________________________________________________________________________
   // STARTING A GAME 
   socket.on('startGame', async () => {
-    // query user_games table, find users where gameid = current game id
+    // query user_games table, find users where game id === current game id
     // sort by created at order
     const allUsersGames = await User_Game.findAll({
       where: {
@@ -144,8 +144,8 @@ io.on('connection', async socket => {
       order: [['createdAt', 'ASC']]
     })
 
+    // get get player info and only include id, username, and socketId
     const allPlayersData = allUsersGames.map(async (player: any) => {
-
       return await User.findOne({
         where: {
           id: player.user_id
@@ -155,12 +155,12 @@ io.on('connection', async socket => {
       })
     })
 
+    // promise all players to ensure that they all resolve
     let promisedPlayers = await Promise.all(allPlayersData);
 
-    allPlayers = promisedPlayers.reduce((acc, user) => {
-
-      // console.log("user", user)
-      const { id, username, socketId } = user.dataValues;
+    // reduce promised players to create new objects without the DB nesting
+    allPlayers = promisedPlayers.reduce((acc, {dataValues}) => {
+      const { id, username, socketId } = dataValues;
 
       const obj = {
         id: id,
@@ -171,8 +171,6 @@ io.on('connection', async socket => {
       acc.push(obj);
       return acc;
     }, [])
-
-    console.log(allPlayers);
 
     // calls advance round with prev round of null
     advanceRound(null)
