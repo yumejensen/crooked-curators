@@ -19,7 +19,7 @@ const Players = () => {
     <Card>
       {players.map((player) => {
         return (
-          <Player player={player} />
+          <Player player={player} key={player.username}/>
         )
       })}
     </Card>
