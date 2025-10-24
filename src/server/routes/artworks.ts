@@ -124,11 +124,6 @@ artworkRouter.get('/judging/:gameCode', ({ params, user }, res) => {
     })
 })
 
-// updates artwork with ribbon awarded
-artworkRouter.patch('/addRibbons', (req, res) => {
-
-})
-
 // gets all artworks with a ribbon for the ending game gallery
 // currently will just pull ALL artworks from the game
 artworkRouter.get('/gallery/:gameCode', ({ params }, res) => {
