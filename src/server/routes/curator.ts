@@ -9,6 +9,9 @@ const CHICAGO_API_URL = 'https://api.artic.edu/api/v1/artworks/search'
 
 curatorRouter.get('/:title', async (req, res) => {
   const query = req.params.title;
+  if(!query){
+    return  res.status(400).send({ message: 'Query parameter is required' });
+  }
   try {
     // First try Chicago API
     const chicagoResponse = await axios.get(CHICAGO_API_URL, {
