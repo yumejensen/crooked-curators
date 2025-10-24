@@ -76,6 +76,7 @@ const App: React.FC = () => {
     role: null,
     ribbons: [],
     players: [],
+    doneCount: 0,
     reference: {
       title: null,
       src: null,
@@ -171,6 +172,11 @@ const App: React.FC = () => {
 
     }
 
+    function submit(doneCount: number) {
+      // update the game context for everyone in the room with the done count
+      setGame((oldGame) => ({...oldGame, doneCount: doneCount}))
+    }
+
     // SOCKET ON
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
@@ -178,6 +184,7 @@ const App: React.FC = () => {
     newSocket.on("newRound", roundAdvance);
     newSocket.on("stageAdvance", stageAdvance);
     newSocket.on("artworkContext", artworkContext);
+    newSocket.on("submit", submit);
 
     // SOCKET OFF
     return () => {
@@ -186,7 +193,8 @@ const App: React.FC = () => {
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
-      newSocket.on("artworkContext", artworkContext);
+      newSocket.off("artworkContext", artworkContext);
+      newSocket.off("submit", submit);
 
       setUserSocketId(null);
     };

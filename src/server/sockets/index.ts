@@ -9,6 +9,7 @@ import { User } from '../db/schemas/users';
 import { User_Game } from '../db/schemas/users-games';
 import { Round } from '../db/schemas/rounds';
 
+
 // session secret for express session
 const { SESSION_SECRET, BASE_URL } = process.env;
 
@@ -51,6 +52,7 @@ let roundCount = 0
 let allPlayers: any = [];
 let stage = 'lobby'
 
+let doneCount = 0;
 // _______________________________________________________________________________
 io.on('connection', async socket => {
 
@@ -184,6 +186,9 @@ io.on('connection', async socket => {
     console.log('advancing round!')
     console.log('allPlayers length', allPlayers.length, 'prevRound', prevRound, 'roundCount', roundCount)
     // console.log(allPlayers);
+
+    // reassign doneCount to 0
+    doneCount = 0;
     
     // ROUND COUNT LOGIC
     if (prevRound === null) {
@@ -239,6 +244,7 @@ io.on('connection', async socket => {
         finished: false
       },
       players: allPlayers,
+      doneCount: 0,
       playerArtworks: []
     }
 
@@ -342,6 +348,18 @@ io.on('connection', async socket => {
     io.to(currentGame.gameCode).emit('artworkContext', {playerArtworks})
     
   })
+
+  // _______________________________________________________________________________
+  // DONE WITH ARTWORK - ACTIVE GAME
+
+  socket.on('submit', () => {
+    // add to doneCount
+    doneCount += 1;
+    
+    // emit the done count to the room
+    io.to(currentGame.gameCode).emit('submit', doneCount)
+  })
+
 
 
 }); // end of connection
