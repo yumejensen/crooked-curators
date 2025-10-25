@@ -214,8 +214,9 @@ const App: React.FC = () => {
             <ContextDebugging />            
             <Content
               style={{
+                marginTop: "2%",
                 padding: "0 15%",
-                color: "#3B262C",
+                color: "var(--darkerbrown)",
               }}
             >
               <br />
