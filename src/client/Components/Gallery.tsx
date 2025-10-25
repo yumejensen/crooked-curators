@@ -117,6 +117,7 @@ const Gallery: React.FC = ({ artwork, size }: ArtworkCardProps) => {
                     <Image
                       width={250}
                       src={artwork.source}
+                      key={artwork.id.toString()}
                     >
                     </Image>
                   );

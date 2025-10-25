@@ -23,7 +23,7 @@ export const SignInButton = () => {
 
   return (
     <>
-      {user.loggedIn ? (
+      {user.loggedIn && user.username !== undefined ? (
         <li>
           <Link onClick={handleSignOut} to="/" >
             Sign Out
