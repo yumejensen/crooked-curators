@@ -1,11 +1,11 @@
 // Contains the Reference and ReferenceSearch components
 
 import React, { useState, useContext } from "react";
-import { Divider, Flex, Button } from "../antdComponents";
+import { Divider, Flex, Button, Popconfirm } from "../antdComponents";
 
 import ReferenceSearch from "./ReferenceSearch";
 import Reference from "./Reference";
-import { SocketContext } from "../context";
+import { SocketContext, GameContext } from "../context";
 import axios from "axios";
 
 const CuratorSearch = () => {
@@ -13,6 +13,7 @@ const CuratorSearch = () => {
   const [results, setResults] = useState([]);
   const [confirmed, setConfirmed] = useState(false)
   const { socket } = useContext(SocketContext)
+  const { game } = useContext(GameContext);
 
   const nextResult = () => {
     setSelected(selected + 1);
@@ -37,12 +38,13 @@ const CuratorSearch = () => {
 
   const selectReference = function (){
     socket?.emit('curatorSelect', results[selected])
+    setConfirmed(true)
   }
   return (
     <Flex gap="middle" align="center" vertical>
       <Divider>
         <ReferenceSearch handleSearch={handleSearch} disabled={results.length}/>
-        {(results.length > 0 && results.length < 4) ? `That search didn't get enough results, you can try again` : `Choose a Reference!`}
+        <p>{(results.length > 0 && results.length < 4) ? `That search didn't get enough results, you can try again` : `Choose a Reference!`}</p>
       </Divider>
       <Divider>
         <Reference {...results[selected]} />
@@ -51,7 +53,15 @@ const CuratorSearch = () => {
             ? "Search For Some Inspiration!"
             : `Result ${selected + 1} out of ${results.length}`}
         </Button>
-        <Button onClick={selectReference} disabled={confirmed || results.length === 0}>{!confirmed ? `Choose this Piece` : `Reference Selected!`}</Button>
+        <Popconfirm
+          title="Are you sure to select this reference?"
+          onConfirm={selectReference}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+        <Button disabled={confirmed || results.length === 0}>{confirmed ? `Reference Selected!` : `Choose this Piece`}</Button>
+        </Popconfirm>
       </Divider>
     </Flex>
   );
