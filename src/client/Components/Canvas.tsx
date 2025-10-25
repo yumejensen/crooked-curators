@@ -20,7 +20,7 @@ import { Slider } from 'antd'
 import { IoArrowUndoSharp, IoArrowRedoSharp } from "react-icons/io5";
 import { FaPenNib, FaEraser, FaRegSave, FaDownload } from 'react-icons/fa';
 
-import { useGameContext } from '../context';
+import { useGameContext, useSocketContext } from '../context';
 
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 
@@ -32,7 +32,7 @@ import CanvasColorPicker from './ColorPicker';
 
 // ---------------------[TYPES]---------------------
 
-import { Canvas as CanvasPropTypes } from './types';
+// import { Canvas as CanvasPropTypes } from './types';
 
 // ---------------------[STYLE]---------------------
 
@@ -53,9 +53,10 @@ const canvasBoxStyle: React.CSSProperties = {
 
 // -------------------[COMPONENT]-------------------
 
-const Canvas = ({ handleDone }: CanvasPropTypes) => {
+const Canvas = () => {
 
   const { code } = useGameContext().game;
+  const { socket } = useSocketContext();
 
   // --------------------[STATES]---------------------
 
@@ -213,12 +214,16 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
       })
         .then(() => {
           console.log('Successful PUT request to s3Url: CLIENT:');
-
+          
+          // send to socket that the art was submitted
+          socket?.emit('submit')
+          
           axios.post('/artworks', {
             gameCode: code,
             imageUrl: imageUrl
           })
-            .then(() => {
+          .then(() => {
+
               console.log('Successfully posted artwork URL to server: CLIENT')
             })
             .catch((err) => {
@@ -329,7 +334,7 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
             <br />
             <br />
             <Row>
-              <SubmitArtwork handleSubmitImage={handleSubmitImage} handleDone={handleDone} />
+              <SubmitArtwork handleSubmitImage={handleSubmitImage} />
             </Row>
           </Col>
         </Flex>

@@ -1,10 +1,13 @@
 import React from 'react'
+import { useUserContext } from '../context';
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import { SignInButton } from './SignInButton';
 
 import { NavBar as NavBarTypes } from './types';
 
 const NavBar: React.FC = (props: NavBarTypes) => {
+
+  const { username } = useUserContext().user;
 
   return (
     <nav className="new-nav">
@@ -13,7 +16,8 @@ const NavBar: React.FC = (props: NavBarTypes) => {
         Crooked Curators
       </Link>
       <ul>
-        <CustomLink to='/profile'>Profile</CustomLink>
+        {/* <CustomLink to='/profile'>Profile</CustomLink> */}
+        <h4>{username}</h4>
         <SignInButton />
       </ul>
     </nav>

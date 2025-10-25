@@ -1,33 +1,19 @@
 // The Active Game View that holds that canvas and reference image
 
 import React from 'react';
-import { useState } from 'react';
 
 import {
-  Card, Col, Row, Flex
+  Col, Row, Flex
 } from '../antdComponents';
 
 // COMPONENTS
 import Canvas from '../Components/Canvas';
 import Reference from '../Components/Reference';
-import ToJudging from '../Components/ToJudging';
+import ArtSubmitCount from '../Components/ArtSubmitCount';
 
-type ActiveGameProps = {
-  handleArtworks: () => void;
-};
 
 const ActiveGame: React.FC = () => {
 
-  // --------------------[STATES]---------------------
-
-  const [playerCount, setPlayerCount] = useState(1);
-  const [done, setDone] = useState(0);
-
-  // -------------------[HANDLERS]--------------------
-
-  const handleDone = () => {
-    setDone(done + 1);
-  }
 
   // --------------------[RENDER]---------------------
 
@@ -35,11 +21,10 @@ const ActiveGame: React.FC = () => {
     <>
       <Row gutter={2}>
         <Col span={3}>
-          <Card>
-          </Card>
+         
         </Col>
         <Col span={18}>
-          <Card >
+
             <Flex gap="middle" align="center" vertical>
               <Flex
                 style={{width: 500}}
@@ -49,18 +34,14 @@ const ActiveGame: React.FC = () => {
                 <Reference />
               </Flex>
             </Flex>
-            <Canvas handleDone={handleDone} />
-          </Card>
+            <Canvas />
+
         </Col>
 
         <Col span={3}>
-          <Card >
-            <ToJudging
-              done={done}
-              playerCount={playerCount}
-              /* isCurator prop is not being used atm */
-            />
-          </Card>
+
+            <ArtSubmitCount />
+
         </Col>
       </Row>
     </>
