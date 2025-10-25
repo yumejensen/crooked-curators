@@ -4,11 +4,6 @@ import { Button } from "../antdComponents";
 
 import { useSocketContext, useGameContext } from "../context";
 
-// type ToJudgingProps = {
-//   done: number;
-//   playerCount: number;
-//   // isCurator: boolean; // not being used atm
-// };
 
 const ToJudging = () => {
   

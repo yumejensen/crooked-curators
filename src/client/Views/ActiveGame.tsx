@@ -1,9 +1,6 @@
 // The Active Game View that holds that canvas and reference image
 
 import React from 'react';
-import { useState } from 'react';
-
-import { useGameContext } from '../context';
 
 import {
   Col, Row, Flex
@@ -14,18 +11,8 @@ import Canvas from '../Components/Canvas';
 import Reference from '../Components/Reference';
 import ArtSubmitCount from '../Components/ArtSubmitCount';
 
-type ActiveGameProps = {
-  handleArtworks: () => void;
-};
 
 const ActiveGame: React.FC = () => {
-
-  // --------------------[STATES]---------------------
-
-  // const [playerCount, setPlayerCount] = useState(1);
-  // const [done, setDone] = useState(0);
-
-  const { doneCount, players } = useGameContext().game;
 
 
   // --------------------[RENDER]---------------------
