@@ -13,6 +13,7 @@ curatorRouter.get('/:title', async (req, res) => {
     return  res.status(400).send({ message: 'Query parameter is required' });
   }
   try {
+    console.log(`Fetching artwork for query: ${query}`);
     // First try Chicago API
     const chicagoResponse = await axios.get(CHICAGO_API_URL, {
       params: {
@@ -23,14 +24,14 @@ curatorRouter.get('/:title', async (req, res) => {
     });
 
     let pieces = chicagoResponse.data.data.map(record => ({
-      title: record.title,
+      title: record.title.substring(0, 60),
       description: record.description || 'No description available',
       image: record.image_id ? `https://www.artic.edu/iiif/2/${record.image_id}/full/843,/0/default.jpg` : ''
     }));
 
     // Filter out pieces without images and shuffle
     pieces = pieces.filter(({ image }) => image).sort(() => 0.5 - Math.random());
-
+    console.log(`Found ${pieces.length} pieces from Chicago API`);
     // If pieces length is < 4, add harvard pieces
     if (pieces.length < 4) {
       const harvardResponse = await axios.get(
@@ -38,7 +39,7 @@ curatorRouter.get('/:title', async (req, res) => {
       );
 
       const harvardPieces = harvardResponse.data.records.map(record => ({
-        title: record.title,
+        title: record.title.substring(0, 60),
         description: record.description || 'No description available',
         image: record.images.length > 0 ? record.images[0].baseimageurl : ''
       }));
@@ -52,14 +53,14 @@ curatorRouter.get('/:title', async (req, res) => {
     const selection = pieces.slice(0, 4);
     
     if (selection.length === 0) {
-      res.status(404).send({ message: 'No artwork found matching your search' });
+      return res.status(404).send({ message: 'No artwork found matching your search' });
     } else {
-      res.send(selection);
+      return res.send(selection);
     }
 
   } catch (err) {
     console.error('Error fetching artwork:', err);
-    res.status(500).send({ message: 'Error fetching artwork' });
+    return res.status(500).send({ message: 'Error fetching artwork' });
   }
 })
 
