@@ -16,6 +16,7 @@ import {
 // -------------------[COMPONENTS]------------------
 import NavBar from "./Components/NavBar";
 import SwitchView from "./SwitchView";
+import ContextDebugging from "./ContextDebugging";
 
 import Homepage from "./Views/Homepage";
 import Profile from "./Views/Profile";
@@ -210,10 +211,7 @@ const App: React.FC = () => {
 
           <Layout>
             <NavBar />
-            <div>{`User Context: ${user.username}, ${user.loggedIn
-              } \n Game Context: ${Object.keys(game).map(
-                (key) => key + ":" + game[key]
-              )}`}</div>
+            <ContextDebugging />            
             <Content
               style={{
                 padding: "0 15%",
