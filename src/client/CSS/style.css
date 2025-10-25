@@ -3,12 +3,15 @@
     --cyan: #058f6fff;
     --cyan-rgb: 141, 235, 213;
     --lightcream: #faf8e7;
-    --cream: #F0E7CA;
     --yellow: #EDDB98;
-    --mauve: #9E6072;
     --lightmauve: #e0b5c2;
     --maroon: #800933;
-    --darkbrown: #3B262C;
+    --darkbrown: #3b2b30;
+
+    --accent:#c4326a;
+    --background: #a06b86;;
+    --nav: #4d2c3e;
+    --content:#eceadb;
 }
 
 *{
@@ -16,7 +19,7 @@
 }
 
 body {
-    background-color: var(--lightmauve);
+    background-color: var(--background);
     margin: 0px;
 }
 
@@ -30,8 +33,8 @@ body {
 }
 
 .new-nav {
-  background-color: #3B262C;
-  color: var(--lightmauve);
+  background-color: var(--nav);
+  color: var(--content);
   display: flex;
   justify-content: space-between;
   align-items: stretch;
@@ -56,15 +59,15 @@ body {
   height: 100%;
   display: flex;
   align-items: center;
-  padding: .25rem
+  padding: 1rem
 }
 
 .new-nav li.active {
-  background-color: var(--maroon);
+  background-color: var(--accent);
 }
 
 .new-nav li:hover {
-  background-color: var(--mauve);
+  background-color: var(--accent);
 }
 
 .site-layout-content {
