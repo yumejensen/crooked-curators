@@ -2,17 +2,18 @@ import React from "react";
 
 import { Button } from "../antdComponents";
 
-import { useSocketContext } from "../context";
+import { useSocketContext, useGameContext } from "../context";
 
-type ToJudgingProps = {
-  done: number;
-  playerCount: number;
-  // isCurator: boolean; // not being used atm
-};
+// type ToJudgingProps = {
+//   done: number;
+//   playerCount: number;
+//   // isCurator: boolean; // not being used atm
+// };
 
-const ToJudging = ({ done, playerCount }: ToJudgingProps) => {
+const ToJudging = () => {
   
   const { socket } = useSocketContext();
+  const { doneCount, players } = useGameContext().game;
 
   const handleClick = () => {
     socket?.emit("toJudging");
@@ -20,19 +21,15 @@ const ToJudging = ({ done, playerCount }: ToJudgingProps) => {
 
   // --------------------[RENDER]---------------------
 
-  if (done === playerCount) {
+  
     return (
-      <Button onClick={handleClick}>
+      <Button
+        onClick={handleClick}
+        disabled={doneCount !== players.length - 1}
+      >
         Judging Time!
       </Button>
       );
-  } else {
-    return (
-      <Button disabled>
-        {done} / {playerCount}
-      </Button>
-    );
-  }
-};
+}
 
 export default ToJudging;

@@ -8,6 +8,8 @@ import Reference from "./Reference";
 import { SocketContext } from "../context";
 import axios from "axios";
 
+import ArtSubmitCount from "./ArtSubmitCount";
+
 const CuratorSearch = () => {
   const [selected, setSelected] = useState(0);
   const [results, setResults] = useState([]);
@@ -52,6 +54,9 @@ const CuratorSearch = () => {
             : `Result ${selected + 1} out of ${results.length}`}
         </Button>
         <Button onClick={selectReference} disabled={confirmed || results.length === 0}>{!confirmed ? `Choose this Piece` : `Reference Selected!`}</Button>
+        
+        <br/>
+        <ArtSubmitCount />
       </Divider>
     </Flex>
   );

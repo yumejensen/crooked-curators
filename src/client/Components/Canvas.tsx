@@ -30,7 +30,7 @@ import CanvasColorPicker from './ColorPicker';
 
 // ---------------------[TYPES]---------------------
 
-import { Canvas as CanvasPropTypes } from './types';
+// import { Canvas as CanvasPropTypes } from './types';
 
 // ---------------------[STYLE]---------------------
 
@@ -51,7 +51,7 @@ const canvasBoxStyle: React.CSSProperties = {
 
 // -------------------[COMPONENT]-------------------
 
-const Canvas = ({ handleDone }: CanvasPropTypes) => {
+const Canvas = () => {
 
   const { code } = useGameContext().game;
   const { socket } = useSocketContext();
@@ -314,7 +314,7 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
             <br />
             <br />
             <Row>
-              <SubmitArtwork handleSubmitImage={handleSubmitImage} handleDone={handleDone} />
+              <SubmitArtwork handleSubmitImage={handleSubmitImage} />
             </Row>
           </Col>
         </Flex>
