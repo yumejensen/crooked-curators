@@ -15,6 +15,8 @@ import {
   Tooltip
 } from '../antdComponents';
 
+import { Slider } from 'antd'
+
 import { IoArrowUndoSharp, IoArrowRedoSharp } from "react-icons/io5";
 import { FaPenNib, FaEraser, FaRegSave, FaDownload } from 'react-icons/fa';
 
@@ -66,6 +68,7 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
   // tools for canvas and line color state
   const [tool, setTool] = React.useState('pen');
   const [lineColor, setLineColor] = React.useState("#000000");
+  const [brushSize, setBrushSize] = React.useState('5');
 
   // history for undo/redo
   const [history, setHistory] = useState([])
@@ -81,7 +84,15 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { tool, points: [pos.x, pos.y], stroke: lineColor }]);
+    setLines([
+      ...lines,
+      {
+        tool,
+        points: [pos.x, pos.y],
+        stroke: lineColor,
+        strokeWidth: brushSize,
+      }
+    ]);
   };
 
   const handleMouseMove = (e) => {
@@ -233,6 +244,15 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
       <Flex gap="middle" align="center" vertical>
         <Flex style={boxStyle} justify='space-evenly' align='center'>
           <Col>
+            <div style={{
+              display: 'inline-block',
+              height: 300,
+              marginInlineStart: 70,
+            }}>
+              <Slider vertical />
+            </div>
+          </Col>
+          <Col>
             <CanvasTools
               tool={tool}
               setTool={setTool}
@@ -265,7 +285,7 @@ const Canvas = ({ handleDone }: CanvasPropTypes) => {
                       key={i}
                       points={line.points}
                       stroke={line.stroke}
-                      strokeWidth={5}
+                      strokeWidth={line.strokeWidth}
                       tension={0.5}
                       lineCap="round"
                       lineJoin="round"
