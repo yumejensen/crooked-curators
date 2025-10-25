@@ -100,9 +100,10 @@ const Gallery: React.FC = ({ artwork, size }: ArtworkCardProps) => {
                   variant="solid"
                   color="primary"
                   style={{
-                    width: 200,
-                    height: 50,
-                    borderRadius: 8
+                    backgroundColor: "var(--nav)",
+                    borderRadius: 8,
+                    paddingBlock: 20,
+                    paddingInline: 30,
                   }}
                 >
                   Play Again
