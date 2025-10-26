@@ -15,12 +15,15 @@ const ReferenceSearch = ({ handleSearch, disabled }) => {
   return (
     <>
       <Search 
-        placeholder='Some fine art'
+        placeholder='Enter a keyword'
         allowClear
         enterButton="Search"
         size="large"
         onSearch={(...args)=>{
           handleSearch(onSearch(...args))
+        }}
+        style={{
+          marginTop: 20
         }}
       />
     </>
