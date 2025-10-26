@@ -46,6 +46,9 @@ artworkRouter.post('/', ({ body, user }: any, res) => {
             artist_id: user.id,
             game_id: game.id
           })
+            .then(() => {
+              res.sendStatus(201);
+            })
         })
         .catch((err: any) => {
           console.error('Failed to find Rounds with Game ID: SERVER:', err);
@@ -107,7 +110,7 @@ artworkRouter.get('/judging/:gameCode', ({ params, user }, res) => {
 
               // send array of artwork uri's back
               Promise.all(allArtworks)
-                .then((artworks) => res.json(artworks))
+                .then((artworks) => res.status(200).json(artworks))
                 .catch((err) => console.error('Failed to PROMISE ALL artwork requests: SERVER:', err))
             })
         })
@@ -160,7 +163,7 @@ artworkRouter.get('/gallery/:gameCode', ({ params }, res) => {
           // promise all artworks to complete requests
           Promise.all(allArtworks)
             // send array of artwork uri's back
-            .then((artworks) => res.json(artworks))
+            .then((artworks) => res.status(200).json(artworks))
             .catch((err: Error) => console.error('Failed to PROMISE ALL artwork requests: SERVER:', err))
         })
     })
@@ -232,7 +235,7 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
           })
 
           // send back points in response
-          res.json(playerPoints);
+          res.status(200).json(playerPoints);
         })
     })
     .catch((err: Error) => {
@@ -287,6 +290,7 @@ artworkRouter.patch('/ribbons', ({ body }, res) => {
     })
       .then(() => {
         console.log('Successful PATCH for Artwork with Ribbon awarded.');
+        res.sendStatus(201);
       })
       .catch((err: Error) => {
         console.error('Failed to PATCH Artwork with Ribbon awarded: SERVER:', err);
