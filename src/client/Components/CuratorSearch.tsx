@@ -52,10 +52,20 @@ const CuratorSearch = () => {
 
 
         <Reference {...results[selected]} />
-        <Button onClick={nextResult} disabled={selected >= results.length - 1}>
+        <Button
+          onClick={nextResult} disabled={selected >= results.length - 1}
+            variant="solid"
+            color="primary"
+            style={{
+              backgroundColor: "var(--nav)",
+              borderRadius: 8,
+              paddingBlock: 20,
+              paddingInline: 30,
+            }}
+        >
           {results.length === 0
-            ? "Search For Some Inspiration!"
-            : `Result ${selected + 1} out of ${results.length}`}
+            ? <h3>Search For Some Inspiration!</h3>
+            : <h3> Result {selected + 1} out of {results.length} </h3>}
         </Button>
         <Popconfirm
           title="Are you sure to select this reference?"
@@ -64,7 +74,19 @@ const CuratorSearch = () => {
           okText="Yes"
           cancelText="No"
         >
-        <Button disabled={confirmed || results.length === 0}>{confirmed ? `Reference Selected!` : `Choose this Piece`}</Button>
+          <Button
+            disabled={confirmed || results.length === 0}
+            variant="solid"
+            color="primary"
+            style={{
+              backgroundColor: "var(--nav)",
+              borderRadius: 8,
+              paddingBlock: 20,
+              paddingInline: 30,
+            }}
+          >
+            {confirmed ? <h3>Reference Selected!</h3> : <h3>Choose this Piece</h3>}
+          </Button>
         </Popconfirm>
 
     </Flex>
