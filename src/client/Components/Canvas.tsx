@@ -221,15 +221,15 @@ const Canvas = () => {
         .then(() => {
           console.log('Successful PUT request to s3Url: CLIENT:');
 
-          // send to socket that the art was submitted
-          socket?.emit('submit')
-
+          
           axios.post('/artworks', {
             gameCode: code,
             imageUrl: imageUrl
           })
-            .then(() => {
-
+          .then(() => {
+              // send to socket that the art was submitted
+              socket?.emit('submit')
+            
               console.log('Successfully posted artwork URL to server: CLIENT')
             })
             .catch((err) => {
