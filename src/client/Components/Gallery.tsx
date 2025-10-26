@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import {
   Carousel,
@@ -18,7 +19,7 @@ const { Meta } = Card;
 import Artwork from "./Artwork";
 import Players from "./Players";
 
-import { useGameContext, useSocketContext } from '../context';
+import { useGameContext } from '../context';
 
 import { Artwork as ArtworkTypes } from './types';
 import axios from "axios";
@@ -40,17 +41,13 @@ const Gallery: React.FC = ({ artwork, size }: ArtworkCardProps) => {
 
   const [galleryArtworks, setGalleryArtworks] = useState([])
 
-  const { socket } = useSocketContext();
-  const { code, players } = useGameContext().game;
+
+  const { code } = useGameContext().game;
 
   const onChange = (currentSlide: number) => {
     // console.log(currentSlide);
   };
 
-  const toLobby = () => {
-    // restarting the game brings everyone to the lobby again
-    socket?.emit('toLobby');
-  }
 
   const handleGameArtworks = () => {
 
@@ -95,19 +92,20 @@ const Gallery: React.FC = ({ artwork, size }: ArtworkCardProps) => {
                 </Carousel>
               </Col>
               <Col>
-                <Button
-                  onClick={toLobby}
-                  variant="solid"
-                  color="primary"
-                  style={{
-                    backgroundColor: "var(--nav)",
-                    borderRadius: 8,
-                    paddingBlock: 20,
-                    paddingInline: 30,
-                  }}
-                >
-                  Play Again
-                </Button>
+                <Link to='/' className='site-title' reloadDocument={true}>
+                  <Button
+                    variant="solid"
+                    color="primary"
+                    style={{
+                      backgroundColor: "var(--nav)",
+                      borderRadius: 8,
+                      paddingBlock: 20,
+                      paddingInline: 30,
+                    }}
+                  >
+                    <h3>Exit to Homepage</h3>
+                  </Button>
+                </Link>
               </Col>
             </Row>
             <br />
