@@ -27,7 +27,7 @@ const ToJudging = () => {
         paddingInline: 30,
       }}
     >
-      Judging Time!
+      <h3>Judging Time!</h3>
     </Button>
   );
 };
