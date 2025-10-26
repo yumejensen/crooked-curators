@@ -198,17 +198,7 @@ io.on('connection', async socket => {
     } else if (prevRound === allPlayers.length - 1){
       // if the prevRound is the amount of players (-1), end of the game go to gallery
       io.to(currentGame.gameCode).emit('stageAdvance', 'gallery')
-
-      // move everyone to the gallery with a delay
-      // io.timeout(5000).to(currentGame.gameCode).emit('stageAdvance', 'gallery', (err:any, res:any) => {
-      //   if (err){
-      //     console.log("Timeout error for moving to gallery", err);
-      //   } else {
-      //     console.log(res)
-      //   }
-      // })
-
-      return
+      return;
     }
     
     // select curator based on roundCount index on the allPlayers array
@@ -270,26 +260,6 @@ io.on('connection', async socket => {
 
   } // end of advance round func
 
-
-  // _______________________________________________________________________________
-  // ADVANCING A STAGE
-  // nextStage updates the stage on the game context
-
-  async function advanceStage(stage) {
-    console.log('next stage event triggered!')
-    /* 
-    check stage of current round (get round from db)
-      if reference, set to painting
-      if painting, set to judging
-        - determine ribbons
-      if judging, create new round (with advanceRound)
-        - determine winners
-        - 
-      POTENTIAL ISSUES;
-        multiple emits occur, causing stages to advance before user input
-          fix: only one client can emit the event, button disabled after one click
-    */
-  }
 
   // _______________________________________________________________________________
   // TO JUDGING
