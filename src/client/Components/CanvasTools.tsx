@@ -59,7 +59,7 @@ const CanvasTools: React.FC = (props: propsTypes) => {
   return(
     <Col>
       <Row>
-        <Tooltip title="Undo">
+        <Tooltip title="Undo (Cntrl + Z)">
           <Button onClick={handleUndo}>
             <IoArrowUndoSharp />
           </Button>
@@ -67,7 +67,7 @@ const CanvasTools: React.FC = (props: propsTypes) => {
       </Row>
       <p />
       <Row>
-        <Tooltip title="Redo">
+        <Tooltip title="Redo (Ctrl + Shift + Z)">
           <Button onClick={handleRedo}>
             <IoArrowRedoSharp />
           </Button>

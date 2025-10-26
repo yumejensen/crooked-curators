@@ -1,22 +1,18 @@
 import React from "react";
-
+import { useSocketContext } from "../context";
 import { Button } from "../antdComponents";
 
-import { useSocketContext, useGameContext } from "../context";
-
-const ToJudging = () => {
+const PlayAgainButton: React.FC = () => {
   const { socket } = useSocketContext();
-  const { doneCount, players } = useGameContext().game;
 
-  const handleClick = () => {
-    socket?.emit("toJudging");
-  };
-
-  // --------------------[RENDER]---------------------
+  const toLobby = () => {
+    // restarting the game brings everyone to the lobby again
+    socket?.emit('toLobby');
+  }
 
   return (
     <Button
-      onClick={handleClick}
+      onClick={toLobby}
       variant="solid"
       color="primary"
       style={{
@@ -26,9 +22,9 @@ const ToJudging = () => {
         paddingInline: 30,
       }}
     >
-      <h3>Judging Time!</h3>
+      <h3>Play Again</h3>
     </Button>
   );
 };
 
-export default ToJudging;
+export default PlayAgainButton;

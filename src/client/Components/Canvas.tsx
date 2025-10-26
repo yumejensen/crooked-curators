@@ -199,7 +199,7 @@ const Canvas = () => {
   // submits image for that round and adds to DB
   const handleSubmitImage = () => {
     // later sets to the link provided from the S3 request to have accessible in outer scope
-    let imageUrl = "";
+    let imageUrl = '';
 
     // converts canvas image to a URI to save to the S3 bucket
     const uri = stageRef.current.toDataURL();
@@ -208,43 +208,42 @@ const Canvas = () => {
     axios
       .get("/s3Url")
       .then((res) => {
-        imageUrl = res.data.split("?")[0];
+        imageUrl = res.data.split('?')[0];
 
-        // make PUT request to the s3 bucket with url from request
-        axios
-          .put(res.data, {
-            "Content-Type": "image/png",
-            body: uri,
+      imageUrl = res.data.split('?')[0];
+
+      // make PUT request to the s3 bucket with url from request
+      axios.put(res.data, {
+        'Content-Type': 'image/png',
+        body: uri
+      })
+        .then(() => {
+          console.log('Successful PUT request to s3Url: CLIENT:');
+
+          
+          axios.post('/artworks', {
+            gameCode: code,
+            imageUrl: imageUrl
           })
           .then(() => {
-            console.log("Successful PUT request to s3Url: CLIENT:");
-
-            // send to socket that the art was submitted
-            socket?.emit("submit");
-
-            axios
-              .post("/artworks", {
-                gameCode: code,
-                imageUrl: imageUrl,
-              })
-              .then(() => {
-                console.log(
-                  "Successfully posted artwork URL to server: CLIENT"
-                );
-              })
-              .catch((err) => {
-                console.error(
-                  "Failed to post artwork URL to server: CLIENT:",
-                  err
-                );
-              });
-          })
-          .catch((err) => {
-            console.error("Failed PUT request to s3 bucket: CLIENT:", err);
-          });
+              // send to socket that the art was submitted
+              socket?.emit('submit')
+            
+              console.log('Successfully posted artwork URL to server: CLIENT')
+            })
+            .catch((err) => {
+              console.error('Failed to post artwork URL to server: CLIENT:', err);
+            })
+        })
+        .catch((err) => {
+          console.error('Failed PUT request to s3 bucket: CLIENT:', err);
+        })
+    })
+      .catch((err) => {
+        console.error('Failed GET request to s3Url: CLIENT:', err);
       })
       .catch((err) => {
-        console.error("Failed GET request to s3Url: CLIENT:", err);
+        console.error('Failed GET request to s3Url: CLIENT:', err);
       });
   };
 

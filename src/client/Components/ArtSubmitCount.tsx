@@ -2,9 +2,11 @@ import React from 'react';
 import { useGameContext} from '../context';
 
 import ToJudging from './ToJudging';
+
 import {
   Card
 } from "../antdComponents"
+
 const ArtSubmitCount:React.FC = () => {
 
   const { doneCount, players, role } = useGameContext().game;
@@ -16,8 +18,12 @@ const ArtSubmitCount:React.FC = () => {
   }
 
   return (
-    <Card size="small" title={`Works Submitted: ${doneCount}/${players.length - 1}`}>
-      <ToJudging />
+    <Card size="small">
+      <h3> Works Submitted: {doneCount}/{players.length - 1} </h3>
+      
+      <div style={{display: doneCount === players.length - 1 ? 'block' : 'none'}}>
+        <ToJudging/>
+      </div>
     </Card>
   )
 }
