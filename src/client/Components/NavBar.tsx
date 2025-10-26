@@ -13,7 +13,7 @@ const NavBar: React.FC = (props: NavBarTypes) => {
     <nav className="new-nav">
       {/* <a href='/' className='site-title' style={{...aStyle, ...titleStyle}} >Crooked Curators</a> */}
       <Link to='/' className='site-title' reloadDocument={true}>
-        Crooked Curators
+        <h4>Crooked Curators</h4>
       </Link>
       <ul>
         {/* <CustomLink to='/profile'>Profile</CustomLink> */}
