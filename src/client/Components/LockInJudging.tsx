@@ -118,8 +118,16 @@ const LockInJudging = () => {
           <Tooltip title="Move to Gallery">
             <Button
               onClick={handleClick}
+              variant="solid"
+              color="primary"
+              style={{
+                backgroundColor: "var(--nav)",
+                borderRadius: 8,
+                paddingBlock: 20,
+                paddingInline: 30,
+              }}
             >
-              Lock In Ribbons
+              <h3>Lock In Ribbons</h3>
             </Button>
           </Tooltip>
         </div>
@@ -131,8 +139,16 @@ const LockInJudging = () => {
   return (
     <Button
       onClick={handleClick}
+      variant="solid"
+      color="primary"
+      style={{
+        backgroundColor: "var(--nav)",
+        borderRadius: 8,
+        paddingBlock: 20,
+        paddingInline: 30,
+      }}
     >
-      Lock In Ribbons
+      <h3>Lock In Ribbons</h3>
     </Button>
   )
 
