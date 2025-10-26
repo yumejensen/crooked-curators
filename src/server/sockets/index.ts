@@ -198,6 +198,16 @@ io.on('connection', async socket => {
     } else if (prevRound === allPlayers.length - 1){
       // if the prevRound is the amount of players (-1), end of the game go to gallery
       io.to(currentGame.gameCode).emit('stageAdvance', 'gallery')
+
+      // move everyone to the gallery with a delay
+      // io.timeout(5000).to(currentGame.gameCode).emit('stageAdvance', 'gallery', (err:any, res:any) => {
+      //   if (err){
+      //     console.log("Timeout error for moving to gallery", err);
+      //   } else {
+      //     console.log(res)
+      //   }
+      // })
+
       return
     }
     
@@ -243,7 +253,8 @@ io.on('connection', async socket => {
       },
       players: allPlayers,
       doneCount: 0,
-      playerArtworks: []
+      playerArtworks: [],
+      lastRound: false
     }
 
     // player emit - targets game room except curator
@@ -301,7 +312,13 @@ io.on('connection', async socket => {
 
     // call advanceStage stage function 
     // update stage of the room from painting -> judging
-    io.to(currentGame.gameCode).emit('stageAdvance', 'judging')
+    io.to(currentGame.gameCode).emit('stageAdvance', 'judging');
+
+    // if it's the last round, emit last round event
+    if (roundCount === allPlayers.length - 1){
+      // emit to the client that it's the last round
+      io.to(currentGame.gameCode).emit('lastRound');
+    }
 
   })
 
