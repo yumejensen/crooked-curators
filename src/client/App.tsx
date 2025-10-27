@@ -4,21 +4,19 @@ import { Route, Routes, Navigate } from "react-router-dom";
 
 import axios from "axios";
 import { Socket, io } from "socket.io-client";
-import { RawPurePanel } from "antd/es/popover/PurePanel";
 
 import {
-  Breadcrumb,
   Layout,
   theme,
   Content,
   Footer,
-  ConfigProvider,
 } from "./antdComponents";
 
 
 // -------------------[COMPONENTS]------------------
 import NavBar from "./Components/NavBar";
 import SwitchView from "./SwitchView";
+import ContextDebugging from "./ContextDebugging";
 
 import Homepage from "./Views/Homepage";
 import Profile from "./Views/Profile";
@@ -79,10 +77,13 @@ const App: React.FC = () => {
     role: null,
     ribbons: [],
     players: [],
+    doneCount: 0,
     reference: {
       title: null,
       src: null,
     },
+    playerArtworks: [],
+    lastRound: false,
   });
 
   // socket connection state
@@ -92,24 +93,9 @@ const App: React.FC = () => {
   // players state
   const [players, setPlayers] = useState([]);
 
-  // start game state
-  const [startGame, setStartGame] = useState(false);
 
   // view state - tied to game context
   const [view, setView] = useState({});
-
-  // update user function to update context - not being used atm
-  function updateUser() {
-    fetchUser()
-      .then(({ data }) => {
-        if (data) {
-          setUser({ username: data.username, loggedIn: true });
-        }
-      })
-      .catch((err) => {
-        setUser({ username: null, loggedIn: false });
-      });
-  }
 
   // --------------------[SOCKET LISTENERS]---------------------
   useEffect(() => {
@@ -119,7 +105,6 @@ const App: React.FC = () => {
 
     // --------FUNCTIONS FOR SOCKET LISTENERS ----------
 
-    // ------- ON CONNECT --------
     const onConnect = async () => {
       if (!newSocket.id) {
         console.error("Socket ID is not available");
@@ -134,7 +119,7 @@ const App: React.FC = () => {
         console.log("SOCKO", newSocket.id);
 
         /* now that we know the socket id we can update the user with it */
-        axios.put("/api/user/socketId", { socketId: newSocket.id });
+        axios.patch("/api/user/socketId", { socketId: newSocket.id });
         setUserSocketId(newSocket.id);
 
         /* order is important. we need to fetch the user after attaching
@@ -150,7 +135,7 @@ const App: React.FC = () => {
       }
     };
 
-    // ------- ON CONNECT --------
+    
     function getRoomDetails(roomCodeObj) {
       console.log("game info from server", roomCodeObj);
       // update the room code
@@ -183,42 +168,46 @@ const App: React.FC = () => {
 
     }
 
-    // SOCKET LISTENERS
+    function artworkContext({playerArtworks}) {
+      // add the round artworks to the game context
+      setGame((oldGame) => ({...oldGame, playerArtworks: playerArtworks}))
+
+    }
+
+    function submit(doneCount: number) {
+      // update the game context for everyone in the room with the done count
+      setGame((oldGame) => ({...oldGame, doneCount: doneCount}))
+    }
+
+    function lastRound() {
+      // change lastRound to true
+      setGame((oldGame) => ({...oldGame, lastRound: true}))
+    }
+
+    // SOCKET ON
     newSocket.on("connect", onConnect);
     newSocket.on("referenceSelected", referenceSelected);
     newSocket.on("sendRoomDetails", getRoomDetails);
     newSocket.on("newRound", roundAdvance);
     newSocket.on("stageAdvance", stageAdvance);
+    newSocket.on("artworkContext", artworkContext);
+    newSocket.on("submit", submit);
+    newSocket.on("lastRound", lastRound);
 
     // SOCKET OFF
     return () => {
       newSocket.off("connect", onConnect);
+      newSocket.off("referenceSelected", referenceSelected);
       newSocket.off("sendRoomDetails", getRoomDetails);
       newSocket.off("newRound", roundAdvance);
       newSocket.off("stageAdvance", stageAdvance);
+      newSocket.off("artworkContext", artworkContext);
+      newSocket.off("submit", submit);
+      newSocket.off("lastRound", lastRound);
 
       setUserSocketId(null);
     };
   }, []);
-
-  // -------------------[ARTWORKS]--------------------
-
-  const [roundArtworks, setRoundArtworks] = useState([]);
-
-  const handleGetRoundArtworks = () => {
-    // send get request to /artworks to retrieve images with game code for querying
-    axios
-      .get(`/artworks/${game.code}`)
-      .then(({ data }) => {
-        console.log(data);
-
-        // update round artworks state to array of artwork objects
-        setRoundArtworks(data);
-      })
-      .catch((err) => {
-        console.error("Failed to GET artworks from round: CLIENT:", err);
-      });
-  };
 
 
   // --------------------[RENDER]---------------------
@@ -230,15 +219,12 @@ const App: React.FC = () => {
 
           <Layout>
             <NavBar />
-            <div>{`User Context: ${user.username}, ${user.loggedIn
-              } \n Game Context: ${Object.keys(game).map(
-                (key) => key + ":" + game[key]
-              )}`}</div>
+            <ContextDebugging />            
             <Content
               style={{
+                marginTop: "2%",
                 padding: "0 15%",
-                color: "#3B262C", // --darkbrown
-                marginTop: "4%",
+                color: "var(--darkerbrown)",
               }}
             >
               <div
@@ -251,7 +237,7 @@ const App: React.FC = () => {
                 }}
               >
                 <Routes>
-                  <Route path="/" element={<Homepage socket={socket} />} />
+                  <Route path="/" element={<Homepage />} />
                   <Route
                     path="/game-settings"
                     element={
@@ -260,7 +246,6 @@ const App: React.FC = () => {
                         <GameSettings
                           roomCode={roomCode}
                           players={players}
-                          socket={socket}
                         />
                       </>
                     }
@@ -272,8 +257,6 @@ const App: React.FC = () => {
                       <>
                         <SwitchView view={view} />
                         <ActiveGame
-                          socket={socket}
-                          handleArtworks={handleGetRoundArtworks}
                         />
                       </>
                     }
@@ -281,14 +264,20 @@ const App: React.FC = () => {
                   <Route
                     path="/judging"
                     element={
-                      <RoundJudging
-                        artworks={roundArtworks}
-                        handleArtworks={handleGetRoundArtworks}
-                        setArtworks={setRoundArtworks}
-                      />
+                      <>
+                        <SwitchView view={view} />
+                        <RoundJudging />
+                      </>
                     }
                   />
-                  <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/gallery"
+                    element={
+                      <>
+                        <SwitchView view={view} />
+                        <Gallery />
+                      </>
+                    } 
+                  />
                   <Route
                     path="/curator"
                     element={

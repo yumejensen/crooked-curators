@@ -20,7 +20,7 @@ const db = require('./db/index');
 
 // --------------ENV------------------
 
-const { SESSION_SECRET, DEBUG_MODE } = process.env;
+const { SESSION_SECRET, BASE_URL, DEBUG_MODE } = process.env;
 
 // ------INIT GOOGLE STRATEGY--------
 // require auth to initialize google strategy
@@ -56,7 +56,7 @@ app.use(passport.session());
 
 // path to static files
 // make different client paths depending on DEBUG_MODE true or false
-const CLIENT = DEBUG_MODE ? path.resolve(__dirname, '../../dist/client') : path.resolve(__dirname, '../client');
+const CLIENT = DEBUG_MODE === "true" ? path.resolve(__dirname, '../../dist/client') : path.resolve(__dirname, '../client');
 const HTML = path.resolve(CLIENT, './index.html');
 
 
@@ -76,7 +76,7 @@ app.use('/ribbons', ribbonsRouter)
 // serve static files from client
 app.use(express.static(CLIENT));
 
-app.put('/api/user/socketId', (req, res) => {
+app.patch('/api/user/socketId', (req, res) => {
   const { socketId } = req.body;
   if (!socketId) {
     return res.status(400).send('Socket ID is required');
@@ -117,7 +117,7 @@ app.get('/{*any}', (req, res) => {
 const port = 3000;
 
 server.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`);
+  return console.log(`Express is listening at ${BASE_URL}`);
 });
 
 // run the sockets/index.ts file

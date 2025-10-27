@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { useGameContext } from './context';
 
@@ -19,6 +19,14 @@ const SwitchView: React.FC = ({ view }) => {
 
   if (stage === 'judging'){
     return <Navigate to={'/judging'} /> 
+  }
+
+  if (stage === 'gallery'){
+    return <Navigate to={'/gallery'} />
+  }
+
+  if (stage === 'lobby'){
+    return <Navigate to={'/game-settings'} />
   }
 
 };

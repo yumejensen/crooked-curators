@@ -9,6 +9,7 @@ import { User } from '../db/schemas/users';
 import { User_Game } from '../db/schemas/users-games';
 import { Round } from '../db/schemas/rounds';
 
+
 // session secret for express session
 const { SESSION_SECRET, BASE_URL } = process.env;
 
@@ -37,14 +38,21 @@ io.engine.use(
 // hold games and players (temporarily)
 const gamesPlayersMap = new Map();
 
+// type GameVariables = {
+//   currentGame: any;
+//   gameCode: string;
+//   currentRound: any;
+// }
+
 // hold the current game information
 let currentGame;
 let currentRound;
 let curator;
 let roundCount = 0
-let allPlayers = [];
+let allPlayers: any = [];
 let stage = 'lobby'
 
+let doneCount = 0;
 // _______________________________________________________________________________
 io.on('connection', async socket => {
 
@@ -110,7 +118,7 @@ io.on('connection', async socket => {
       //----------------------------------------------------------------------
 
       // to the specific room, emit the room code - make it visible for everyone
-      //TODO - update context with code, players array
+      
       io.to(joinAttempt.roomCode).emit('sendRoomDetails', {
         roomCode: joinAttempt.roomCode,
         game: roomExists,
@@ -129,14 +137,42 @@ io.on('connection', async socket => {
   // _______________________________________________________________________________
   // STARTING A GAME 
   socket.on('startGame', async () => {
-    // query user_games table, find users where gameid = current game id
+    // query user_games table, find users where game id === current game id
     // sort by created at order
-    allPlayers = await User_Game.findAll({
+    const allUsersGames = await User_Game.findAll({
       where: {
         game_id: currentGame.id
       },
       order: [['createdAt', 'ASC']]
     })
+
+    // get get player info and only include id, username, and socketId
+    const allPlayersData = allUsersGames.map(async (player: any) => {
+      return await User.findOne({
+        where: {
+          id: player.user_id
+        }
+      }, {
+        attributes: ['id', 'username', 'socketId']
+      })
+    })
+
+    // promise all players to ensure that they all resolve
+    let promisedPlayers = await Promise.all(allPlayersData);
+
+    // reduce promised players to create new objects without the DB nesting
+    allPlayers = promisedPlayers.reduce((acc, {dataValues}) => {
+      const { id, username, socketId } = dataValues;
+
+      const obj = {
+        id: id,
+        username: username,
+        socketId: socketId
+      }
+
+      acc.push(obj);
+      return acc;
+    }, [])
 
     // calls advance round with prev round of null
     advanceRound(null)
@@ -144,19 +180,32 @@ io.on('connection', async socket => {
 
   // _______________________________________________________________________________
   // ROUND PROGRESSION HANDLER
-  async function advanceRound(prevRound) {
+  async function advanceRound(prevRound: number | null) {
     console.log('advancing round!')
+    console.log('allPlayers length', allPlayers.length, 'prevRound', prevRound, 'roundCount', roundCount)
+    // console.log(allPlayers);
 
-    //TODO- move this somewhere else?
+    // reassign doneCount to 0
+    doneCount = 0;
+    
+    // ROUND COUNT LOGIC
     if (prevRound === null) {
+      // if prevRound is null, it's the first round
       roundCount = 0
-    } else {
-      roundCount++
+    } else if (prevRound < allPlayers.length - 1) {
+      // if prevRound is less than the amount of players(-1), progress
+      roundCount += 1
+    } else if (prevRound === allPlayers.length - 1){
+      // if the prevRound is the amount of players (-1), end of the game go to gallery
+      io.to(currentGame.gameCode).emit('stageAdvance', 'gallery')
+      return;
     }
+    
     // select curator based on roundCount index on the allPlayers array
     curator = await User.findOne({
-      where: { id: allPlayers[roundCount].user_id }
+      where: { id: allPlayers[roundCount].id }
     })
+    
 
     // assign currentRound, then add round to database
     currentRound = await Round.create({
@@ -192,11 +241,10 @@ io.on('connection', async socket => {
         username: curator.username,
         finished: false
       },
-      players: allPlayers.map(async ({ user_id }) => {
-        const player = await User.findOne({ where: { id: user_id } })
-        // add only the parts needed for other players
-        return { username: player.username, finished: false }
-      })
+      players: allPlayers,
+      doneCount: 0,
+      playerArtworks: [],
+      lastRound: false
     }
 
     // player emit - targets game room except curator
@@ -214,37 +262,55 @@ io.on('connection', async socket => {
 
 
   // _______________________________________________________________________________
-  // ADVANCING A STAGE
-  // nextStage updates the stage on the game context
-
-  async function advanceStage(stage) {
-    console.log('next stage event triggered!')
-    /* 
-    check stage of current round (get round from db)
-      if reference, set to painting
-      if painting, set to judging
-        - determine ribbons
-      if judging, create new round (with advanceRound)
-        - determine winners
-        - 
-      POTENTIAL ISSUES;
-        multiple emits occur, causing stages to advance before user input
-          fix: only one client can emit the event, button disabled after one click
-    */
-  }
-
-  // _______________________________________________________________________________
   // TO JUDGING
   // emitted from client when judge hits 'To Judging!' button
-  socket.on('toJudging', () => {
+  socket.on('toJudging', async () => {
+    // add the artworks to the context 
+    const handleGetRoundArtworks = async () => {
+      // send get request to /artworks to retrieve images with game code for querying
+      await axios.get(`${BASE_URL}/artworks/judging/${currentGame.gameCode}`)
+        .then(({ data }) => {
+          // update round artworks state to array of artwork objects
+          // setRoundArtworks(data);
+          io.to(currentGame.gameCode).emit('artworkContext', {playerArtworks: data})
+        })
+        .catch((err) => {
+          console.error("Failed to GET artworks from round: SOCKET", err);
+        });
+    };
+    await handleGetRoundArtworks();
+
     // call advanceStage stage function 
     // update stage of the room from painting -> judging
-    io.to(currentGame.gameCode).emit('stageAdvance', 'judging')
+    io.to(currentGame.gameCode).emit('stageAdvance', 'judging');
+
+    // if it's the last round, emit last round event
+    if (roundCount === allPlayers.length - 1){
+      // emit to the client that it's the last round
+      io.to(currentGame.gameCode).emit('lastRound');
+    }
 
   })
 
   // _______________________________________________________________________________
-  // TO GALLERY
+  // TO LOBBY
+  // emitted from client when someone hits the 'Play Again?' button in the gallery
+  socket.on('toLobby', () => {
+    console.log('returning to lobby!')
+    // call advanceStage stage function 
+    // update stage of the room from gallery -> lobby
+    io.to(currentGame.gameCode).emit('stageAdvance', 'lobby')
+  })
+
+  // _______________________________________________________________________________
+  // ADVANCING A ROUND
+  // hit after judge makes ribbon selections
+
+  socket.on('newRound', () => {
+
+    advanceRound(roundCount);
+    
+  })
 
 
   // _______________________________________________________________________________
@@ -259,17 +325,27 @@ io.on('connection', async socket => {
     io.to(currentGame.gameCode).emit('stageAdvance', 'painting')
   })
 
+  // _______________________________________________________________________________
+  // ARTWORK DRAG - ROUND JUDGING
+  socket.on('dragArtwork', (playerArtworks) => {
+
+    // emit the new artwork context to eveyone in the room
+    io.to(currentGame.gameCode).emit('artworkContext', {playerArtworks})
+    
+  })
+
+  // _______________________________________________________________________________
+  // DONE WITH ARTWORK - ACTIVE GAME
+
+  socket.on('submit', () => {
+    // add to doneCount
+    doneCount += 1;
+    
+    // emit the done count to the room
+    io.to(currentGame.gameCode).emit('submit', doneCount)
+  })
+
+
 
 }); // end of connection
 
-
-
-
-// NOT WORKING - attempted to use reload to maintain session connection
-// socket.request.session.reload((err) => {
-//   if (err) {
-//     return socket.disconnect();
-//   }
-//   socket.request.session.count++;
-//   socket.request.session.save();
-// });

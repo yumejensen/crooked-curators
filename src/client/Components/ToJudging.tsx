@@ -1,43 +1,34 @@
 import React from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
 
-import { Col, Row, Button, Tooltip } from "../antdComponents";
+import { Button } from "../antdComponents";
 
-import { useSocketContext } from "../context";
+import { useSocketContext, useGameContext } from "../context";
 
-type ToJudgingProps = {
-  done: number;
-  playerCount: number;
-  isCurator: boolean;
-  socket: any;
-  handleArtworks: () => void;
-};
-
-const ToJudging = ({ done, playerCount, isCurator, handleArtworks }: ToJudgingProps) => {
-  
+const ToJudging = () => {
   const { socket } = useSocketContext();
+  const { doneCount, players } = useGameContext().game;
 
   const handleClick = () => {
-    handleArtworks();
-    socket.emit("toJudging");
+    socket?.emit("toJudging");
   };
 
   // --------------------[RENDER]---------------------
 
-  if (done === playerCount) {
-    return (
-      <Button onClick={handleClick}>
-        Judging Time!
-      </Button>
-      );
-  } else {
-    return (
-      <Button disabled>
-        {done} / {playerCount}
-      </Button>
-    );
-  }
+  return (
+    <Button
+      onClick={handleClick}
+      variant="solid"
+      color="primary"
+      style={{
+        backgroundColor: "var(--nav)",
+        borderRadius: 8,
+        paddingBlock: 20,
+        paddingInline: 30,
+      }}
+    >
+      <h3>Judging Time!</h3>
+    </Button>
+  );
 };
 
 export default ToJudging;

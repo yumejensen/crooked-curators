@@ -1,8 +1,11 @@
 // Reference image that will show on artist view and curator view after a reference is picked from reference search
 
 import React from "react";
-import { Image } from "../antdComponents";
+import { Image, Card } from "../antdComponents";
 import { useGameContext } from "../context";
+
+import Mona_Loser_Pick from "../../assets/images/Mona_Loser_Pick.png";
+import Mona_Loser_Wait from "../../assets/images/Mona_Loser_Wait.png";
 
 type props = {
   title: string;
@@ -11,21 +14,18 @@ type props = {
 };
 
 const Reference = (props) => {
+  const { game } = useGameContext();
   let { title, image, description } = props;
   if (!title) {
-    title = "Wait for the Curator";
-    image =
-      "https://www.farmersalmanac.com/wp-content/uploads/2020/11/Starry-Night-Van-Gogh-Which-Stars-GoogleArtProject-1536x817.jpg";
-    description = "Weird Al!";
+    title = game.role === 'curator' ? "No Reference Selected" : "Waiting for Curator to Select Reference...";
+    image = game.role === 'curator' ? Mona_Loser_Pick : Mona_Loser_Wait;
   }
-  const { game } = useGameContext();
   title = game?.reference?.title ?? title;
   image = game?.reference?.src ?? image;
   return (
-    <div>
-      <h3>{title}</h3>
-      <Image src={image} />
-    </div>
+    <Card title={title} style={{textAlign:'center'}}>
+      <Image src={image} style={{maxHeight: "40vh"}}/>
+    </Card>
   );
 };
 

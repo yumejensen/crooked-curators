@@ -1,11 +1,10 @@
 // Card that covers the create and start if user is not signed in
 
 import React from "react";
-import { useState} from "react";
 
 import { useUserContext } from "../context";
 
-import { Card, Flex, Col, Row, Button } from '../antdComponents'
+import { Card, Flex, Col } from '../antdComponents'
 
 import SignInButton2 from "./SignInButton2";
 
@@ -36,7 +35,7 @@ const HomepageSignInToPlay = () => {
 
     
           <Card style={{ width: 300, textAlign: "center" }} >
-            <h2> Sign in to Create a Game or Join a Game </h2>
+            <h2> Sign in to Create or Join a Game </h2>
           </Card>
  
           <Flex style={buttonStyle} justify="center" align="center">

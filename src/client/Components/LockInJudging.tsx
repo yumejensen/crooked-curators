@@ -3,9 +3,10 @@
 
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import { useGameContext, useSocketContext } from '../context';
 import axios from 'axios';
 
-import { Button } from '../antdComponents';
+import { Button, Tooltip, Spin, Flex } from '../antdComponents';
 
 // ---------------------[TYPES]---------------------
 
@@ -13,11 +14,17 @@ import { LockInJudging as LockInJudgingProps } from './types';
 
 // -------------------[COMPONENT]-------------------
 
-const LockInJudging = ({ artworks }: LockInJudgingProps) => {
+const LockInJudging = () => {
 
-  // --------------------[STATES]---------------------
+  // --------------[STATES + CONTEXT]---------------------
 
   const [lockInReady, setLockInReady] = useState(false);
+
+  const [ spinnerVisible, setSpinnerVisible ] = useState(false);
+
+  const { socket } = useSocketContext();
+
+  const { ribbons, playerArtworks, role, lastRound } = useGameContext().game;
 
   // -------------------[HANDLERS]--------------------
 
@@ -25,18 +32,42 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
   const handleLockIn = () => {
 
     // make request to update each of the artworks' entries in the DB to have the ribbon referenced by ribbon_id
-    axios.patch('/artworks', {
-
+    axios.patch('/artworks/ribbons', {
       // include artwork id and ribbon id
-
+      artworks: playerArtworks,
+      ribbons: ribbons
     })
     .then(() => {
       // will a then block be needed?
       console.log('Successfully PATCHed artwork with winning Ribbon')
     })
-    .catch((err) => {
-      console.error('Failed to PATCH artwork with winning Ribbon: CLIENT')
+    .catch((err: Error) => {
+      console.error('Failed to PATCH artwork with winning Ribbon: CLIENT:', err)
     })
+  }
+
+  // trigger the next round
+  const triggerNextRound = () => {
+    // if it's the last round, wait to emit to the socket
+    if (lastRound){
+      setTimeout(() => {
+        socket.emit('newRound')
+      }, 2000)
+
+    } else {
+      socket?.emit('newRound')
+    }
+
+  }
+
+  // on click, submit points and then trigger the next round
+  const handleClick = () => {
+    handleLockIn();
+    triggerNextRound();
+
+    if(lastRound) {
+      setSpinnerVisible(true)
+    }
   }
 
   // -------------------[LIFECYCLE]-------------------
@@ -44,7 +75,7 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
   useEffect(() => {
 
     // check to make sure that the amount of artworks in each column is exactly one
-    const toUpdate = artworks.map((artwork) => {
+    const toUpdate = playerArtworks.map((artwork) => {
       return artwork.status === 'BLUE' || artwork.status === 'WHITE' || artwork.status === 'RED';
     })
 
@@ -56,9 +87,9 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
       if(artwork.status === 'BLUE'){
         blueRibbonArts++;
       } else if(artwork.status === 'WHITE'){
-        redRibbonArts++;
+        whiteRibbonArts++;
       } else if(artwork.status === 'RED'){
-        whiteRibbonArts;
+        redRibbonArts++;
       }
     });
 
@@ -73,15 +104,63 @@ const LockInJudging = ({ artworks }: LockInJudgingProps) => {
 
   // --------------------[RENDER]---------------------
 
-  if(lockInReady === true){
+  // only render the button for the curator
+  if (role !== "curator"){
+    return null
+  }
+
+  if (lastRound){
     return (
-      <Button>Lock In Ribbons</Button>
-    )
-  } else {
-    return (
-      <Button disabled>Lock In Ribbons</Button>
+      <Flex vertical>
+        <Spin size="large" style={{display: spinnerVisible ? 'block' : 'none'}} />
+
+        <div style={{display: spinnerVisible ? 'none' : 'block'}}>
+          <Tooltip title="Move to Gallery">
+            <Button
+              onClick={handleClick}
+              variant="solid"
+              color="primary"
+              style={{
+                backgroundColor: "var(--nav)",
+                borderRadius: 8,
+                paddingBlock: 20,
+                paddingInline: 30,
+              }}
+            >
+              <h3>Lock In Ribbons</h3>
+            </Button>
+          </Tooltip>
+        </div>
+
+      </Flex>
     )
   }
+
+  return (
+    <Button
+      onClick={handleClick}
+      variant="solid"
+      color="primary"
+      style={{
+        backgroundColor: "var(--nav)",
+        borderRadius: 8,
+        paddingBlock: 20,
+        paddingInline: 30,
+      }}
+    >
+      <h3>Lock In Ribbons</h3>
+    </Button>
+  )
+
+  // if(lockInReady === true){
+  //   return (
+  //     <Button>Lock In Ribbons</Button>
+  //   )
+  // } else {
+  //   return (
+  //     <Button disabled>Lock In Ribbons</Button>
+  //   )
+  // }
 }
 
 export default LockInJudging;

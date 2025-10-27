@@ -2,16 +2,18 @@
 :root {
     --cyan: #058f6fff;
     --cyan-rgb: 141, 235, 213;
-    --lightcream: #f8f4e5;
-    --cream: #F0E7CA;
+    --lightcream: #faf8e7;
+    --grey: #8f8f8f;
     --yellow: #EDDB98;
-    --mauve: #9E6072;
     --lightmauve: #e0b5c2;
     --grey: rgb(196, 185, 177);
     --maroon: #800933;
-    --maroonbg: #611530ff;
-    --darkbrown: #3B262C;
-    --darkerbrown: #16020c;
+    --darkbrown: #3b2b30;
+
+    --accent:#c4326a;
+    --background: #a06b7d;;
+    --nav: #4d2c3a;
+    --content:#eceadb;
 }
 
 *{
@@ -19,17 +21,26 @@
 }
 
 body {
-    background-color: var(--maroonbg);
-    margin: 0px
+    background-color: var(--background);
+    margin: 0px;
+}
+
+.slick-arrow.slick-prev, .slick-arrow.slick-next {
+  color: var(--cyan);
+}
+
+.slick-arrow.slick-prev::after, .slick-arrow.slick-next::after {
+  border-inline-start-width: 5px;
+  border-block-start-width: 5px;
 }
 
 .new-nav {
-  background-color: var(--darkerbrown);
-  color: var(--yellow);
+  background-color: var(--nav);
+  color: var(--content);
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  height: 3.2rem;
+  height: 3.5rem;
 }
 
 .site-title {
@@ -50,16 +61,15 @@ body {
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 0.7rem;
+  padding: 1rem
 }
 
 .new-nav li.active {
-  background-color: var(--maroon);
+  background-color: var(--accent);
 }
 
 .new-nav li:hover {
-  transition: 0.4s ease;
-  background: var(--mauve);
+  background-color: var(--accent);
 }
 
 
@@ -80,3 +90,14 @@ body {
   float: right;
   margin: 16px 0 16px 24px;
 }
+
+.ant-btn-default:disabled {
+  color: var(--background);
+}
+
+.ant-input-search-button {
+  border-radius: 8px;
+  color: var(--content);
+  background-color: var(--nav);
+}
+
