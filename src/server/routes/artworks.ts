@@ -235,12 +235,6 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
             })
             .catch((err: Error) => console.error('Failed to PROMISE ALL artworks with their ribbon requests: SERVER:', err))
 
-          // // add points to player points total
-          // artworksWithRibbons.forEach((artwork: any) => {
-          //   const { points } = artwork.ribbon
-          //   playerPoints += points;
-          // })
-
           // send back points in response
           res.status(200).json(playerPoints);
         })
@@ -295,10 +289,9 @@ artworkRouter.patch('/ribbons', async ({ body }, res) => {
         id: artworkRibbon.artworkId
       }
     })
-      // .then(() => {
-      //   console.log('Successful PATCH for Artwork with Ribbon awarded.');
-      //   res.sendStatus(201);
-      // })
+      .then(() => {
+        console.log('Successful PATCH for Artwork with Ribbon awarded.');
+      })
       .catch((err: Error) => {
         console.error('Failed to PATCH Artwork with Ribbon awarded: SERVER:', err);
         res.sendStatus(500);
