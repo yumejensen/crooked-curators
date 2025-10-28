@@ -75,7 +75,7 @@ const CanvasTools: React.FC = (props: propsTypes) => {
       </Row>
       <p />
       <Row>
-        <Tooltip title="Pen">
+        <Tooltip title="Brush (B)">
           <Button
             color="default"
             variant={penSelected}
@@ -87,7 +87,7 @@ const CanvasTools: React.FC = (props: propsTypes) => {
       </Row>
       <p />
       <Row>
-        <Tooltip title="Eraser">
+        <Tooltip title="Eraser (E)">
           <Button
             color="default"
             variant={eraserSelected}
