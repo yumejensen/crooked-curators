@@ -219,7 +219,8 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
               .catch((err: Error) => {
                 console.error('Failed to get A Ribbon for an Artwork: SERVER:', err);
               });
-
+            
+            console.log('acc is', acc)
             acc.push(obj);
             return acc;
           }, [])
@@ -290,10 +291,11 @@ artworkRouter.patch('/ribbons', ({ body }, res) => {
     })
       .then(() => {
         console.log('Successful PATCH for Artwork with Ribbon awarded.');
-        res.sendStatus(201);
       })
       .catch((err: Error) => {
         console.error('Failed to PATCH Artwork with Ribbon awarded: SERVER:', err);
       })
   })
+
+  res.sendStatus(201)
 })
