@@ -247,22 +247,6 @@ const Canvas = () => {
       });
   };
 
-  const handleKeyDown = (e) => {
-
-    if(e.ctrlKey && e.zKey === 90){
-      handleUndo();
-    }
-
-    // b for brush
-
-    // e for eraser
-  }
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    // cleanup on keyup
-  }, [])
-
   // --------------------[RENDER]---------------------
 
   return (
