@@ -201,7 +201,7 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
           })
 
           // reduce over filtered artworks
-          const artworksWithRibbons = await artworksThatHaveRibbons.reduce(async (acc, {dataValues}: any) => {
+          const artworksWithRibbons = await artworksThatHaveRibbons.map(async ({dataValues}: any) => {
             const obj = {
               artwork: dataValues,
               ribbon: {}
@@ -215,14 +215,12 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
               .then(({dataValues}: any) => {
                 // add ribbon to artwork object with points, title, and source
                 obj.ribbon = dataValues;
-                acc.push(obj);
               })
               .catch((err: Error) => {
                 console.error('Failed to get A Ribbon for an Artwork: SERVER:', err);
               });
 
-            console.log('acc is:', acc);
-            return acc;
+            return obj;
           }, [])
 
           // promise all to ensure that the values resolve
