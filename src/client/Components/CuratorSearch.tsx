@@ -96,7 +96,7 @@ const CuratorSearch = () => {
               setSelected(0);
               setDisabled(false);
             }}
-          >{`Try Another Search?`}</Button>
+          ><h3>Try Another Search?</h3></Button>
         ) : null}
         <Popconfirm
           title="Are you sure to select this reference?"
