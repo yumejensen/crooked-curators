@@ -201,7 +201,7 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
           })
 
           // reduce over filtered artworks
-          const artworksWithRibbons = await artworksThatHaveRibbons.reduce(async (acc: any, {dataValues}: any) => {
+          const artworksWithRibbons = await artworksThatHaveRibbons.reduce(async (acc, {dataValues}: any) => {
             const obj = {
               artwork: dataValues,
               ribbon: {}
@@ -215,25 +215,25 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
               .then(({dataValues}: any) => {
                 // add ribbon to artwork object with points, title, and source
                 obj.ribbon = dataValues;
+                acc.push(obj);
               })
               .catch((err: Error) => {
                 console.error('Failed to get A Ribbon for an Artwork: SERVER:', err);
               });
-            
-            console.log('acc is', acc)
-            acc.push(obj);
+
+            console.log('acc is:', acc);
             return acc;
           }, [])
 
           // promise all to ensure that the values resolve
           await Promise.all(artworksWithRibbons)
+            .then((values) => {
+              values.forEach((artwork: any) => {
+                const { points } = artwork.ribbon;
+                playerPoints += points;
+              })
+            })
             .catch((err: Error) => console.error('Failed to PROMISE ALL artworks with their ribbon requests: SERVER:', err))
-
-          // add points to player points total
-          artworksWithRibbons.forEach((artwork: any) => {
-            const { points } = artwork.ribbon
-            playerPoints += points;
-          })
 
           // send back points in response
           res.status(200).json(playerPoints);
@@ -247,7 +247,7 @@ artworkRouter.get('/points/:user_id/:gameCode', ({ params }, res) => {
 // ---------------[PATCH ARTWORK]----------------
 
 // updates artwork when awarded a ribbon from judging
-artworkRouter.patch('/ribbons', ({ body }, res) => {
+artworkRouter.patch('/ribbons', async ({ body }, res) => {
 
   // pull artworks and ribbons from the body of the req
   const { artworks, ribbons } = body;
@@ -258,7 +258,7 @@ artworkRouter.patch('/ribbons', ({ body }, res) => {
   const redRibbon = ribbons.filter((ribbon: any) => ribbon.color === 'RED')[0];
 
   // get matching artwork and ribbon
-  const artworksRibbons = artworks.reduce((acc: any, artwork: any) => {
+  const artworksRibbons = artworks.reduce((acc, artwork: any) => {
     // object to return to the array
     const obj = {
       artworkId: 0,
@@ -281,7 +281,7 @@ artworkRouter.patch('/ribbons', ({ body }, res) => {
   }, [])
 
   // update db with artwork and ribbon
-  artworksRibbons.forEach((artworkRibbon: any) => {
+  await artworksRibbons.forEach((artworkRibbon: any) => {
     Artwork.update({
       ribbon_id: artworkRibbon.ribbonId
     }, {
@@ -294,6 +294,7 @@ artworkRouter.patch('/ribbons', ({ body }, res) => {
       })
       .catch((err: Error) => {
         console.error('Failed to PATCH Artwork with Ribbon awarded: SERVER:', err);
+        res.sendStatus(500);
       })
   })
 
