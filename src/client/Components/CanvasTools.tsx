@@ -65,7 +65,8 @@ const CanvasTools: React.FC = (props: propsTypes) => {
           </Button>
         </Tooltip>
       </Row>
-      <p />
+      <br />
+      <br />
       <Row>
         <Tooltip title="Redo (Ctrl + Shift + Z)">
           <Button onClick={handleRedo}>
@@ -73,7 +74,8 @@ const CanvasTools: React.FC = (props: propsTypes) => {
           </Button>
         </Tooltip>
       </Row>
-      <p />
+      <br />
+      <br />
       <Row>
         <Tooltip title="Brush (B)">
           <Button
@@ -85,7 +87,8 @@ const CanvasTools: React.FC = (props: propsTypes) => {
           </Button>
         </Tooltip>
       </Row>
-      <p />
+      <br />
+      <br />
       <Row>
         <Tooltip title="Eraser (E)">
           <Button
