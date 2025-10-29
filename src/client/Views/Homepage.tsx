@@ -71,7 +71,12 @@ const Homepage: React.FC = () => {
 
           <Col >
 
-            <Card style={{display: !loggedIn || username === undefined ? 'none' : 'flex', marginBottom: 30}}>
+            <Card style={{
+              display: !loggedIn || username === undefined ? 'none' : 'flex',
+              marginBottom: 30,
+              marginTop: 15
+              }}
+            >
               <HomepageName
                 randomName={randomName}
                 handleRandomizeName={handleRandomizeName}
