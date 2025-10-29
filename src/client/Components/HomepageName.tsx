@@ -10,7 +10,6 @@ const randomizerStyle: React.CSSProperties = {
   height: 75,
   borderRadius: 6,
   marginTop: 10,
-  marginBottom: 7
 };
 
 const HomepageName = ({ randomName, handleRandomizeName }) => {
