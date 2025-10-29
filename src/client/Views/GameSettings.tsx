@@ -43,8 +43,6 @@ const GameSettings = ({roomCode, players}) => {
             onClick={startGame}
             disabled={!socket || !roomCode}
             style={{
-              backgroundColor: "var(--nav)",
-              borderRadius: 8,
               paddingBlock: 20,
               paddingInline: 30,
             }}

@@ -57,6 +57,7 @@ const CuratorSearch = () => {
 
       <Flex style={{ gap: 20 }}>
         <Button
+          type="primary"
           disabled={selected >= results.length - 1}
           onClick={nextResult}
           variant="solid"
@@ -64,8 +65,6 @@ const CuratorSearch = () => {
           icon={<ReloadOutlined style={{ fontSize: 20 }} />}
           iconPosition="end"
           style={{
-            backgroundColor: "var(--nav)",
-            borderRadius: 8,
             paddingBlock: 20,
             paddingInline: 17,
           }}
@@ -81,13 +80,12 @@ const CuratorSearch = () => {
         </Button>
         {results.length > 0 && results.length < 4 && !confirmed ? (
           <Button
+            type="primary"
             variant="solid"
             color="primary"
             icon={<ReloadOutlined style={{ fontSize: 20 }} />}
             iconPosition="end"
             style={{
-              backgroundColor: "var(--nav)",
-              borderRadius: 8,
               paddingBlock: 20,
               paddingInline: 17,
             }}
@@ -106,12 +104,11 @@ const CuratorSearch = () => {
           cancelText="No"
         >
           <Button
+            type="primary"
             disabled={confirmed || results.length === 0}
             variant="solid"
             color="primary"
             style={{
-              backgroundColor: "var(--nav)",
-              borderRadius: 8,
               paddingBlock: 20,
               paddingInline: 30,
             }}
