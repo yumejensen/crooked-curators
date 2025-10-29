@@ -48,10 +48,14 @@ const CuratorSearch = () => {
   };
   return (
     <Flex gap="middle" align="center" vertical>
-      <div>
+      <div style={{textAlign:"center", marginBottom: 7}}>
+        <h3>You are the curator!</h3>
+        <h3>Type a keyword to find art for your gallery</h3>
         <ReferenceSearch handleSearch={handleSearch} disabled={disabled} />
       </div>
-      <ArtSubmitCount />
+      <div style={{marginBottom: 7}}>
+        <ArtSubmitCount />
+      </div>
 
       <Reference {...results[selected]} />
 
@@ -121,6 +125,11 @@ const CuratorSearch = () => {
           </Button>
         </Popconfirm>
       </Flex>
+
+      {/* <div style={{marginTop: 16}}>
+        <ArtSubmitCount />
+      </div> */}
+
     </Flex>
   );
 };
