@@ -31,7 +31,10 @@ const GameSettings = ({roomCode, players}) => {
       </Flex>
 
       <br></br>
-      <JoinedPlayers players={players} />
+      <Card>
+        <JoinedPlayers players={players} />
+
+      </Card>
       <br></br>
 
       <Flex align='right' justify='right'>
