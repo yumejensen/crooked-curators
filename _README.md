@@ -80,6 +80,10 @@ Red Ribbons:
 
 After all rounds are complete, everyone is redirected to a gallery view, where all artworks that were awarded ribbons will be viewed in a carousel and everyone's points across all rounds are tallied up.
 
+# How to Start Up Project
+
+
+
 # Project Structure
 
 **Front End Structure**
